@@ -7,7 +7,8 @@ define([
     "modules/backbone-mozu-validation",
     "modules/backbone-mozu-model",
     "modules/backbone-mozu-pagedcollection",
-    "modules/backbone-mozu-view"
+    "modules/backbone-mozu-view",
+    "modules/backbone-mozu-grid"
 ], function (Backbone) {
     return Backbone;
 });

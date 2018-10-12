@@ -106,6 +106,15 @@
                     }
                 } catch (e) { }
             },
+            
+            setIndex: function(num){
+                try {
+                    num = parseInt(num, 10);
+                    if (typeof num === 'number') {
+                        return this.apiModel.setIndex((num ), this.lastRequest);
+                    }
+                } catch (e) { }
+            },
 
             setPage: function(num) {
                 num = parseInt(num, 10);

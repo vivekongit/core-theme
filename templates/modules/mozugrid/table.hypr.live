@@ -1,0 +1,36 @@
+<!--
+     dataGridItems
+
+     //A list of items that contain only columns and assocaited column values
+-->
+<div class="mz-grid-header">
+    <div class="mz-grid-row"></div>
+        {% for col in model.columns %}
+            <span class="mz-grid-column" data-mz-action="sort" data-mz-col-index="{{col.index}}">
+                {{col.displayName}}
+                {% if col.sort %}
+                    <span>
+                        < >
+                    </span>
+                {% endif %}
+            </span>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="mz-grid-body">
+    {% if model.items %}
+        {% for row in model.gridItems %}
+            <div class="mz-grid-row">
+                {% for col in row %}
+                    <span class="mz-grid-column">
+                        {{col}}
+                    </span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="mz-grid-body-empty"> No Results </div>
+    {% endif %}
+</div>
