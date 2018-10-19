@@ -1,6 +1,7 @@
 ﻿require(["modules/jquery-mozu", "underscore", "hyprlive", "modules/backbone-mozu", "modules/cart-monitor", "modules/models-product", "modules/views-productimages",  "hyprlivecontext"], function ($, _, Hypr, Backbone, CartMonitor, ProductModels, ProductImageViews, HyprLiveContext) {
 
     var ProductView = Backbone.MozuView.extend({
+        requiredBehaviors: [1014],
         templateName: 'modules/product/product-detail',
         additionalEvents: {
             "change [data-mz-product-option]": "onOptionChange",
@@ -92,7 +93,7 @@
             if (cartitem && cartitem.prop('id')) {
                 product.isLoading(true);
                 CartMonitor.addToCount(product.get('quantity'));
-                if(stopRedirect) {
+                if(!stopRedirect) {
                     window.location.href = (HyprLiveContext.locals.pageContext.secureHost || HyprLiveContext.locals.siteContext.siteSubdirectory) + "/cart";
                 }
                 
