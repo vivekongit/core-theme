@@ -16,5 +16,7 @@
 	<div class="dataGrid">
 		Grid
 	</div>	
+
+	 {% include "modules/productPicker/productPick" %}
 	{% dropzone "body" scope="page" %}
 {% endblock body-content %}
