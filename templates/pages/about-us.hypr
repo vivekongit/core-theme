@@ -7,16 +7,10 @@
 
 
  {% block body-content %}
- 
- {% require_script "pages/datagrid" %}
 
-	 <div>{{model.properties.blurb|safe}}<div> 
-
-
-	<div class="dataGrid">
-		Grid
-	</div>	
-
-	 {% include "modules/productPicker/productPick" %}
+	<div class="mz-b2b-quote-wrapper">
+	 {% include "modules/b2b-account/quotes/my-quotes" %}
+	</div>
+	 
 	{% dropzone "body" scope="page" %}
 {% endblock body-content %}

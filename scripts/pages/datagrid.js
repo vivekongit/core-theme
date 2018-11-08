@@ -12,38 +12,17 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
 
     $(document).ready(function () {
-        // var product = ProductModels.Product.fromCurrent();
-
-        // product.on('addedtocart', function (cartitem) {
-        //     if (cartitem && cartitem.prop('id')) {
-        //         product.isLoading(true);
-        //         CartMonitor.addToCount(product.get('quantity'));
-        //         window.location.href = (HyprLiveContext.locals.pageContext.secureHost || HyprLiveContext.locals.siteContext.siteSubdirectory) + "/cart";
-        //     } else {
-        //         product.trigger("error", { message: Hypr.getLabel('unexpectedError') });
-        //     }
-        // });
-
-        // product.on('addedtowishlist', function (cartitem) {
-        //     $('#add-to-wishlist').prop('disabled', 'disabled').text(Hypr.getLabel('addedToWishlist'));
-        // });
-
-        // var productImagesView = new ProductImageViews.ProductPageImagesView({
-        //     el: $('[data-mz-productimages]'),
-        //     model: product
-        // });
-        var collaction = new mozuGridCollection();
+       
+        var collection= new mozuGridCollection();
         var views = {
             mozuGrid: new MozuGrid({
                 el: $('.dataGrid'),
-                model: collaction
+                model: collection
             })
         }
         
         _.invoke(views, 'render');
         
-
-        // window.gridView = gridView;
 
     });
 

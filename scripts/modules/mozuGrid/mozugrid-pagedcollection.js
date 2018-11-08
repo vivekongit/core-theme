@@ -24,6 +24,12 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             sortable: false
         }
     ],
+    rowActions: [
+        {
+            displayName: 'Edit',
+            action: 'someAction'
+        },
+    ],
     sort: function(index){
         var col = _.findWhere(this.get('columns'), {index: index});
         if (col && col.sortable) {
@@ -71,6 +77,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
 
         if (this.columns) {
             this.set('columns', this.columns);
+            this.set('rowActions', this.rowActions);
         }
         // this.on('sync', function () {
         //     me.trigger('facetchange', me.getQueryString());

@@ -146,7 +146,5 @@
        
     });
     
-    return function() {
-        return Search
-    };
+    return Search;
 });

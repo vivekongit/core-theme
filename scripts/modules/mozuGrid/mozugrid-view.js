@@ -12,6 +12,18 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 var asd = data;
                 //self.render();
             });
+            
+        },
+        registerRowActions: function(){
+            var self = this;
+            var rowActions = this.model.get('rowActions');
+            _.each(rowActions, function(action){
+                self[action.action] = function(e){
+                    var rowNumber = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
+                    var row = self.model.get('items').at(rowNumber-1)
+                    self.model[action.action](e, row);
+                }
+            })
         },
         sort: function (e) {
             e.preventDefault();
@@ -29,8 +41,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         render: function () {
             var self = this;
+            self.registerRowActions();
             Backbone.MozuView.prototype.render.apply(this, arguments);
-
+            
             var views = {
                 mozuGridPagingControls: new PagingViews.PagingControls({
                     el: $('.dataGrid').find('[data-mz-pagingcontrols]'),
