@@ -186,7 +186,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 var $field = search.AutocompleteManager.$typeaheadField = $(this);
 
                 search.AutocompleteManager.typeaheadInstance = $field.typeahead({
-                    minLength: 3
+                    minLength: 0
                 }, search.dataSetConfigs).data('ttTypeahead');
                 $field.on('typeahead:selected', function (e, data, set) {
                     
