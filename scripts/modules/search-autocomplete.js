@@ -30,7 +30,7 @@
                 return function (res) {
                     var suggestionGroups = res.suggestionGroups,
                         thisGroup;
-                    for (i = suggestionGroups.length - 1; i >= 0; i--) {
+                    for (var i = suggestionGroups.length - 1; i >= 0; i--) {
                         if (suggestionGroups[i].name === name) {
                             thisGroup = suggestionGroups[i];
                             break;
@@ -79,7 +79,7 @@
                             ajax: self.ajaxConfig
                         }
                     })
-                }  
+                };
             },
 
             datasetsTerms: function() {
@@ -125,8 +125,8 @@
 
                 
             }
-        }
-    }
+        };
+    };
 
     $(document).ready(function () {
         var $fields = $('[data-mz-role="searchquery"]').each(function(field){
@@ -142,8 +142,7 @@
             $field.on('typeahead:selected', function (e, data, set) {
                 if (data.suggestion.productCode) window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/p/" + data.suggestion.productCode;
             });
-        })
-       
+        });
     });
     
     return Search;

@@ -1,10 +1,10 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozuGrid/mozugrid-view', 'modules/mozuGrid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
         deleteWishlist: function(id) {
             if(id) {
-                return this.apiModel.delete({id:id});
-            };
+                return this.apiModel['delete']({id:id}); 
+            }
         },
         saveWishlist: function(){
             this.set('customerAccountId', require.mozuData('user').accountId);
@@ -58,7 +58,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             if (!(quote instanceof QuoteModel)){
                 if (quote.toJSON)
                     quote = quote.toJSON();
-                quote = new QuoteModel(quote)
+                quote = new QuoteModel(quote);
             }
             this.set('quote').clear();
             if (this.get('quote').get('items').length) {
@@ -90,14 +90,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var self = this;
             return this.model.get('quote').deleteWishlist(id).then(function(){
                 self.render();
-            })
+            });
         },
         copyQuote: function (quote) {
             var self = this;
             quote.unset('id');
             return this.model.get('quote').apiModel.create(quote).then(function () {
                 self.render();
-            })
+            });
         },
         createOrder: function () {
             console.log('Create Order');
@@ -113,10 +113,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var editQuoteView = new EditQuoteView({
                 el: self.$el.find('.mz-b2b-quotes-product-picker'),
                 model: self.model.get('quote')
-            })
+            });
             $(document).ready(function () {
                 if (!self.model.get('isEditMode')){
-                    var collection = new MozuGridCollection();
+                    var collection = new MozuGridCollectionModel();
 
                     var quotesGrid = new MozuGrid({
                         el: $('.mz-b2b-quotes-grid'),
@@ -193,7 +193,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                     self.model.set('pickerItem', data.suggestion);
                     console.log('Add Product ' + data.suggestion.productCode);
                 });
-            })
+            });
         }
     });
 
@@ -242,7 +242,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var id = $(e.currentTarget).data('mzItemId');
             if (id) {
                 var removeWishId = id;
-                return this.model.apiModel.deleteItem({id: self.model.get('id'), itemId: id}, { silent: true }).then(function () {
+                return this.model.apiModel.deleteItem({id: self.model.get('id'), itemId: id}, { silent: true }).then(function () { 
                     var itemToRemove = self.model.get('items').where({
                         id: removeWishId
                     });
@@ -255,7 +255,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         }
     });
 
-    var MozuGridCollection = MozuGridCollection.extend({
+    var MozuGridCollectionModel = MozuGridCollection.extend({
         mozuType: 'wishlists',
         columns: [
             {
@@ -332,10 +332,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 el: $('.mz-b2b-quote-wrapper'),
                 model: quotesModel
             })
-        }
+        };
 
-        window.quoteViews = views
+        window.quoteViews = views;
         _.invoke(views, 'render');
 
     });
-})
+});

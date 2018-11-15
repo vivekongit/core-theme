@@ -5,10 +5,7 @@
         hyprlive: "empty:",
         hyprlivecontext: "empty:",
         underscore: "vendor/underscore/underscore",
-        backgrid: "vendor/backgrid/lib/backgrid",
-        backbone: "vendor/backbone/backbone",
-        'backbone.paginator': "vendor/backbone.paginator/lib/backbone.paginator",
-        'backgrid-paginator': "vendor/backgrid-paginator/backgrid-paginator"
+        backbone: "vendor/backbone/backbone"
     },
     dir: "compiled/scripts/",
     locale: "en-us",
@@ -76,10 +73,6 @@
         },
         {
             name: 'pages/search',
-            exclude: ["modules/common"]
-        },
-        {
-            name: "pages/datagrid",
             exclude: ["modules/common"]
         }
     ]

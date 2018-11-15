@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", "modules/views-paging"], function ($, api, _, Hypr, Backbone, HyprLiveContext, PagingViews) {
+define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/views-paging"], function ($, _, Backbone, PagingViews) {
 
     var mozuGridView = Backbone.MozuView.extend({
         templateName: 'modules/mozugrid/grid',
@@ -20,10 +20,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             _.each(rowActions, function(action){
                 self[action.action] = function(e){
                     var rowNumber = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
-                    var row = self.model.get('items').at(rowNumber-1)
+                    var row = self.model.get('items').at(rowNumber-1);
                     self.model[action.action](e, row);
-                }
-            })
+                };
+            });
         },
         sort: function (e) {
             e.preventDefault();
@@ -53,7 +53,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                     el: $('.dataGrid').find('[data-mz-pagenumbers]'),
                     model: self.model
                 })
-            }
+            };
 
             _.invoke(views, 'render');
         }
