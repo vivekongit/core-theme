@@ -386,13 +386,6 @@
             "template": "order-status",
             "title": "Order Status",
             "userCreatable": false
-        },
-        {
-            "entityType": "customer",
-            "id": "b2baccount",
-            "template": "b2baccount",
-            "title": "B2B Account",
-            "userCreatable": false
         }
     ],
     "settings": {
