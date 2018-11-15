@@ -47,6 +47,7 @@
     "bundleContents": "Bundle Contents",
     "bundleExtraPartOf": "Bought as optional extra for <a href=\"{0}\">{1}</a> bundle",
     "bundlePartOf": "Bought as part of <a href=\"{0}\">{1}</a> bundle",
+    "b2bAccount" : "Your B2B Account",
     "cancel": "Cancel",
     "cardBillingMissing": "Please select a billing contact for this credit card.",
     "cardExpInvalid": "Please enter an expiration date in the future",
