@@ -95,8 +95,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         copyQuote: function (quote) {
             var self = this;
             quote.unset('id');
-            return this.model.get('quote').apiModel.create(quote).then(function () {
+            if(quote.toJSON){
+                quote = quote.toJSON();
+            }
+            self.model.isLoading(true);
+            return this.model.get('quote').apiCreate(quote).then(function () {
                 self.render();
+            }).done(function(){
+                self.model.isLoading(false);
             });
         },
         createOrder: function () {
@@ -314,7 +320,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         addWishlistToCart: function (e, row){
             var cart = CartModels.Cart.fromCurrent();
             var products = row.get('items').toJSON();
-            cart.apiModel.addBulkProducts({ postdata: products});
+            cart.apiModel.addBulkProducts({ postdata: products}).then(function(){
+                window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
+            });
         },
         copyWishlist: function(e, row){
             var wishlistName = 'copy - ' + row.get('name');
