@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
         deleteWishlist: function(id) {
@@ -150,6 +150,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         defaults: {
           'pickerItemQuantity' : 1  
         },
+        initialize: function() {
+            var self = this;
+            this.listenTo(this.model, "productSelected", function (product) {
+                self.addWishlistItem(product);
+            });
+        },
         saveQuote: function () {
             console.log('Create Wishlist');
             var self = this;
@@ -166,10 +172,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             window.quoteViews.quotesView.render();
             //Just the Edit Page that is empty?
         },
-        addWishlistItem: function(){
+        addWishlistItem: function(product){
             var self = this;
-            window.quoteViews.quotesView.model.get('quote').addQuoteItem(self.model.get('pickerItem'), self.model.get('pickerItemQuantity'));
-            self.model.unset('pickerItem');
+            
+            window.quoteViews.quotesView.model.get('quote').addQuoteItem(product, self.model.get('pickerItemQuantity'));
+            self.model.unset('selectedProduct');
             $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
             $('.mz-b2b-quotes #pickerItemQuantity').val(1);
         },
@@ -185,21 +192,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             });
             quoteListView.render();
 
-            var $fields = $('.mz-b2b-quotes [data-mz-role="searchquery"]').each(function (field) {
-                var search = new SearchAutoComplete();
-                search.initialize();
-
-                var $field = search.AutocompleteManager.$typeaheadField = $(this);
-
-                search.AutocompleteManager.typeaheadInstance = $field.typeahead({
-                    minLength: 0
-                }, search.dataSetConfigs).data('ttTypeahead');
-                $field.on('typeahead:selected', function (e, data, set) {
-                    
-                    self.model.set('pickerItem', data.suggestion);
-                    console.log('Add Product ' + data.suggestion.productCode);
-                });
+            var productPickerView = new ProductPicker({
+                el: self.$el.find('[mz-quote-product-picker]'),
+                model: self.model
             });
+            
+            productPickerView.render();
         }
     });
 

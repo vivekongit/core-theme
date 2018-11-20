@@ -11,7 +11,7 @@
     <div class="quote-edit-form-section productPicker">
         <div>
             <span class="quote-edit-label">{{labels.b2bProductPicker}}</span>
-            {% include "modules/b2b-account/quotes/product-picker" %}
+            <div mz-quote-product-picker>{% include "modules/product-picker/product-picker" %}</div>
         </div>
         <div>
             <span class="quote-edit-label">{{labels.b2bQuantity}}</span>
