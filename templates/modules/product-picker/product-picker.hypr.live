@@ -10,6 +10,6 @@
 
 <div mz-modal-product-dialog class="mz-product-modal">
     <div id="mzModalDialog" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
-        {% include "modules/cart/discount-modal/discount-modal" %}
+        {% include "modules/product-picker/product-modal" %}
     </div>
 </div>

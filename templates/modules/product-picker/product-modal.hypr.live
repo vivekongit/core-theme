@@ -1,5 +1,4 @@
 {% extends "modules/common/modal-dialog" %}
-
 {% block modal-header %} 
     <h3 class="modal-title">{{labels.productModalHeading}}</h3>
 {% endblock modal-header %}

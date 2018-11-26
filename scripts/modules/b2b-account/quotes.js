@@ -1,6 +1,10 @@
 define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
+        defaults: {
+            'pickerItemQuantity': 1,
+            'isProductSelected': false
+        },
         deleteWishlist: function(id) {
             if(id) {
                 return this.apiModel['delete']({id:id}); 
@@ -116,10 +120,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         render: function(){
             Backbone.MozuView.prototype.render.apply(this, arguments);
             var self = this;
+            if (this._editQuote) {
+                this._editQuote.stopListening();
+            }
             var editQuoteView = new EditQuoteView({
                 el: self.$el.find('.mz-b2b-quotes-product-picker'),
                 model: self.model.get('quote')
             });
+            this._editQuote = editQuoteView;
             $(document).ready(function () {
                 if (!self.model.get('isEditMode')){
                     var collection = new MozuGridCollectionModel();
@@ -147,13 +155,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             'name',
             'pickerItemQuantity'
         ],
-        defaults: {
-          'pickerItemQuantity' : 1  
-        },
         initialize: function() {
             var self = this;
-            this.listenTo(this.model, "productSelected", function (product) {
-                self.addWishlistItem(product);
+            this.listenToOnce(this.model, "productSelected", function (product) {
+                self.model.set('isProductSelected', true);
             });
         },
         saveQuote: function () {

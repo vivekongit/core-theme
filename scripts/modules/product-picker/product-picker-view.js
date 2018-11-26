@@ -44,7 +44,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                         productModalView.setInit();
                         return;
                     }
-                    self.trigger('productSelected', product);
+                    self.model.trigger('productSelected', product);
                     
                     // console.log('Add Product ' + data.suggestion.productCode);
                 });
