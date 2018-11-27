@@ -30,6 +30,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             action: 'someAction'
         }
     ],
+    apiGridRead: false,
     sort: function(index){
         var col = _.findWhere(this.get('columns'), {index: index});
         if (col && col.sortable) {
@@ -80,6 +81,12 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             this.set('columns', this.columns);
             this.set('rowActions', this.rowActions);
         }
+
+        if (typeof apiGridRead === 'function') {
+            this.apiModel['get'] = apiGridRead;
+            this.apiModel['setIndex'] = apiGridRead;
+        }
+
         // this.on('sync', function () {
         //     me.trigger('facetchange', me.getQueryString());
         // });
