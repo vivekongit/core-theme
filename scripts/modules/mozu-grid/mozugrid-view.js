@@ -8,6 +8,12 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
                 pageSize: 5,
                 startIndex: 0
             };
+
+            if (typeof this.model.apiGridRead === 'function') {
+                this.model.apiModel.get = this.model.apiGridRead;
+                this.model.apiModel.setIndex = this.model.apiGridRead;
+            }
+
             try {
                 self.model.setIndex(0);
             } catch (error) {
@@ -54,6 +60,8 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
                     model: self.model
                 })
             };
+
+            
 
             _.invoke(views, 'render');
         }

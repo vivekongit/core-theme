@@ -82,10 +82,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             this.set('rowActions', this.rowActions);
         }
 
-        if (typeof this.apiGridRead === 'function') {
-            this.apiModel.get = this.apiGridRead;
-            this.apiModel.setIndex = this.apiGridRead;
-        }
+        
 
         // this.on('sync', function () {
         //     me.trigger('facetchange', me.getQueryString());
