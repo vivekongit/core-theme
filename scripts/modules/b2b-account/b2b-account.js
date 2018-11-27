@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/b2b-account/quotes", "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, Lists, PaneSwitcher) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/b2b-account/quotes", "modules/b2b-account/users", "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, Lists, Users, PaneSwitcher) {
     
     var paneSwitcherModel = new PaneSwitcher.PaneSwitcherModel({
         panes: [
@@ -12,7 +12,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 name: 'Returns'
             },
             {
-                name: 'Users'
+                name: 'Users',
+                view: new Users.UsersView({
+                    model: new Users.UsersModel({})
+                })
             },
             {
                 name: 'Lists',
