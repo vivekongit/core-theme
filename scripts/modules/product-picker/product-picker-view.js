@@ -24,7 +24,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                 el: self.$el.find("[mz-modal-product-dialog]"),
                 model: self.model.get('selectedProduct'),
                 messagesEl: self.$el.find("[mz-modal-product-dialog]").find('[data-mz-message-bar]')
-            })
+            });
             self._productConfigurationView = productModalView;
             productModalView.render();
 

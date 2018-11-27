@@ -111,26 +111,6 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         },
         addToWishlist: function () {
             this.model.addToWishlist();
-        },
-        checkLocalStores: function (e) {
-            var me = this;
-            e.preventDefault();
-            this.model.whenReady(function () {
-                var productLocationView = new ProductLocationView({
-                    el: $('.mz-product-locations'),
-                    model: me.model
-                });
-
-                productLocationView.render();
-
-                // var $localStoresForm = $(e.currentTarget).parents('[data-mz-localstoresform]'),
-                //     $input = $localStoresForm.find('[data-mz-localstoresform-input]');
-                // if ($input.length > 0) {
-                //     $input.val(JSON.stringify(me.model.toJSON()));
-                //     $localStoresForm[0].submit();
-                // }
-            });
-
         }
     });
 

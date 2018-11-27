@@ -1,0 +1,23 @@
+{% extends "modules/pane-switcher"%}
+
+ {% block pane-switcher-nav %}
+    <div class="mz-l-sidebar mz-myaccount-nav">
+        <div id="mzPaneSwitcherNav" class="mz-pane-switcher-nav">
+            {% for pane in model.panes %}
+            <ul>
+                <li>
+                    <a href="#{{pane.name}}">
+                        <span class="nav-item" data-mz-action="handlePaneSelect" data-mz-index="{{forloop.index}}">{{pane.name}}</span>
+                    </a>
+                </li>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block pane-switcher-container %}
+    <div id="account-panels" class="mz-myaccount-panels mz-l-stack mz-l-stack-large">
+        <div id="mzPaneSwitcherContainer" mz-pane-switcher-container></div>
+    </div>
+{% endblock %}

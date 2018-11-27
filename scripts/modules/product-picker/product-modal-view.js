@@ -84,7 +84,7 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         completeProductConfiguration: function (e) {
             var self = this;
             e.preventDefault();
-            self.model.trigger('configurationComplete', self)
+            self.model.trigger('configurationComplete', self);
             // try {
             //     self.model.addToCart(true).then(function () {
             //         this.model.parent.handleDialogCancel();

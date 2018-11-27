@@ -6,29 +6,20 @@
 
 {% block body-content %}
 
-{% require_script "modules/b2b-account/quotes" %}
+{% require_script "modules/b2b-account/b2b-account" %}
 
 {% preload_json model "customer" %}
-
+ 
 <div class="mz-l-container">
     <h1 class="mz-pagetitle">
         {{ labels.b2bAccount }} 
     </h1>
 
-    <div class="mz-l-sidebar mz-myaccount-nav">
-        {% include "modules/my-account/my-account-nav" with navtarget="body" %}
-    </div>
-
-    <div id="account-panels" class="mz-myaccount-panels mz-l-stack mz-l-stack-large">
-        
-        <div class="mz-b2b-quote-wrapper">
-             {% include "modules/b2b-account/quotes/my-quotes" %}
+        <div class="mz-b2b-pane-switcher">
+             {% include "modules/pane-switcher" %}
         </div>
-         
 
 		{% dropzone "my-account-bottom" scope="template" %} 
-
-    </div>
 </div>
 {% endblock body-content %}
 

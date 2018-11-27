@@ -8,11 +8,11 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
                 pageSize: 5,
                 startIndex: 0
             };
-            self.model.setIndex(0).then(function(data) {
-                var asd = data;
-                //self.render();
-            });
-            
+            try {
+                self.model.setIndex(0);
+            } catch (error) {
+                
+            }
         },
         registerRowActions: function(){
             var self = this;

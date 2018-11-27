@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
         defaults: {
@@ -334,19 +334,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         }
     });
 
-
-    $(document).ready(function () {
-
-        var quotesModel = new QuotesModel({});
-        var views = {
-            quotesView: new QuotesView({
-                el: $('.mz-b2b-quote-wrapper'),
-                model: quotesModel
-            })
-        };
-
-        window.quoteViews = views;
-        _.invoke(views, 'render');
-
-    });
+    return {
+        'QuotesModel': QuotesModel,
+        'QuotesView': QuotesView
+    };
 });
