@@ -11,7 +11,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             try {
                 self.model.setIndex(0);
             } catch (error) {
-                
+
             }
         },
         registerRowActions: function(){
@@ -43,7 +43,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             var self = this;
             self.registerRowActions();
             Backbone.MozuView.prototype.render.apply(this, arguments);
-            
+
             var views = {
                 mozuGridPagingControls: new PagingViews.PagingControls({
                     el: $('.dataGrid').find('[data-mz-pagingcontrols]'),

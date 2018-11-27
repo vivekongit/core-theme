@@ -9,17 +9,18 @@
 {% require_script "modules/b2b-account/b2b-account" %}
 
 {% preload_json model "customer" %}
- 
+
 <div class="mz-l-container">
     <h1 class="mz-pagetitle">
-        {{ labels.b2bAccount }} 
+        {{ labels.b2bAccount }}
     </h1>
 
         <div class="mz-b2b-pane-switcher">
              {% include "modules/pane-switcher" %}
         </div>
 
-		{% dropzone "my-account-bottom" scope="template" %} 
+		{% dropzone "my-account-bottom" scope="template" %}
+
 </div>
 {% endblock body-content %}
 
