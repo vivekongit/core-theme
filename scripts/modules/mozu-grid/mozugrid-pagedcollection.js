@@ -81,7 +81,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             this.set('columns', this.columns);
             this.set('rowActions', this.rowActions);
         }
-        this.apiModel = this.get('apiModel');
+        // this.apiModel = this.get('apiModel');
 
         
 

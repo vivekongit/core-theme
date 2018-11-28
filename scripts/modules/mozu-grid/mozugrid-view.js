@@ -10,8 +10,8 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             };
 
             if (typeof this.model.apiGridRead === 'function') {
-                this.model.apiModel.get = this.model.apiGridRead;
-                this.model.apiModel.setIndex = this.model.apiGridRead;
+                this.model.apiModel.get = this.model.apiGridRead.bind(this.model);
+                this.model.apiModel.setIndex = this.model.apiGridRead.bind(this.model);
             }
 
             try {

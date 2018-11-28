@@ -45,7 +45,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     // });
 
     var UsersGridCollectionModel = MozuGridCollection.extend({
-        mozuType: 'customers',
+        mozuType: 'b2baccount',
         columns: [
             {
                 index: 'name',

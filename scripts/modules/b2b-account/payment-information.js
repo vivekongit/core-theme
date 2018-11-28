@@ -64,11 +64,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           Backbone.MozuView.prototype.render.apply(this, arguments);
           var self = this;
           $(document).ready(function () {
-              var collection = new TransactionGridCollectionModel(self.model);
+              var collection = new TransactionGridCollectionModel({id: self.model.get('id')});
               console.log(self.model);
               console.log(self.model.apiModel);
               var transactionsGrid = new MozuGrid({
-                  el: $('.mz-b2b-transactions-grid'),
+                  el: self.el,
                   model: collection
               });
               transactionsGrid.render();
@@ -80,7 +80,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   var TransactionGridCollectionModel = MozuGridCollection.extend({
       mozuType: 'customer',
       apiGridRead: function(){
-        return this.apiModel.getPurchaseOrderTransactions();
+          return this.apiGetPurchaseOrderTransactions();
       },
       columns: [
           {
@@ -118,7 +118,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               displayName: 'Amount',
               sortable: true,
               displayTemplate: function (amount){
-                  return '$'+amount.toFixed(2);
+                  if(amount){
+                      return '$' + amount.toFixed(2);
+                  }
+                  return "";
               }
           }
       ],

@@ -1,0 +1,44 @@
+<div class=" mz-user-edit-form mz-l-2column">
+    <div class="mz-l-column">
+        <div class="mz-l-formfieldgroup-row">
+            <div class="mz-l-formfieldgroup-cell">
+                <label for="firstName">
+                    {{ labels.firstName}}
+                    <span class="is-required"> *</span>:
+                </label>
+            </div>
+            <div class="mz-l-formfieldgroup-cell">
+                <input type="text" name="firstName" id="firstName" data-mz-value="user.firstName" value="{{ model.firstName }}">
+                <span class="mz-validationmessage" data-mz-validationmessage-for="user.firstName"></span>
+            </div>
+        </div>
+        <div class="mz-l-formfieldgroup-row">
+            <div class="mz-l-formfieldgroup-cell">
+                <label for="lastName">
+                    {{ labels.lastName}}
+                    <span class="is-required"> *</span>:
+                </label>
+            </div>
+            <div class="mz-l-formfieldgroup-cell">
+                <input type="text" name="lastName" id="lastName" data-mz-value="user.lastName" value="{{ model.lastName }}">
+                <span class="mz-validationmessage" data-mz-validationmessage-for="user.lastName"></span>
+            </div>
+        </div>
+        <div class="mz-l-formfieldgroup-row">
+            <div class="mz-l-formfieldgroup-cell">
+                <label for="email">
+                    {{ labels.email}}
+                    <span class="is-required"> *</span>:
+                </label>
+            </div>
+            <div class="mz-l-formfieldgroup-cell">
+                <input type="text" name="email" id="email" data-mz-value="user.email" value="{{ model.email }}">
+                <span class="mz-validationmessage" data-mz-validationmessage-for="user.email"></span>
+            </div>
+        </div>
+    </div><!--mz-l-column -->
+    <div class="mz-l-column">
+        
+
+    </div><!--mz-l-column -->
+</div><!--mz-user-edit-form -->
