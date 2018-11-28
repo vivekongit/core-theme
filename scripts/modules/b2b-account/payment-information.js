@@ -59,11 +59,29 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           if (window.confirm(Hypr.getLabel('confirmDeleteCard', card.get('cardNumberPart')))) {
               this.doModelAction('deleteCard', id);
           }
+      },
+      render: function(){
+          Backbone.MozuView.prototype.render.apply(this, arguments);
+          var self = this;
+          $(document).ready(function () {
+              var collection = new TransactionGridCollectionModel(self.model);
+              console.log(self.model);
+              console.log(self.model.apiModel);
+              var transactionsGrid = new MozuGrid({
+                  el: $('.mz-b2b-transactions-grid'),
+                  model: collection
+              });
+              transactionsGrid.render();
+              return;
+          });
       }
   });
 
   var TransactionGridCollectionModel = MozuGridCollection.extend({
-      mozuType: 'purchaseOrderTransactions',
+      mozuType: 'customer',
+      apiGridRead: function(){
+        return this.apiModel.getPurchaseOrderTransactions();
+      },
       columns: [
           {
               index: 'date',
@@ -103,38 +121,27 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                   return '$'+amount.toFixed(2);
               }
           }
-          {
-              index: 'items',
-              displayName: 'Product Count',
-              displayTemplate: function (items) {
-                  items = items || [];
-                  return items.length;
-              },
-              sortable: false
-          }
       ],
-      rowActions: [
-          {
-              displayName: 'Edit',
-              action: 'editWishlist'
-          },
-          {
-              displayName: 'Delete',
-              action: 'deleteWishlist'
-          },
-          {
-              displayName: 'Copy',
-              action: 'copyWishlist'
-          },
-          {
-              displayName: 'Order',
-              action: 'addWishlistToCart'
-          }
-      ],
+      // rowActions: [
+      //     {
+      //         displayName: 'Edit',
+      //         action: 'editWishlist'
+      //     },
+      //     {
+      //         displayName: 'Delete',
+      //         action: 'deleteWishlist'
+      //     },
+      //     {
+      //         displayName: 'Copy',
+      //         action: 'copyWishlist'
+      //     },
+      //     {
+      //         displayName: 'Order',
+      //         action: 'addWishlistToCart'
+      //     }
+      // ],
       relations: {
-          items: Backbone.Collection.extend({
-              model: QuoteModel
-          })
+          items: Backbone.Collection.extend({})
       },
       deleteWishlist: function (e, row) {
           console.log('Remove Wishlist');
@@ -151,11 +158,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           window.quoteViews.quotesView.model.setEditMode(true);
           window.quoteViews.quotesView.render();
       },
-      addWishlistToCart: function (e, row){
-          var cart = CartModels.Cart.fromCurrent();
-          var products = row.get('items').toJSON();
-          cart.apiModel.addBulkProducts({ postdata: products});
-      },
       copyWishlist: function(e, row){
           var wishlistName = 'copy - ' + row.get('name');
           row.set('name', wishlistName);
@@ -163,16 +165,20 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       }
   });
 
-    $(document).ready(function(){
-          var accountModel = window.accountModel = CustomerModels.EditableCustomer.fromCurrent();
-          var views = {
-            paymentView: new PaymentMethodsView({
-                el: $('mz-b2b-payment-wrapper'),
-                model: accountModel
-            })
-          };
+  return {
+    'PaymentInformationView': PaymentMethodsView
+  };
 
-          window.quoteViews = views;
-          _.invoke(views, 'render');
-    });
+    // $(document).ready(function(){
+    //       var accountModel = window.accountModel = CustomerModels.EditableCustomer.fromCurrent();
+    //       var views = {
+    //         paymentView: new PaymentMethodsView({
+    //             el: $('mz-b2b-payment-wrapper'),
+    //             model: accountModel
+    //         })
+    //       };
+    //
+    //       window.quoteViews = views;
+    //       _.invoke(views, 'render');
+    // });
 });

@@ -1,14 +1,14 @@
 define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher) {
-    
+
     // var UsersEditModel = Backbone.MozuModel.extend({
-        
+
     // });
 
     // var UsersEditView = Backbone.MozuView.extend({
     //     templateName: "modules/users/edit"
 
     // });
-    
+
     // var UsersModalView = ModalDialogView.extend({
     //     templateName: "modules/users/modal",
     //     handleDialogOpen: function () {
@@ -79,7 +79,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     });
 
     var UsersView = Backbone.MozuView.extend({
-        templateName: "modules/b2b-account/users",
+        templateName: "modules/b2b-account/users/users",
         render: function () {
             var self = this;
             var collection = new UsersGridCollectionModel({});

@@ -1,6 +1,6 @@
 define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore', 'hyprlivecontext', 'modules/views-modal-dialog', 'modules/api', 'modules/models-product', 'modules/views-location', 'modules/models-location'], function (Backbone, Hypr, $, _, HyprLiveContext, ModalDialogView, Api, ProductModels, LocationViews, LocationModels) {
 
-    var productLocationView = Backbone.MozuView.extend({
+    var ProductLocationView = Backbone.MozuView.extend({
         templateName: "modules/cart/discount-modal/discount-product-location",
         render: function () {
             Backbone.MozuView.prototype.render.apply(this, arguments);

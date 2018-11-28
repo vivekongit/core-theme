@@ -1,5 +1,5 @@
 define(["underscore", "modules/backbone-mozu"], function ( _, Backbone) {
-    
+
 var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
     mozuType: 'search',
     helpers: ['gridItems', 'columnNames'],
@@ -81,6 +81,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             this.set('columns', this.columns);
             this.set('rowActions', this.rowActions);
         }
+        this.apiModel = this.get('apiModel');
 
         
 
