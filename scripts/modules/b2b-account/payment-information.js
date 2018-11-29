@@ -68,7 +68,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               console.log(self.model);
               console.log(self.model.apiModel);
               var transactionsGrid = new MozuGrid({
-                  el: self.el,
+                  el: $('.mz-b2b-transactions-grid'),
                   model: collection
               });
               transactionsGrid.render();
@@ -84,23 +84,26 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       },
       columns: [
           {
-              index: 'date',
+              index: 'transactionDate',
               displayName: 'Date',
               sortable: true
           },
           {
               index: 'orderNumber',
               displayName: 'Order Number',
-              sortable: true
+              sortable: true,
+              displayTemplate: function(value){
+                  value == undefined || value.length < 1 ? value : 'N/A'
+              }
           },
           {
-              index: 'orderType',
+              index: 'transactionTypeId',
               displayName: 'Order Type',
               sortable: false
           },
           {
               index: 'purchaseOrderNumber',
-              displayName: 'PO#',
+              displayName: 'PO #',
               sortable: false
           },
           {
@@ -109,12 +112,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               sortable: false
           },
           {
-              index: 'transactionDetails',
+              index: 'transactionDescription',
               displayName: 'Transaction Details',
               sortable: false
           },
           {
-              index: 'amount',
+              index: 'transactionAmount',
               displayName: 'Amount',
               sortable: true,
               displayTemplate: function (amount){
@@ -125,24 +128,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               }
           }
       ],
-      // rowActions: [
-      //     {
-      //         displayName: 'Edit',
-      //         action: 'editWishlist'
-      //     },
-      //     {
-      //         displayName: 'Delete',
-      //         action: 'deleteWishlist'
-      //     },
-      //     {
-      //         displayName: 'Copy',
-      //         action: 'copyWishlist'
-      //     },
-      //     {
-      //         displayName: 'Order',
-      //         action: 'addWishlistToCart'
-      //     }
-      // ],
       relations: {
           items: Backbone.Collection.extend({})
       },
