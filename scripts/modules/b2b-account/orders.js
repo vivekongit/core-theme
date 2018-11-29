@@ -79,14 +79,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           items: OrderModels.OrderCollection
       },
       deleteWishlist: function (e, row) {
-          console.log('Remove Wishlist');
+          window.console.log('Remove Wishlist');
           //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
           //var wishlistId = e.target.data("mzQuoteId");
           //Confirmation Modal
           window.quoteViews.quotesView.removeQuote(row.get('id'));
       },
       editWishlist: function (e, row) {
-          console.log('Edit Wishlist');
+          window.console.log('Edit Wishlist');
           //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
 
           window.quoteViews.quotesView.model.setQuote(row);

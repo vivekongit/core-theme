@@ -367,7 +367,7 @@ define(['modules/api',
     /* begin visa checkout */
     function initVisaCheckout () {
       if (!window.V) {
-          //console.warn( 'visa checkout has not been initilized properly');
+          //window.console.warn( 'visa checkout has not been initilized properly');
           return false;
       }
 

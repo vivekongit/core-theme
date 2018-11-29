@@ -65,8 +65,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var self = this;
           $(document).ready(function () {
               var collection = new TransactionGridCollectionModel({id: self.model.get('id')});
-              console.log(self.model);
-              console.log(self.model.apiModel);
+              window.console.log(self.model);
+              window.console.log(self.model.apiModel);
               var transactionsGrid = new MozuGrid({
                   el: $('.mz-b2b-transactions-grid'),
                   model: collection
@@ -132,14 +132,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           items: Backbone.Collection.extend({})
       },
       deleteWishlist: function (e, row) {
-          console.log('Remove Wishlist');
+          window.console.log('Remove Wishlist');
           //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
           //var wishlistId = e.target.data("mzQuoteId");
           //Confirmation Modal
           window.quoteViews.quotesView.removeQuote(row.get('id'));
       },
       editWishlist: function (e, row) {
-          console.log('Edit Wishlist');
+          window.console.log('Edit Wishlist');
           //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
 
           window.quoteViews.quotesView.model.setQuote(row);

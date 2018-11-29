@@ -502,7 +502,7 @@ define([
                 self.syncApiModel();
                 self.trigger('render');
               }, function(error){
-                  //console.log(error);
+                  //window.console.log(error);
               });
 
             },

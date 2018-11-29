@@ -1,3 +1,6 @@
 <div class="mz-b2baccount-users">
-  <p> Hhhhhhhh </p>
+</div>
+
+<div class="mz-b2baccount-users-modal">
+  {% include "modules/b2b-account/users/users-modal" %}
 </div>

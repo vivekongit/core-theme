@@ -84,7 +84,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     var QuotesView = Backbone.MozuView.extend({
         templateName: 'modules/b2b-account/quotes/my-quotes',
         newQuote: function () {
-            console.log('Create Wishlist');
+            window.console.log('Create Wishlist');
             this.model.setQuote({});
             this.model.setEditMode(true);
             this.render();
@@ -110,11 +110,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             });
         },
         createOrder: function () {
-            console.log('Create Order');
+            window.console.log('Create Order');
             //Move to Cart?
         },
         shareQuote: function () {
-            console.log('Share Quote');
+            window.console.log('Share Quote');
             //Move to Cart?
         },
         render: function(){
@@ -162,7 +162,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             });
         },
         saveQuote: function () {
-            console.log('Create Wishlist');
+            window.console.log('Create Wishlist');
             var self = this;
             this.model.saveWishlist().then(function(){
                 self.model.parent.setEditMode(false);
@@ -172,7 +172,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             //Just the Edit Page that is empty?
         },
         cancelQuoteEdit: function () {
-            console.log('Create Wishlist');
+            window.console.log('Create Wishlist');
             this.model.parent.setEditMode(false);
             window.quoteViews.quotesView.render();
             //Just the Edit Page that is empty?
@@ -306,14 +306,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             })
         },
         deleteWishlist: function (e, row) {
-            console.log('Remove Wishlist');
+            window.console.log('Remove Wishlist');
             //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
             //var wishlistId = e.target.data("mzQuoteId");
             //Confirmation Modal
             window.quoteViews.quotesView.removeQuote(row.get('id'));
         },
         editWishlist: function (e, row) {
-            console.log('Edit Wishlist');
+            window.console.log('Edit Wishlist');
             //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
 
             window.quoteViews.quotesView.model.setQuote(row);

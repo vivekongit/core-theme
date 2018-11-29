@@ -46,7 +46,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                     }
                     self.model.trigger('productSelected', product);
                     
-                    // console.log('Add Product ' + data.suggestion.productCode);
+                    // window.console.log('Add Product ' + data.suggestion.productCode);
                 });
             });
         }

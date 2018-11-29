@@ -51,7 +51,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
         var customer = CustomerModels.EditableCustomer.fromCurrent();
         customer.apiModel.getPurchaseOrderTransactions().then(function(response){
-          console.log(response);
+          window.console.log(response);
         });
 
         window.quoteViews = views;
