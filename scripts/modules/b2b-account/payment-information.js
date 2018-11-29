@@ -93,7 +93,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               displayName: 'Order Number',
               sortable: true,
               displayTemplate: function(value){
-                  value == undefined || value.length < 1 ? value : 'N/A'
+                  return (value === undefined || value.length < 1) ? value : 'N/A';
               }
           },
           {
