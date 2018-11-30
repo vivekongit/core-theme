@@ -2,33 +2,36 @@ define(["underscore", "modules/backbone-mozu"], function ( _, Backbone) {
 
 var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
     mozuType: 'search',
+    defaults: {
+        autoload: true
+    },
     helpers: ['gridItems', 'columnNames'],
     //These are test columns and should be set when The collection is used
     columns: [
-        {
-            index: 'productCode',
-            displayName: 'Product Code',
-            sortable: true
-        },
-        {
-            index: 'productName',
-            displayName: 'Product Name',
-            sortable: true
-        },
-        {
-            index: 'price.price',
-            displayName: 'Price',
-            displayTemplate: function(price) {
-                return '$' + price;
-            },
-            sortable: false
-        }
+        // {
+        //     index: 'productCode',
+        //     displayName: 'Product Code',
+        //     sortable: true
+        // },
+        // {
+        //     index: 'productName',
+        //     displayName: 'Product Name',
+        //     sortable: true
+        // },
+        // {
+        //     index: 'price.price',
+        //     displayName: 'Price',
+        //     displayTemplate: function(price) {
+        //         return '$' + price;
+        //     },
+        //     sortable: false
+        // }
     ],
     rowActions: [
-        {
-            displayName: 'Edit',
-            action: 'someAction'
-        }
+        // {
+        //     displayName: 'Edit',
+        //     action: 'someAction'
+        // }
     ],
     apiGridRead: false,
     sort: function(index){
@@ -87,7 +90,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
         }
         // this.apiModel = this.get('apiModel');
 
-        
+
 
         // this.on('sync', function () {
         //     me.trigger('facetchange', me.getQueryString());

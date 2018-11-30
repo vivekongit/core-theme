@@ -1,44 +1,96 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels) {
-  var OrdersGridView = Backbone.MozuView.extend({
-      templateName: "modules/b2b-account/orders/orders-grid",
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels) {
+  var OrdersView = Backbone.MozuView.extend({
+      templateName: "modules/b2b-account/orders/orders",
+      initialize: function(){
+        Backbone.MozuView.prototype.initialize.apply(this, arguments);
+      },
       render: function(){
           var self = this;
-          $(document).ready(function () {
-              var collection = new OrdersGridCollectionModel(self.model);
-              var ordersGrid = new MozuGrid({
-                  el: $('.mz-b2b-orders-grid'),
-                  model: collection
-              });
-              ordersGrid.render();
-              return;
+          Backbone.MozuView.prototype.render.apply(this, arguments);
+          var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
+          var collection = new OrdersGridCollectionModel({});
+          collection.set('items', orderHistory.items);
+          this.initializeGrid(collection);
+      },
+      initializeGrid: function(collection){
+          var self = this;
+          $(document).ready( function () {
+                var ordersGrid = new MozuGrid({
+                    el: $('.mz-b2b-orders-grid'),
+                    model: collection
+                });
+                ordersGrid.listenTo(ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
+                ordersGrid.listenTo(ordersGrid.model, 'reorder', self.reorder.bind(self));
+                ordersGrid.render();
+                return;
           });
+      },
+      viewOrder: function(row){
+          this.model.set('viewOrder', true);
+          this.model.set('currentOrder', row.toJSON());
+          this.render();
+      },
+      returnToGrid: function(){
+          this.model.set('viewOrder', false);
+          this.render();
+      },
+      reorder: function(e, row){
+          var self = this;
+          var order = row || new Backbone.MozuModel(self.model.get('currentOrder'));
+          var cart = CartModels.Cart.fromCurrent();
+          var products = order.get('items');
+          cart.apiModel.addBulkProducts({ postdata: products}).then(function(){
+              window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
+          });
+      },
+      viewAllOrders: function(){
+          // Set loading
+          // Make API call to get all orders for b2b account id
+          // set it to orderHistory
       }
   });
 
   var OrdersGridCollectionModel = MozuGridCollection.extend({
       mozuType: 'orders',
+      autoload: false,
       columns: [
           {
-              index: 'id',
-              displayName: 'Order ID',
+              index: 'orderNumber',
+              displayName: 'Order Number',
               sortable: true
           },
           {
-              index: 'date',
+              index: 'submittedDate',
               displayName: 'Submitted Date',
               sortable: true,
-              displayTemplate: function(date){
-                return date;
-                // Date renderer
+              displayTemplate: function(value){
+                var date = new Date(value);
+                return date.toLocaleDateString();
               }
           },
           {
-              index: 'fulfillmentLocation',
+              index: 'fulfillmentInfo',
               displayName: 'Ship To',
               sortable: false,
-              displayTemplate: function(location){
+              displayTemplate: function(fulfillmentInfo){
                 // Form a readable address string
-                return location;
+                if (fulfillmentInfo.fulfillmentContact){
+                    var address = fulfillmentInfo.fulfillmentContact.address;
+                    var firstLine = address.address1;
+                    var tooltip = $('<span />').attr('class', 'tooltiptext').html('tooly');
+                    var container = $('<div />').attr('class', 'tooltip').html(firstLine+tooltip.prop('outerHTML'));
+                    var tooltipText = address.address1;
+                    if (address.address2) tooltipText += '</br>' + address.address2;
+                    if (address.address3) tooltipText += '</br>' + address.address3;
+                    if (address.address4) tooltipText += '</br>' + address.address4;
+                    tooltipText += '</br>' + (address.cityOrTown || '');
+                    tooltipText += ', '+ (address.stateOrProvince || '') + ' ';
+                    tooltipText += address.postalOrZipCode;
+                    tooltipText += '</br>' + (address.countryCode || '');
+
+                    return '<span class="grid-tooltip">'+firstLine+'<span class="tooltiptext">'+tooltipText+'</span></span>';
+                }
+                return "N/A";
               }
           },
           {
@@ -46,12 +98,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               displayName: 'Created By',
               sortable: false,
               displayTemplate: function(createdBy){
-                  // We'll need access to the full model most likely
-                  return createdBy;
+                  // We'll need to do extra work to get this.
+                  if (createdBy) return createdBy;
+                  return "";
               }
           },
           {
-              index: 'totalAmount',
+              index: 'total',
               displayName: 'Order Total',
               sortable: false,
               displayTemplate: function (amount){
@@ -71,49 +124,32 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       ],
       rowActions: [
           {
-              displayName: 'edit',
-              action: 'editWishlist'
+              displayName: 'View',
+              action: 'viewOrder'
+          },
+          {
+              displayName: 'Reorder',
+              action: 'reorder'
           }
       ],
       relations: {
-          items: OrderModels.OrderCollection
+          items: Backbone.Collection.extend({
+              model: OrderModels.Order
+          })
       },
-      deleteWishlist: function (e, row) {
-          window.console.log('Remove Wishlist');
-          //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
-          //var wishlistId = e.target.data("mzQuoteId");
-          //Confirmation Modal
-          window.quoteViews.quotesView.removeQuote(row.get('id'));
+      viewOrder: function(e, row){
+          this.trigger('viewOrder', row);
       },
-      editWishlist: function (e, row) {
-          window.console.log('Edit Wishlist');
-          //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
-
-          window.quoteViews.quotesView.model.setQuote(row);
-          window.quoteViews.quotesView.model.setEditMode(true);
-          window.quoteViews.quotesView.render();
+      reorder: function(e, row){
+        this.trigger('reorder', e, row);
       },
-      copyWishlist: function(e, row){
-          var wishlistName = 'copy - ' + row.get('name');
-          row.set('name', wishlistName);
-          window.quoteViews.quotesView.copyQuote(row);
+      backToGrid: function(){
+          this.set('viewOrder', false);
       }
   });
 
   return {
-    'OrdersGridView': OrdersGridView
+    'OrdersView': OrdersView
   };
 
-    // $(document).ready(function(){
-    //       var accountModel = window.accountModel = CustomerModels.EditableCustomer.fromCurrent();
-    //       var views = {
-    //         paymentView: new PaymentMethodsView({
-    //             el: $('mz-b2b-payment-wrapper'),
-    //             model: accountModel
-    //         })
-    //       };
-    //
-    //       window.quoteViews = views;
-    //       _.invoke(views, 'render');
-    // });
 });

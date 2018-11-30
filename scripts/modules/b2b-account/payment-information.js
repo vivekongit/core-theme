@@ -65,8 +65,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var self = this;
           $(document).ready(function () {
               var collection = new TransactionGridCollectionModel({id: self.model.get('id')});
-              window.console.log(self.model);
-              window.console.log(self.model.apiModel);
               var transactionsGrid = new MozuGrid({
                   el: $('.mz-b2b-transactions-grid'),
                   model: collection
@@ -86,7 +84,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           {
               index: 'transactionDate',
               displayName: 'Date',
-              sortable: true
+              sortable: true,
+              displayTemplate: function(value){
+                  var date = new Date(value);
+                  return date.toLocaleDateString();
+              }
           },
           {
               index: 'orderNumber',
@@ -130,43 +132,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       ],
       relations: {
           items: Backbone.Collection.extend({})
-      },
-      deleteWishlist: function (e, row) {
-          window.console.log('Remove Wishlist');
-          //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
-          //var wishlistId = e.target.data("mzQuoteId");
-          //Confirmation Modal
-          window.quoteViews.quotesView.removeQuote(row.get('id'));
-      },
-      editWishlist: function (e, row) {
-          window.console.log('Edit Wishlist');
-          //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
-
-          window.quoteViews.quotesView.model.setQuote(row);
-          window.quoteViews.quotesView.model.setEditMode(true);
-          window.quoteViews.quotesView.render();
-      },
-      copyWishlist: function(e, row){
-          var wishlistName = 'copy - ' + row.get('name');
-          row.set('name', wishlistName);
-          window.quoteViews.quotesView.copyQuote(row);
       }
   });
 
   return {
     'PaymentInformationView': PaymentMethodsView
   };
-
-    // $(document).ready(function(){
-    //       var accountModel = window.accountModel = CustomerModels.EditableCustomer.fromCurrent();
-    //       var views = {
-    //         paymentView: new PaymentMethodsView({
-    //             el: $('mz-b2b-payment-wrapper'),
-    //             model: accountModel
-    //         })
-    //       };
-    //
-    //       window.quoteViews = views;
-    //       _.invoke(views, 'render');
-    // });
 });

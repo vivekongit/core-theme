@@ -2,15 +2,17 @@
 
  {% block pane-switcher-nav %}
     <div class="mz-l-sidebar mz-myaccount-nav">
-        <div id="mzPaneSwitcherNav" class="mz-pane-switcher-nav">
+        <div id="mzPaneSwitcherNav" class="mz-pane-switcher-nav mz-myaccount-nav">
             {% for pane in model.panes %}
-            <ul>
-                <li>
-                    <a href="#{{pane.name}}">
+            <nav class="mz-scrollnav affix-top" id="account-nav" data-mz-scrollnav="body">
+            <ul class="mz-scrollnav-list nav">
+                <li class="mz-scrollnav-item">
+                    <a class="mz-scrollnav-link" href="#{{pane.name}}">
                         <span class="nav-item" data-mz-action="handlePaneSelect" data-mz-index="{{forloop.index}}">{{pane.name}}</span>
                     </a>
                 </li>
             </ul>
+            </nav>
             {% endfor %}
         </div>
     </div>

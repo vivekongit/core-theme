@@ -37,7 +37,7 @@
                 <div class="mz-grid-cols mz-cols-{{model.columns.length}}">
                     {% for col in row %}
                         <span class="mz-grid-column">
-                            {{col}}
+                            {{col|safe}}
                         </span>
 
                     {% endfor %}
