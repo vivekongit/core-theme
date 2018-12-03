@@ -23,7 +23,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             }
             var createPayload = {
                 b2bUser: this.get('user')
-            }
+            };
             return user.apiCreate(createPayload).then(function () {
                 window.usersGridView.refreshGrid();
             }); 
@@ -116,7 +116,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 index: 'islocked',
                 displayName: 'Is locked',
                 renderer: function(value){
-                    return (value) ? 'Locked' : ''
+                    return (value) ? 'Locked' : '';
                 },
                 sortable: false
             }
@@ -138,7 +138,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         deleteUser: function (e, row) {
             var self = this;
-            user.apiDelete().then(function(){
+            return this.get('user').apiDelete().then(function(){
                 self.refreshGrid();
             });
         },
