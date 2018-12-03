@@ -10,7 +10,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var returnHistory = CustomerModels.Customer.fromCurrent().get('returnHistory');
           var collection = new ReturnsGridCollectionModel({});
           collection.set('items', returnHistory.items);
-          console.log(collection);
+          window.console.log(collection);
           this.initializeGrid(collection);
       },
       initializeGrid: function(collection){
@@ -28,7 +28,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       viewReturn: function(row){
           this.model.set('viewReturn', true);
           this.model.set('currentReturn', row.toJSON());
-          console.log(this.model.get('currentReturn'));
+          window.console.log(this.model.get('currentReturn'));
           this.render();
       },
       returnToGrid: function(){
