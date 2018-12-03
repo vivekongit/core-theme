@@ -107,11 +107,11 @@
                 } catch (e) { }
             },
             
-            setIndex: function(num){
+            setIndex: function(num, config){
                 try {
                     num = parseInt(num, 10);
                     if (typeof num === 'number') {
-                        return this.apiModel.setIndex((num ), this.lastRequest);
+                        return this.apiModel.setIndex((num), Object.assign(this.lastRequest, config));
                     }
                 } catch (e) { }
             },

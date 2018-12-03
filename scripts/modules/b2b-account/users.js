@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-b2b-accounts", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/models-dialog", "modules/views-modal-dialog'"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, B2BAccountModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, DialogModels, ModalDialogView) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-b2b-accounts", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/models-dialog", "modules/views-modal-dialog"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, B2BAccountModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, DialogModels, ModalDialogView) {
 
     var UsersEditModel = Backbone.MozuModel.extend({
         relations: {
@@ -8,14 +8,24 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             b2bAccountId: require.mozuData('user').accountId
         },
         saveUser: function(){
-            if(this.get('id')) {
-                return this.get('user').apiUpdate.then(function(){
+            var user = this.get('user');
+            user.set('accountId', this.get('b2bAccountId'));
+            user.set('localeCode', "en-US");
+            user.set('acceptsMarketing', false);
+            user.set('externalPassword', "");
+            user.set('isImport', false);
+            user.set('isRemoved', false);
+            user.set('userName', user.get('emailAddress'));
+            if (user.get('id')) {
+                return user.apiUpdate.then(function(){
 
                 });
             }
-
-            return this.get('user').apiCreate.then(function () {
-
+            var createPayload = {
+                b2bUser: this.get('user')
+            }
+            return user.apiCreate(createPayload).then(function () {
+                window.usersGridView.refreshGrid();
             }); 
         },
         setUser: function(user){
@@ -31,11 +41,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     });
 
     var UsersEditForm = Backbone.MozuView.extend({
-        templateName: "modules/users/edit-users-form",
+        templateName: "modules/b2b-account/users/edit-user-form",
         autoUpdate: [
             'user.firstName',
             'user.lastName',
-            'user.email',
+            'user.emailAddress',
             'user.isActive',
             'user.userRole'
         ]
@@ -44,7 +54,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     var UserModalModel = DialogModels.extend({});
 
     var UsersModalView = ModalDialogView.extend({
-        templateName: "modules/users/users-modal",
+        templateName: "modules/b2b-account/users/users-modal",
         handleDialogOpen: function () {
             this.model.trigger('dialogOpen');
             this.bootstrapInstance.show();
@@ -56,7 +66,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         handleDialogSave: function () {
             var self = this;
             if (self._userForm ) {
-                self.model.saveUser();
+                self._userForm.model.saveUser();
             }
             this.bootstrapInstance.hide();
         },
@@ -67,12 +77,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         loadUserEditView: function (user) {
             var self = this;
-            user = user || {};
+            user = user || new B2BAccountModels.b2bUser({});
             var userEditForm = new UsersEditForm({
                 el: self.$el.find('.mz-user-modal-content'),
-                model: new UsersEditModel(user)
+                model: new UsersEditModel({user:user})
             });
-            self._userForm = UsersEditForm;
+            self._userForm = userEditForm;
             userEditForm.render();
         },
         render: function () {
@@ -82,12 +92,33 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     });
 
     var UsersGridCollectionModel = MozuGridCollection.extend({
-        mozuType: 'b2baccount',
+        mozuType: 'b2busers',
+        defaults: {
+            accountId: require.mozuData('user').accountId
+        },
         columns: [
             {
-                index: 'name',
-                displayName: 'Name',
+                index: 'emailAddress',
+                displayName: 'Email',
                 sortable: true
+            },
+            {
+                index: 'firstName',
+                displayName: 'First Name',
+                sortable: false
+            },
+            {
+                index: 'lastName',
+                displayName: 'Last Name',
+                sortable: false
+            },
+            {
+                index: 'islocked',
+                displayName: 'Is locked',
+                renderer: function(value){
+                    return (value) ? 'Locked' : ''
+                },
+                sortable: false
             }
         ],
         rowActions: [
@@ -101,18 +132,18 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             }
         ],
         relations: {
-            items: Backbone.Collection.extend({})
+            items: Backbone.Collection.extend({
+                model: B2BAccountModels.b2bUser
+            })
         },
         deleteUser: function (e, row) {
             var self = this;
-            var user = B2BAccountModels.b2bUser(row);
             user.apiDelete().then(function(){
                 self.refreshGrid();
             });
         },
         editUser: function (e, row) {
-            var user = B2BAccountModels.b2bUser(row);
-            window.userModalView.loadUserEditView(user);
+            window.userModalView.loadUserEditView(row);
             window.userModalView.handleDialogOpen();
         }
     });
@@ -123,7 +154,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     var UsersView = Backbone.MozuView.extend({
         templateName: "modules/b2b-account/users/users",
+        addNewUser: function () {
+            window.userModalView.loadUserEditView();
+            window.userModalView.handleDialogOpen();
+        },
         render: function () {
+            Backbone.MozuView.prototype.render.apply(this, arguments);
             var self = this;
             var collection = new UsersGridCollectionModel({});
 
@@ -137,7 +173,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 model: new UserModalModel({})
             });
 
-            window.userModalView = UsersModalView;
+            window.userModalView = usersModalView;
+            window.usersGridView = usersGrid;
 
             usersGrid.render();
         }

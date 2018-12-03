@@ -15,7 +15,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             }
 
             try {
-                self.model.setIndex(0);
+                self.model.setIndex(0, self.model.toJSON());
             } catch (error) {
 
             }
@@ -30,6 +30,9 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
                     self.model[action.action](e, row);
                 };
             });
+        },
+        refreshGrid: function () {
+            this.model.refreshGrid();
         },
         sort: function (e) {
             e.preventDefault();
