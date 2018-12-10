@@ -16,7 +16,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
 
             try {
                 if (this.model.get('autoload')){
-                    self.model.setIndex(0);
+                    self.model.setIndex(0, self.model.toJSON());
                 }
             } catch (error) {
 
@@ -57,11 +57,11 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
 
             var views = {
                 mozuGridPagingControls: new PagingViews.PagingControls({
-                    el: $('.dataGrid').find('[data-mz-pagingcontrols]'),
+                    el: self.$el.find('[data-mz-pagingcontrols]'),
                     model: self.model
                 }),
                 mozuGridPageNumbers: new PagingViews.PageNumbers({
-                    el: $('.dataGrid').find('[data-mz-pagenumbers]'),
+                    el: self.$el.find('[data-mz-pagenumbers]'),
                     model: self.model
                 })
             };

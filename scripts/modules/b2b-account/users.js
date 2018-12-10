@@ -94,8 +94,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     var UsersGridCollectionModel = MozuGridCollection.extend({
         mozuType: 'b2busers',
         defaults: {
-            accountId: require.mozuData('user').accountId
+            accountId: require.mozuData('user').accountId,
+            autoload: true
         },
+        autoload: true,
         columns: [
             {
                 index: 'emailAddress',
