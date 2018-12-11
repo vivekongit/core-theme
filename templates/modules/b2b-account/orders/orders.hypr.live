@@ -1,15 +1,18 @@
 {% require_script "modules/b2b-account/orders" %}
-<div class="mz-l-stack-section" style="clear:none">
+<div id="orders-messages">
+    {% include "modules/common/message-bar" with model=model.messages %}
+</div>
+<div class="mz-l-stack-section mz-orderlist" style="clear:none">
 <h3 class="mz-l-stack-sectiontitle">{{ labels.orderHistory }}</h3>
 <div class="mz-b2b-orders">
 {% if model.viewOrder %}
-<div class="mz-order-view">
-    <div class="mz-btns">
-        <button type="button" class="mz-button" data-mz-action="returnToGrid">Back</button>
-        <button type="button" style="float:right" class="mz-button" data-mz-action="reorder">Reorder</button>
-    </div>
-    <ul class="mz-orderlist">
-        <li>{% include "modules/common/order-listing" with model=model.currentOrder %}</li>
+<div class="mz-btns">
+    <button type="button" class="mz-button" data-mz-action="returnToGrid">Back</button>
+    <button type="button" style="float:right" class="mz-button" data-mz-action="reorder">Reorder</button>
+</div>
+<div class="mz-b2b-order-view">
+    <ul>
+        <li>{% include "modules/my-account/order-history-listing" %}</li>
     </ul>
 </div>
 {% else %}

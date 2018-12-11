@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart', 'pages/myaccount'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels, OrderViews) {
   var OrdersView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/orders/orders",
       initialize: function(){
@@ -11,6 +11,19 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var collection = new OrdersGridCollectionModel({});
           collection.set('items', orderHistory.items);
           this.initializeGrid(collection);
+          this.initializeOrderView();
+      },
+      initializeOrderView: function(){
+        var self = this;
+          if(this.model.get('currentOrder')){
+            var orderView = new OrderViews.OrderHistoryListingView({
+                templateName: 'modules/my-account/order-history-listing',
+                el: $('.mz-b2b-order-view'),
+                model: this.model.get('currentOrder'),
+                messagesEl: $('#orders-messages')
+            });
+            orderView.render();
+          }
       },
       initializeGrid: function(collection){
           var self = this;
@@ -27,7 +40,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       },
       viewOrder: function(row){
           this.model.set('viewOrder', true);
-          this.model.set('currentOrder', row.toJSON());
+          this.model.set('currentOrder', row);
+          var currentOrder = this.model.get('currentOrder');
           this.render();
       },
       returnToGrid: function(){
@@ -73,7 +87,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               displayName: 'Ship To',
               sortable: false,
               displayTemplate: function(fulfillmentInfo){
-                // Form a readable address string
+                // Form a readable address string.
+                // TODO: WOW. This is all really bad. Try again.
                 if (fulfillmentInfo.fulfillmentContact){
                     var address = fulfillmentInfo.fulfillmentContact.address;
                     var firstLine = address.address1;
@@ -98,7 +113,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               displayName: 'Created By',
               sortable: false,
               displayTemplate: function(createdBy){
-                  // We'll need to do extra work to get this.
+                  // TODO: We'll need to do extra work to get this.
                   if (createdBy) return createdBy;
                   return "";
               }
@@ -110,11 +125,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               displayTemplate: function (amount){
                   return '$'+amount.toFixed(2);
               }
-          },
-          {
-              index: 'transactionDetails',
-              displayName: 'Transaction Details',
-              sortable: false
           },
           {
               index: 'status',

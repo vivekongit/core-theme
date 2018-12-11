@@ -10,7 +10,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var returnHistory = CustomerModels.Customer.fromCurrent().get('returnHistory');
           var collection = new ReturnsGridCollectionModel({});
           collection.set('items', returnHistory.items);
-          window.console.log(collection);
           this.initializeGrid(collection);
       },
       initializeGrid: function(collection){
