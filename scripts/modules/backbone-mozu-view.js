@@ -130,7 +130,7 @@
             render: function (options) {
                 if (this.model.requiredBehaviors && this.requireBehaviorsToRender) {
                     var userBehaviors = require.mozuData('user').behaviors || [];
-                    var match = _.intersection(userBehaviors, this.model.requiredBehaviors)
+                    var match = _.intersection(userBehaviors, this.model.requiredBehaviors);
                     if (this.model.requiredBehaviorsType == "AllOf") {
                         if (match.length !== this.requiredBehaviors.length) {
                             return;
