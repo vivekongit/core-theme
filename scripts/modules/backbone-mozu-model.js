@@ -463,7 +463,22 @@
                 });
 
                 return (options && options.ensureCopy) ? JSON.parse(JSON.stringify(attrs)) : attrs;
+            },
+
+            hasRequiredBehavior:function(){
+                userBehaviors = require.mozuData('user').behaviors || [];
+                var match = _.intersection(userBehaviors, this.requiredBehaviors)
+                if (this.requiredBehaviorsType === "AllOf") {
+                    if (match.length !== this.requiredBehaviors.length) {
+                        return false;
+                    }
+                }
+                if (match.length < 1) {
+                    return false;
+                }
+                return true;
             }
+
         });
 
         // we have to attach the constructor to the prototype via direct assignment,
@@ -472,6 +487,12 @@
 
         modelProto.constructor = function(conf) {
             this.helpers = (this.helpers || []).concat(['isLoading', 'isValid']);
+            
+            if (this.requiredBehaviors) {
+                this.helpers = (this.helpers || []).concat(['hasRequiredBehavior']);
+            }
+            
+            
             Backbone.Model.apply(this, arguments);
             if (this.mozuType) this.initApiModel(conf);
             if (this.handlesMessages) {
