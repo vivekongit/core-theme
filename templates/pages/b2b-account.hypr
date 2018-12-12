@@ -19,8 +19,6 @@
              {% include "modules/pane-switcher" %}
         </div>
 
-        
-
 		{% dropzone "my-account-bottom" scope="template" %}
 
 </div>

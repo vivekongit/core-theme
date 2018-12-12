@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/models-customer', "modules/b2b-account/quotes", "modules/b2b-account/users", "modules/b2b-account/orders", "modules/b2b-account/returns", "modules/b2b-account/payment-information", "modules/backbone-pane-switcher", "modules/account-info"], function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, AccountInfo) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", 'modules/models-customer', "modules/b2b-account/quotes", "modules/b2b-account/users", "modules/b2b-account/orders", "modules/b2b-account/returns", "modules/b2b-account/payment-information", 'modules/b2b-account/shipping-information', "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, CustomerModels, Lists, Users, Orders, Returns, PaymentInformation, ShippingInformation, PaneSwitcher) {
 
     var paneSwitcherModel = new PaneSwitcher.PaneSwitcherModel({
         panes: [
@@ -34,7 +34,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 })
             },
             {
-                name: 'Shipping Information'
+                name: 'Shipping Information',
+                view: new ShippingInformation.AddressBookView({
+                    model: ShippingInformation.AddressBookModel.fromCurrent()
+                })
             },
             {
                 name: 'Payment Information',
