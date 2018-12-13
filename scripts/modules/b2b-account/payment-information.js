@@ -69,9 +69,18 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                   el: $('.mz-b2b-transactions-grid'),
                   model: collection
               });
+              transactionsGrid.requireBehaviorsToRender = true;
               transactionsGrid.render();
               return;
           });
+      }
+  });
+
+  var PaymentMethodsModel = CustomerModels.EditableCustomer.extend({
+      helpers: ['isLimited'],
+      requiredBehaviors: [ 1003 ],
+      isLimited: function(){
+          return !this.hasRequiredBehavior();
       }
   });
 
@@ -80,6 +89,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       apiGridRead: function(){
           return this.apiGetPurchaseOrderTransactions();
       },
+      requiredBehaviors: [ 1006 ],
       columns: [
           {
               index: 'transactionDate',
@@ -136,6 +146,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   });
 
   return {
-    'PaymentInformationView': PaymentMethodsView
+    'PaymentInformationView': PaymentMethodsView,
+    'PaymentInformationModel': PaymentMethodsModel
   };
 });

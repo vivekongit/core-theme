@@ -22,6 +22,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 model: this.model.get('currentOrder'),
                 messagesEl: $('#orders-messages')
             });
+            orderView.model.set('isLimited', self.model.isLimited());
             orderView.render();
           }
       },
@@ -61,6 +62,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           // Set loading
           // Make API call to get all orders for b2b account id
           // set it to orderHistory
+      }
+  });
+
+  var OrdersModel = CustomerModels.EditableCustomer.extend({
+      helpers: ['isLimited'],
+      requiredBehaviors: [ 1009 ],
+      isLimited: function(){
+          return !this.hasRequiredBehavior();
       }
   });
 
@@ -159,7 +168,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   });
 
   return {
-    'OrdersView': OrdersView
+    'OrdersView': OrdersView,
+    'OrdersModel': OrdersModel
   };
 
 });

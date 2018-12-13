@@ -1,4 +1,21 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/models-customer', "modules/b2b-account/quotes", "modules/b2b-account/users", "modules/b2b-account/orders", "modules/b2b-account/returns", "modules/b2b-account/payment-information", "modules/backbone-pane-switcher", 'modules/b2b-account/shipping-information', "modules/b2b-account/account-info"], function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, ShippingInformation, AccountInfo) {
+define([
+    "modules/jquery-mozu",
+    'modules/api',
+    "underscore",
+    "hyprlive",
+    "modules/backbone-mozu",
+    "hyprlivecontext",
+    'modules/models-customer',
+    "modules/b2b-account/quotes",
+    "modules/b2b-account/users",
+    "modules/b2b-account/orders",
+    "modules/b2b-account/returns",
+    "modules/b2b-account/payment-information",
+    "modules/backbone-pane-switcher",
+    'modules/b2b-account/shipping-information',
+    "modules/b2b-account/account-info"
+],
+function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, ShippingInformation, AccountInfo) {
 
     var paneSwitcherModel = new PaneSwitcher.PaneSwitcherModel({
         panes: [
@@ -11,7 +28,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             {
                 name: 'Orders',
                 view: new Orders.OrdersView({
-                    model: CustomerModels.EditableCustomer.fromCurrent()
+                    model: Orders.OrdersModel.fromCurrent()
                 })
             },
             {
@@ -42,7 +59,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             {
                 name: 'Payment Information',
                 view: new PaymentInformation.PaymentInformationView({
-                    model: CustomerModels.EditableCustomer.fromCurrent()
+                    model: PaymentInformation.PaymentInformationModel.fromCurrent()
                 })
             },
             {
