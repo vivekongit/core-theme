@@ -156,13 +156,13 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
 
     var UsersModel = Backbone.MozuModel.extend({
         requiredBehaviors: [
-            MozuUtils.Behaviors.User_Has_Full_Access_To_Their_Account
+            1013
         ]
     });
 
     var UsersView = Backbone.MozuView.extend({
         templateName: "modules/b2b-account/users/users",
-        requireBehaviorsToRender: false,
+        requireBehaviorsToRender: true,
         addNewUser: function () {
             window.userModalView.loadUserEditView();
             window.userModalView.handleDialogOpen();
