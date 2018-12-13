@@ -137,7 +137,7 @@
                         } 
                     }
                     if(match.length < 1) {
-                        return; 
+                        return;
                     }
                 }
                 var thenFocus = this.el && document.activeElement && document.activeElement.type !== "radio" && document.activeElement.type !== "checkbox" && $.contains(this.el, document.activeElement) && {

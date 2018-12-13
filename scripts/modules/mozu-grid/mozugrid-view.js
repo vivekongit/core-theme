@@ -41,32 +41,25 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             var col = $(e.currentTarget).data('mzColIndex');
             return this.model.sort(col);
         },
-        handlePageClick: function(e) {
-
-        },
-        handlePageSizeChange: function (e) {
-
-        },
-        handleSortClick: function (e) {
-
-        },
         render: function () {
             var self = this;
+            var views = {};
             self.registerRowActions();
             Backbone.MozuView.prototype.render.apply(this, arguments);
-
-            var views = {
-                mozuGridPagingControls: new PagingViews.PagingControls({
-                    el: self.$el.find('[data-mz-pagingcontrols]'),
-                    model: self.model
-                }),
-                mozuGridPageNumbers: new PagingViews.PageNumbers({
-                    el: self.$el.find('[data-mz-pagenumbers]'),
-                    model: self.model
-                })
-            };
-
-
+            
+            if (self.model.get('items').length) {
+                views = {
+                    mozuGridPagingControls: new PagingViews.PagingControls({
+                        el: self.$el.find('[data-mz-pagingcontrols]'),
+                        model: self.model
+                    }),
+                    mozuGridPageNumbers: new PagingViews.PageNumbers({
+                        el: self.$el.find('[data-mz-pagenumbers]'),
+                        model: self.model
+                    })
+                };
+            }
+            
 
             _.invoke(views, 'render');
         }

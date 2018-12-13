@@ -2,7 +2,7 @@
     <div data-mz-dataGrid class="mz-grid-table">
         {% include "modules/mozugrid/table" %}
     </div>
-    {% if model.items %}
+    {% if model.items.length > 0 %}
         <div data-mz-pagenumbers class="mz-pagenumbers">
             {% include "modules/common/page-numbers" %}
         </div>
