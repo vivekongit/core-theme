@@ -16,7 +16,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
 
             try {
                 if (this.model.get('autoload')){
-                    self.model.setIndex(0, self.model.toJSON());
+                    self.model.setIndex(0);
                 }
             } catch (error) {
 

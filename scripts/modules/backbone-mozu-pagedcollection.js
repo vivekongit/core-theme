@@ -79,7 +79,7 @@
                     pageSize = this.get("pageSize"),
                     startIndex = this.get("startIndex"),
                     sortBy = $.deparam().sortBy || this.currentSort() || defaultSort;
-                    filter = $.deparam().filterBy || this.currentFilter();
+                    filter = this.currentFilter();
 
                 conf.pageSize = pageSize;
                 if (startIndex) conf.startIndex = startIndex;

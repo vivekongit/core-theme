@@ -97,9 +97,8 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
 
     var UsersGridCollectionModel = MozuGridCollection.extend({
         mozuType: 'b2busers',
-        defaults: {
-            accountId: require.mozuData('user').accountId,
-            autoload: true
+        baseRequestParams: {
+            accountId: require.mozuData('user').accountId
         },
         autoload: true,
         columns: [
