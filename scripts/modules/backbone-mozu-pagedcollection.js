@@ -79,9 +79,12 @@
                     pageSize = this.get("pageSize"),
                     startIndex = this.get("startIndex"),
                     sortBy = $.deparam().sortBy || this.currentSort() || defaultSort;
+                    filter = $.deparam().filterBy || this.currentFilter();
+
                 conf.pageSize = pageSize;
                 if (startIndex) conf.startIndex = startIndex;
                 if (sortBy) conf.sortBy = sortBy;
+                if (filter) con.filter = filter;
                 return conf;
             },
 
@@ -163,9 +166,18 @@
                 return (this.lastRequest && this.lastRequest.sortBy && decodeURIComponent(this.lastRequest.sortBy).replace(/\+/g, ' ')) || '';
             },
 
+            currentFilter: function () {
+                return (this.lastRequest && this.lastRequest.filter && decodeURIComponent(this.lastRequest.filter).replace(/\+/g, ' ')) || '';
+            },
+
             sortBy: function(sortString) {
                 return this.apiGet($.extend(this.lastRequest, { sortBy: sortString }));
             },
+
+            filterBy: function (filterString) {
+                return this.apiGet($.extend(this.lastRequest, { filter: filterString }));
+            },
+
             initialize: function() {
                 this.lastRequest = this.buildRequest();
             }

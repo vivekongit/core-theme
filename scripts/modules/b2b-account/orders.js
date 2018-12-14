@@ -29,15 +29,21 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       initializeGrid: function(collection){
           var self = this;
           $(document).ready( function () {
-                var ordersGrid = new MozuGrid({
+                self.ordersGrid = new MozuGrid({
                     el: $('.mz-b2b-orders-grid'),
                     model: collection
                 });
-                ordersGrid.listenTo(ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
-                ordersGrid.listenTo(ordersGrid.model, 'reorder', self.reorder.bind(self));
-                ordersGrid.render();
+                self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
+                self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
+                self.ordersGrid.render();
                 return;
           });
+      },
+      switchFilter: function(e){
+          var self = this;
+          if (self.ordersGrid) {
+              self.ordersGrid.model.filter('userId eq 32132')
+          }
       },
       viewOrder: function(row){
           this.model.set('viewOrder', true);

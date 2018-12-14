@@ -19,6 +19,7 @@
 <div class="mz-order-grid-container">
   <div class="mz-btns" style="text-align:right">
       <button type="button" class="mz-button" data-mz-action="viewAllOrders">View All Orders</button>
+        <button type="button" class="mz-button" data-mz-action="switchFilter">Switch</button>
   </div>
   <div class="mz-b2b-orders-grid">
       <div class="is-loading"></div>

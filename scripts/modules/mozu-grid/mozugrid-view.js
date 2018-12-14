@@ -41,6 +41,11 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             var col = $(e.currentTarget).data('mzColIndex');
             return this.model.sort(col);
         },
+        filter: function (e) {
+            e.preventDefault();
+            var filterString = $(e.currentTarget).data('mzFilter');
+            return this.model.filter(filterString);
+        },
         render: function () {
             var self = this;
             var views = {};
