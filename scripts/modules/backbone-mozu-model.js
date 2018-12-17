@@ -519,8 +519,10 @@
              * @memberof MozuModel
              * @static
              */
-            fromCurrent: function () {
-                return new this(require.mozuData(this.prototype.mozuType), { silent: true, parse: true });
+            fromCurrent: function (overRide) {
+                var mozuType = this.prototype.mozuType;
+                if (overRide) mozuType = overRide;
+                return new this(require.mozuData(mozuType), { silent: true, parse: true });
             },
             DataTypes: {
                 "Int": function (val) {

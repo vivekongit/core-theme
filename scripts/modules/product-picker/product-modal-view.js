@@ -85,6 +85,7 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
             var self = this;
             e.preventDefault();
             self.model.trigger('configurationComplete', self);
+            
             // try {
             //     self.model.addToCart(true).then(function () {
             //         this.model.parent.handleDialogCancel();
@@ -163,7 +164,6 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         },
         render: function () {
             var self = this;
-            self.setInit();
         }
     });
 

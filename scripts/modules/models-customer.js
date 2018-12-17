@@ -1,4 +1,4 @@
-﻿define(['modules/backbone-mozu', 'underscore', 'modules/models-address', 'modules/models-orders', 'modules/models-paymentmethods', 'modules/models-product', 'modules/models-returns', 'hyprlive'], function (Backbone, _, AddressModels, OrderModels, PaymentMethods, ProductModels, ReturnModels, Hypr) {
+﻿define(['modules/backbone-mozu', 'underscore', 'modules/models-address', 'modules/models-orders', 'modules/models-paymentmethods', 'modules/models-product', 'modules/models-returns', 'hyprlive', 'modules/models-b2b-account'], function (Backbone, _, AddressModels, OrderModels, PaymentMethods, ProductModels, ReturnModels, Hypr, B2BAccountModels) {
 
 
     var pageContext = require.mozuData('pagecontext'),
@@ -514,9 +514,24 @@
             delete j.oldPassword;
             return j;
         }
+    }),
+    B2BCustomerAccount = B2BAccountModels.b2bUser.extend({
+        toJSON: function (options) {
+            var j = Customer.prototype.toJSON.apply(this, arguments);
+            if (!options || !options.helpers)
+                delete j.customer;
+            delete j.password;
+            delete j.confirmPassword;
+            delete j.oldPassword;
+           
+            j.accountId = j.id;
+            j.id = j.userId;
+            return j;
+        }
     });
 
     return {
+        B2BCustomer: B2BCustomerAccount,
         Contact: CustomerContact,
         Customer: Customer,
         EditableCustomer: EditableCustomer

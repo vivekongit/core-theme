@@ -4,10 +4,6 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
         templateName: 'modules/mozugrid/grid',
         initialize: function () {
             var self = this;
-            self.model.lastRequest = {
-                pageSize: 5,
-                startIndex: 0
-            };
 
             if (typeof this.model.apiGridRead === 'function') {
                 this.model.apiModel.get = this.model.apiGridRead.bind(this.model);

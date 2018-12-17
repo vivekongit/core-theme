@@ -6,6 +6,7 @@ define([
     "modules/backbone-mozu",
     "hyprlivecontext",
     'modules/models-customer',
+    'modules/models-b2b-account',
     "modules/b2b-account/quotes",
     "modules/b2b-account/users",
     "modules/b2b-account/orders",
@@ -15,14 +16,14 @@ define([
     'modules/b2b-account/shipping-information',
     "modules/b2b-account/account-info"
 ],
-function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, ShippingInformation, AccountInfo) {
+    function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, B2BAccountModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, ShippingInformation, AccountInfo) {
 
     var paneSwitcherModel = new PaneSwitcher.PaneSwitcherModel({
         panes: [
             {
                 name: 'Account Information',
                 view: new AccountInfo.InfoView({
-                    model: CustomerModels.EditableCustomer.fromCurrent()
+                    model: CustomerModels.B2BCustomer.fromCurrent('customer')
                 })
             },
             {
@@ -78,7 +79,7 @@ function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, Lists, Use
             })
         };
 
-        window.quoteViews = views;
+        window.views = views;
         _.invoke(views, 'render');
 
     });

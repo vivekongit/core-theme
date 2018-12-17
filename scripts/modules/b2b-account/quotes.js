@@ -16,6 +16,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 this.set('name', 'New List - ' + Date.now());
             }
             this.set('customerAccountId', require.mozuData('user').accountId);
+            this.set('userId', require.mozuData('user').userId);
 
             if (this.get('id')) {
                 this.syncApiModel();
@@ -31,6 +32,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 return this.saveWishlist().then(function(){
                     var payload = {
                         wishlistId: self.get('id'),
+                        id: self.get('id'),
                         quantity: 1,
                         product: item
                     };
@@ -174,13 +176,20 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         cancelQuoteEdit: function () {
             window.console.log('Create Wishlist');
             this.model.parent.setEditMode(false);
-            window.quoteViews.quotesView.render();
+            window.views.currentPane.render();
             //Just the Edit Page that is empty?
         },
-        addWishlistItem: function(product){
+        addWishlistItem: function(e){
             var self = this;
+            var product = self.model.get('selectedProduct');
 
-            window.quoteViews.quotesView.model.get('quote').addQuoteItem(product, self.model.get('pickerItemQuantity'));
+            if (product.options) {
+                window.productConfigurationView.model.set(product);
+                window.productConfigurationView.setInit();
+                return;
+            }
+
+            window.views.currentPane.model.get('quote').addQuoteItem(product, self.model.get('pickerItemQuantity'));
             self.model.unset('selectedProduct');
             $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
             $('.mz-b2b-quotes #pickerItemQuantity').val(1);
@@ -310,15 +319,15 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
             //var wishlistId = e.target.data("mzQuoteId");
             //Confirmation Modal
-            window.quoteViews.quotesView.removeQuote(row.get('id'));
+            window.views.currentPane.removeQuote(row.get('id'));
         },
         editWishlist: function (e, row) {
             window.console.log('Edit Wishlist');
             //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
 
-            window.quoteViews.quotesView.model.setQuote(row);
-            window.quoteViews.quotesView.model.setEditMode(true);
-            window.quoteViews.quotesView.render();
+            window.views.currentPane.model.setQuote(row);
+            window.views.currentPane.model.setEditMode(true);
+            window.views.currentPane.render();
         },
         addWishlistToCart: function (e, row){
             var cart = CartModels.Cart.fromCurrent();
@@ -330,7 +339,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         copyWishlist: function(e, row){
             var wishlistName = 'copy - ' + row.get('name');
             row.set('name', wishlistName);
-            window.quoteViews.quotesView.copyQuote(row);
+            window.views.currentPane.copyQuote(row);
         }
     });
 

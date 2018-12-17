@@ -5,6 +5,11 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
         },
         defaults: {
             selectedProduct: ProductModels.Product.extend({})
+        },
+        toJSON: function(){
+            var j = Backbone.MozuModel.prototype.toJSON.apply(this, arguments);
+            delete j.selectedProduct;
+            return j;
         }
     });
     
@@ -13,6 +18,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
         initialize: function () {
             var self = this;
             this.listenTo(this.model, "configurationComplete", function (product) {
+                console.log('Config Complete')
                 self.trigger('productSelected', product);
             });
         },
@@ -25,8 +31,8 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                 model: self.model.get('selectedProduct'),
                 messagesEl: self.$el.find("[mz-modal-product-dialog]").find('[data-mz-message-bar]')
             });
-            self._productConfigurationView = productModalView;
-            productModalView.render();
+            window.productConfigurationView = productModalView;
+            window.productConfigurationView.render();
 
             var $fields = self.$el.find('[data-mz-role="searchquery"]').each(function (field) {
                 var search = new SearchAutoComplete();
@@ -40,10 +46,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                 $field.on('typeahead:selected', function (e, data, set) {
                     var product = data.suggestion;
                     self.model.set('selectedProduct', product);
-                    if (product.options) {
-                        productModalView.setInit();
-                        return;
-                    }
+                    
                     self.model.trigger('productSelected', product);
                     
                     // window.console.log('Add Product ' + data.suggestion.productCode);

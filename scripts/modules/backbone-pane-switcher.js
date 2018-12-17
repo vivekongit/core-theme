@@ -44,7 +44,9 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
             if (pane && pane.view) {
                 pane.view.el = this.paneEl();
                 pane.view.$el = this.paneEl();
+                window.views.currentPane = pane.view;
                 pane.view.render();
+                 
             }
         },
         render: function () {

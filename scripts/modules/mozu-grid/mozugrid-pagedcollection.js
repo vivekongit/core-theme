@@ -3,7 +3,9 @@ define(["underscore", "modules/backbone-mozu"], function ( _, Backbone) {
 var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
     mozuType: 'search',
     defaults: {
-        autoload: true
+        autoload: true,
+        pageSize: 5,
+        startIndex: 0
     },
     helpers: ['gridItems', 'columnNames'],
     //These are test columns and should be set when The collection is used
