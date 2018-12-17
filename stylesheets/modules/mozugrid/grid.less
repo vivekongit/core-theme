@@ -3,10 +3,10 @@
     margin: 15px 0;
     border: 1px solid #999;
     .mz-grid-table {
-        
+
         .mz-grid-header {
             position: relative;
-            border-bottom: 1px solid #999;
+            background-color: #eeeeee;
             .mz-grid-row {
                 border-bottom:none;
             }
@@ -39,7 +39,7 @@
         display: -moz-box;
         display: -ms-flexbox;
         display: -webkit-flex;
-        display: flex; 
+        display: flex;
         flex-direction: row;
         flex-grow:1;
         .mz-grid-column {
@@ -55,14 +55,14 @@
         display: -moz-box;
         display: -ms-flexbox;
         display: -webkit-flex;
-        display: flex; 
+        display: flex;
         flex-direction: row;
     }
 
      .mz-grid-row:last-child {
         border-bottom:none;
      }
-    
+
     .mz-grid-column {
         padding: 0px 15px;
     }
@@ -76,7 +76,7 @@
         margin-top: 5px;
         margin-left: @gutter;
     }
-    
+
     .mz-grid-cols {
         &.mz-cols-2 .mz-grid-column {
             width: 50%;
@@ -100,5 +100,5 @@
             width: 15.5%;
         }
     }
-    
+
 }

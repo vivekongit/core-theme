@@ -317,7 +317,8 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "hyprlive"
                         fulfillmentMethod: fulfillMethod,
                         quantity: me.get("quantity")
                     }).then(function (item) {
-                        //me.trigger('addedtocart', item, stopRedirect);
+                        console.log(stopRedirect);
+                        me.trigger('addedtocart', item, stopRedirect);
                     });
                 }
             });

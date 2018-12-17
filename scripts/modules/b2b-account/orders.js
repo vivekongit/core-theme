@@ -2,14 +2,29 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   var OrdersView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/orders/orders",
       initialize: function(){
+        var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
+        //TODO: REVERSE THIS!
+        var viewingAllOrders = (self.model.hasRequiredBehavior(1102)) ? false : true;
+        self.model.set('viewingAllOrders', viewingAllOrders);
       },
       render: function(){
           var self = this;
           Backbone.MozuView.prototype.render.apply(this, arguments);
-          var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
-          var collection = new OrdersGridCollectionModel({});
-          collection.set('items', orderHistory.items);
+          var collection = new OrdersGridCollectionModel({autoload: false});
+          // If the user has permission to view all child orders, we want
+          // them to view all child orders by default.
+          var hasPermission = self.model.hasRequiredBehavior(1102);
+          //TODO: REVERSE THIS!!
+          if (!hasPermission && self.model.get('viewingAllOrders')){
+              // We expect the orderHistory on the current customer to be based on accountId, not userId.
+              var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
+              collection.set('items', orderHistory.items);
+          } else {
+              api.get('orders', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
+                  collection.set('items', res.get('items'));
+              });
+          }
           this.initializeGrid(collection);
           this.initializeOrderView();
       },
@@ -27,24 +42,28 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           }
       },
       initializeGrid: function(collection){
-          var self = this;
-          $(document).ready( function () {
-                self.ordersGrid = new MozuGrid({
-                    el: $('.mz-b2b-orders-grid'),
-                    model: collection
-                });
-                self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
-                self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
-                self.ordersGrid.render();
-                return;
-          });
+        var self = this;
+        self.ordersGrid = new MozuGrid({
+            el: $('.mz-b2b-orders-grid'),
+            model: collection
+        });
+        self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
+        self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
+        self.ordersGrid.render();
       },
-    //   switchFilter: function(e){
-    //       var self = this;
-    //       if (self.ordersGrid) {
-    //           self.ordersGrid.model.filter('userId eq 32132')
-    //       }
-    //   },
+      toggleGridSource: function(e){
+          var self = this;
+          if (self.model.get('viewingAllOrders')){
+              self.model.set('viewingAllOrders', false);
+              if (self.ordersGrid) {
+                  self.ordersGrid.model.filter('userId eq '+self.model.get('userId'))
+              }
+          } else {
+              self.model.set('viewingAllOrders', true);
+              self.ordersGrid.model.filter('');
+          }
+          self.render();
+      }
       viewOrder: function(row){
           this.model.set('viewOrder', true);
           this.model.set('currentOrder', row);
@@ -63,25 +82,22 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           cart.apiModel.addBulkProducts({ postdata: products}).then(function(){
               window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
           });
-      },
-      viewAllOrders: function(){
-          // Set loading
-          // Make API call to get all orders for b2b account id
-          // set it to orderHistory
       }
   });
 
   var OrdersModel = CustomerModels.EditableCustomer.extend({
-      helpers: ['isLimited'],
+      helpers: ['isLimited', 'limitUsersView'],
       requiredBehaviors: [ 1009 ],
       isLimited: function(){
           return !this.hasRequiredBehavior();
+      },
+      limitUsersView: function(){
+          return !this.hasRequiredBehavior(1102);
       }
   });
 
   var OrdersGridCollectionModel = MozuGridCollection.extend({
       mozuType: 'orders',
-      autoload: false,
       columns: [
           {
               index: 'orderNumber',

@@ -29,6 +29,6 @@
 </ul>
 {% else %}
 <p class="mz-accountaddressbook-empty">
-  {{ labels.noSavedContacts }} <a href="javascript:;" data-mz-action="beginAddContact">{{ labels.addNewContact }}</a>
+  {{ labels.noSavedContacts }} {% if not model.isLimited %}<a href="javascript:;" data-mz-action="beginAddContact">{{ labels.addNewContact }}{% endif %}</a>
 </p>
 {% endif %}
