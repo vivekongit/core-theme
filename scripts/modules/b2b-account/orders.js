@@ -63,7 +63,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               self.ordersGrid.model.filter('');
           }
           self.render();
-      }
+      },
       viewOrder: function(row){
           this.model.set('viewOrder', true);
           this.model.set('currentOrder', row);
