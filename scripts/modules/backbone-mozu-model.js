@@ -467,14 +467,16 @@
 
             hasRequiredBehavior:function(){
                 var userBehaviors = require.mozuData('user').behaviors || [];
-                var match = _.intersection(userBehaviors, this.requiredBehaviors);
-                if (this.requiredBehaviorsType === "AllOf") {
-                    if (match.length !== this.requiredBehaviors.length) {
+                if (this.requiredBehaviors) {
+                    var match = _.intersection(userBehaviors, this.requiredBehaviors);
+                    if (this.requiredBehaviorsType === "AllOf") {
+                        if (match.length !== this.requiredBehaviors.length) {
+                            return false;
+                        }
+                    }
+                    if (match.length < 1) {
                         return false;
                     }
-                }
-                if (match.length < 1) {
-                    return false;
                 }
                 return true;
             }

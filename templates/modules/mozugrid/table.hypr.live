@@ -21,7 +21,9 @@
         <div class="mz-grid-row-actions">
             <span class="mz-grid-column">
                 {% for action in model.rowActions %}
-                    <a href="#" data-mz-action="{{action.action}}">{{action.displayName}}</a>
+                    {% if action.isHidden != true %}
+                        <a href="#" data-mz-action="{{action.action}}">{{action.displayName}}</a>
+                    {% endif %}
                 {% endfor %}
             </span>
         </div>
@@ -46,7 +48,9 @@
                     <div class="mz-grid-row-actions">
                         <span class="mz-grid-column">
                             {% for action in model.rowActions %}
-                                <a href="#" data-mz-action="{{action.action}}">{{action.displayName}}</a>
+                                {% if action.isHidden != true %}
+                                    <a href="#" data-mz-action="{{action.action}}">{{action.displayName}}</a>
+                                {% endif %}
                             {% endfor %}
                         </span>
                     </div>

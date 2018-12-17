@@ -80,10 +80,22 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
         var columns = [];
         if (self.columns){
             _.each(self.columns, function (col) {
-                columns.push(col.displayName);
+                var hidden = (typeof col.isHidden === "function") ? col.isHidden() : col.isHidden;
+                if (!hidden){
+                    columns.push(col.displayName);
+                }
             });
         }
         return columns;
+    },
+    toJSON: function(){
+        var self = this;
+        var j = Backbone.MozuModel.prototype.toJSON.apply(this, arguments);
+        _.each(j.rowActions, function (row, idx) {
+            var isHidden = self.get('rowActions')[idx].isHidden;
+            row.isHidden = (typeof isHidden === "function") ? isHidden.apply(self) : isHidden || false;
+        })
+        return j;
     },
     initialize: function () {
         var me = this;

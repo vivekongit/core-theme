@@ -1,4 +1,6 @@
-<button class="mz-button mz-button-large add-user-btn" data-mz-action="addNewUser">Add User</button>
+{% if model.hasRequiredBehavior %}
+  <button class="mz-button mz-button-large add-user-btn" data-mz-action="addNewUser">Add User</button>
+{% endif %}
 <div class="mz-b2baccount-users">
 </div>
 

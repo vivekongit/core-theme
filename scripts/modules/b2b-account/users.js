@@ -1,4 +1,4 @@
-define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-b2b-account", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/models-dialog", "modules/views-modal-dialog"], function (MozuUtils, $, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, B2BAccountModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, DialogModels, ModalDialogView) {
+define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-b2b-account", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/models-dialog", "modules/views-modal-dialog", "modules/mozu-utilities"], function (MozuUtils, $, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, B2BAccountModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, DialogModels, ModalDialogView, MozuUtilities) {
 
     var UsersEditModel = Backbone.MozuModel.extend({
         relations: {
@@ -100,6 +100,9 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         baseRequestParams: {
             accountId: require.mozuData('user').accountId
         },
+        requiredBehaviors: [
+            MozuUtilities.Behaviors.Manage_Users
+        ],
         autoload: true,
         columns: [
             {
@@ -129,11 +132,17 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         rowActions: [
             {
                 displayName: 'Edit',
-                action: 'editUser'
+                action: 'editUser',
+                isHidden: function(){
+                    return !this.hasRequiredBehavior()
+                }
             },
             {
                 displayName: 'Delete',
-                action: 'deleteUser'
+                action: 'deleteUser',
+                isHidden: function () { 
+                    return !this.hasRequiredBehavior()
+                }
             }
         ],
         relations: {
@@ -154,6 +163,9 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
     });
 
     var UsersModel = Backbone.MozuModel.extend({
+        requiredBehaviors: [
+            MozuUtilities.Behaviors.Manage_Users
+        ]
     });
 
     var UsersView = Backbone.MozuView.extend({

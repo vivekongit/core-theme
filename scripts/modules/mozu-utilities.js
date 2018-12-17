@@ -4,6 +4,6 @@ define(['sdk'], function (Mozu) {
 
     return {
         Behaviors: behaviorsUtil.USER_BEHAVIORS_BY_NAME,
-        Utilities: Mozu.MozuUtilites
+        Utilities: Mozu.MozuUtilities
     };
 });
