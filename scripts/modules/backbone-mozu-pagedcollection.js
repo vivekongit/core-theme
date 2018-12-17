@@ -78,13 +78,13 @@
                 var conf = this.baseRequestParams ? _.clone(this.baseRequestParams) : {},
                     pageSize = this.get("pageSize"),
                     startIndex = this.get("startIndex"),
-                    sortBy = $.deparam().sortBy || this.currentSort() || defaultSort;
+                    sortBy = $.deparam().sortBy || this.currentSort() || defaultSort,
                     filter = this.currentFilter();
 
                 conf.pageSize = pageSize;
                 if (startIndex) conf.startIndex = startIndex;
                 if (sortBy) conf.sortBy = sortBy;
-                if (filter) con.filter = filter;
+                if (filter) conf.filter = filter;
                 return conf;
             },
 

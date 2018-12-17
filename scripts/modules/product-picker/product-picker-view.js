@@ -18,7 +18,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
         initialize: function () {
             var self = this;
             this.listenTo(this.model, "configurationComplete", function (product) {
-                console.log('Config Complete')
+                //console.log('Config Complete')
                 self.trigger('productSelected', product);
             });
         },

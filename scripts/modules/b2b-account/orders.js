@@ -39,12 +39,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 return;
           });
       },
-      switchFilter: function(e){
-          var self = this;
-          if (self.ordersGrid) {
-              self.ordersGrid.model.filter('userId eq 32132')
-          }
-      },
+    //   switchFilter: function(e){
+    //       var self = this;
+    //       if (self.ordersGrid) {
+    //           self.ordersGrid.model.filter('userId eq 32132')
+    //       }
+    //   },
       viewOrder: function(row){
           this.model.set('viewOrder', true);
           this.model.set('currentOrder', row);
