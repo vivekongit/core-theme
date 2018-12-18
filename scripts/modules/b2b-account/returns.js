@@ -4,9 +4,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       initialize: function(){
         var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
-        //TODO: REVERSE THIS!
-        //var viewingAllReturns = (self.model.hasRequiredBehavior(1103)) ? false : true;
-        var viewingAllReturns = true;
+        var viewingAllReturns = (self.model.hasRequiredBehavior(1103)) ? false : true;
         self.model.set('viewingAllReturns', viewingAllReturns);
       },
       render: function(){
@@ -18,9 +16,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         var returnHistory = CustomerModels.Customer.fromCurrent().get('returnHistory');
         collection.set('items', returnHistory.items);
         this.initializeGrid(collection);
-        var hasPermission = true;
-        //var hasPermission = self.model.hasRequiredBehavior(1103);
-        //TODO: REVERSE THIS!!
+        var hasPermission = self.model.hasRequiredBehavior(1103);
         if (hasPermission && self.model.get('viewingAllReturns')){
             // We expect the returnHistory on the current customer to be based on accountId, not userId.
             collection.set('items', returnHistory.items);

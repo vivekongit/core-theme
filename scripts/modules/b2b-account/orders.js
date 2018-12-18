@@ -4,9 +4,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       initialize: function(){
         var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
-        var viewingAllOrders = true;
-        //TODO: REVERSE THIS!
-        //var viewingAllOrders = (self.model.hasRequiredBehavior(1102)) ? false : true;
+        var viewingAllOrders = (self.model.hasRequiredBehavior(1102)) ? true : false;
         self.model.set('viewingAllOrders', viewingAllOrders);
       },
       render: function(){
@@ -41,9 +39,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         });
         self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
         self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
-        //var hasPermission = self.model.hasRequiredBehavior(1102);
-        var hasPermission = true;
-        //TODO: REVERSE THIS!!!
+        var hasPermission = self.model.hasRequiredBehavior(1102);
         if (hasPermission && self.model.get('viewingAllOrders')){
             self.ordersGrid.render();
         } else {
