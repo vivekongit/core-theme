@@ -89,13 +89,16 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   });
 
   var OrdersModel = CustomerModels.EditableCustomer.extend({
-      helpers: ['isLimited', 'limitUsersView'],
+      helpers: ['isLimited', 'limitOrdersView', 'limitPlaceOrders'],
       requiredBehaviors: [ 1009 ],
       isLimited: function(){
           return !this.hasRequiredBehavior();
       },
-      limitUsersView: function(){
+      limitOrdersView: function(){
           return !this.hasRequiredBehavior(1102);
+      },
+      limitPlaceOrders: function(){
+          return !this.hasRequiredBehavior(1008);
       }
   });
 
@@ -173,7 +176,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           },
           {
               displayName: 'Reorder',
-              action: 'reorder'
+              action: 'reorder',
+              isHidden: function () {
+                  // 1008 = Can place orders
+                  return !this.hasRequiredBehavior(1008);
+              }
           }
       ],
       relations: {
