@@ -31,7 +31,7 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         },
         handlePaneSelect: function(e){
             var index = $(e.currentTarget).data('mzIndex')-1;
-            var forceLoad = $(e.currentTarget).data('mzForceLoad')
+            var forceLoad = $(e.currentTarget).data('mzForceLoad');
             this.model.setPane(index, forceLoad);
         },
         switcherEl: function () {

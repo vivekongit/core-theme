@@ -34,7 +34,15 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             user.set('userName', user.get('emailAddress'));
             if (user.get('id')) {
                 return user.apiUpdate().then(function(){
-                    window.usersGridView.refreshGrid()
+                    window.usersGridView.refreshGrid();
+                    var role = user.get('originalRoles');
+                    if (role[0]) {
+                        user.apiRemoveUserRole({
+                            id: user.get('id'),
+                            accountId: user.get('accountId'),
+                            roleId: role[0].roleId
+                        });
+                    }
                     return user.apiAddUserRole();
                 });
             }
@@ -109,6 +117,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             user.apiGetUserRoles().then(function (resp) {
                 var role = resp.data.items[0];
                 if(role) {
+                    user.set('originalRoles', resp.data.items); 
                     user.set('roleId', role.roleId);
                 }
                
@@ -119,7 +128,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
                 
                 self._userForm = userEditForm;
                 userEditForm.render();
-            })
+            });
         },
         render: function () {
             var self = this;
