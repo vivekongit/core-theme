@@ -34,14 +34,14 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             user.set('userName', user.get('emailAddress'));
             if (user.get('id')) {
                 return user.apiUpdate().then(function(){
-                    return user.apiAddUserRole()
+                    return user.apiAddUserRole();
                 });
             }
             var createPayload = {
                 b2bUser: this.get('user')
             };
             return user.apiCreate(createPayload).then(function () {
-                user.apiAddUserRole()
+                user.apiAddUserRole();
                 window.usersGridView.refreshGrid();
             });
         },
@@ -69,7 +69,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             'user.isActive'
         ],
         chooseUserRole: function(e){
-            roleId = $(e.currentTarget).prop('value');
+            var roleId = $(e.currentTarget).prop('value');
             this.model.get('user').set('roleId', roleId);
         }
     });
