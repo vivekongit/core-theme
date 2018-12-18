@@ -2,48 +2,81 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   var ReturnsView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/returns/returns",
       initialize: function(){
+        var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
+        //TODO: REVERSE THIS!
+        //var viewingAllReturns = (self.model.hasRequiredBehavior(1103)) ? false : true;
+        var viewingAllReturns = true;
+        self.model.set('viewingAllReturns', viewingAllReturns);
       },
       render: function(){
-          var self = this;
-          Backbone.MozuView.prototype.render.apply(this, arguments);
-          var returnHistory = CustomerModels.Customer.fromCurrent().get('returnHistory');
-          var collection = new ReturnsGridCollectionModel({});
-          collection.set('items', returnHistory.items);
-          this.initializeGrid(collection);
+        var self = this;
+        Backbone.MozuView.prototype.render.apply(this, arguments);
+        var collection = new ReturnsGridCollectionModel({autoload: false});
+        // If the user has permission to view all child returns, we want
+        // them to view all child returns by default.
+        var returnHistory = CustomerModels.Customer.fromCurrent().get('returnHistory');
+        collection.set('items', returnHistory.items);
+        this.initializeGrid(collection);
+        var hasPermission = true;
+        //var hasPermission = self.model.hasRequiredBehavior(1103);
+        //TODO: REVERSE THIS!!
+        if (hasPermission && self.model.get('viewingAllReturns')){
+            // We expect the returnHistory on the current customer to be based on accountId, not userId.
+            collection.set('items', returnHistory.items);
+        } else {
+            api.get('rmas', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
+                collection.set('items', res.data.items);
+            });
+        }
       },
       initializeGrid: function(collection){
           var self = this;
-          $(document).ready( function () {
-                var returnsGrid = new MozuGrid({
-                    el: $('.mz-b2b-returns-grid'),
-                    model: collection
-                });
-                returnsGrid.listenTo(returnsGrid.model, 'viewReturn', self.viewReturn.bind(self));
-                returnsGrid.render();
-                return;
+          self.returnsGrid = new MozuGrid({
+              el: $('.mz-b2b-returns-grid'),
+              model: collection
           });
+          self.returnsGrid.listenTo(self.returnsGrid.model, 'viewReturn', self.viewReturn.bind(self));
+          var hasPermission = self.model.hasRequiredBehavior(1103);
+          //TODO: REVERSE THIS!!
+          if (!hasPermission && self.model.get('viewingAllReturns')){
+              self.returnsGrid.render();
+          } else {
+              api.get('rmas', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
+                  collection.set('items', res.data.items);
+                  self.returnsGrid.render();
+              });
+          }
+      },
+      toggleReturnsGridSource: function(e){
+        var self = this;
+        if (self.model.get('viewingAllReturns')){
+            self.model.set('viewingAllReturns', false);
+            if (self.returnsGrid) {
+                self.returnsGrid.model.filter('userId eq '+self.model.get('userId')).then(function(response){
+                    self.returnsGrid.model.set('items', response.data.items);
+                    self.returnsGrid.render();
+                });
+            }
+        } else {
+            self.model.set('viewingAllReturns', true);
+            self.returnsGrid.model.filter('');
+        }
+        self.render();
       },
       viewReturn: function(row){
           this.model.set('viewReturn', true);
           this.model.set('currentReturn', row.toJSON());
-          window.console.log(this.model.get('currentReturn'));
           this.render();
       },
       returnToGrid: function(){
           this.model.set('viewReturn', false);
           this.render();
-      },
-      viewAllReturns: function(){
-          // Set loading
-          // Make API call to get all orders for b2b account id
-          // set it to orderHistory
       }
   });
 
   var ReturnsGridCollectionModel = MozuGridCollection.extend({
-      mozuType: 'returns',
-      autoload: false,
+      mozuType: 'rmas',
       columns: [
           {
               index: 'returnNumber',

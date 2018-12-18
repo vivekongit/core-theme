@@ -4,8 +4,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       initialize: function(){
         var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
+        var viewingAllOrders = true;
         //TODO: REVERSE THIS!
-        var viewingAllOrders = (self.model.hasRequiredBehavior(1102)) ? false : true;
+        //var viewingAllOrders = (self.model.hasRequiredBehavior(1102)) ? false : true;
         self.model.set('viewingAllOrders', viewingAllOrders);
       },
       render: function(){
@@ -14,17 +15,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var collection = new OrdersGridCollectionModel({autoload: false});
           // If the user has permission to view all child orders, we want
           // them to view all child orders by default.
-          var hasPermission = self.model.hasRequiredBehavior(1102);
-          //TODO: REVERSE THIS!!
-          if (!hasPermission && self.model.get('viewingAllOrders')){
-              // We expect the orderHistory on the current customer to be based on accountId, not userId.
-              var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
-              collection.set('items', orderHistory.items);
-          } else {
-              api.get('orders', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
-                  collection.set('items', res.get('items'));
-              });
-          }
+          var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
+          collection.set('items', orderHistory.items);
           this.initializeGrid(collection);
           this.initializeOrderView();
       },
@@ -49,14 +41,29 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         });
         self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
         self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
-        self.ordersGrid.render();
+        //var hasPermission = self.model.hasRequiredBehavior(1102);
+        var hasPermission = true;
+        //TODO: REVERSE THIS!!!
+        if (hasPermission && self.model.get('viewingAllOrders')){
+            self.ordersGrid.render();
+        } else {
+            api.get('orders', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
+                collection.set('items', res.data.items);
+                self.ordersGrid.render();
+            });
+        }
       },
-      toggleGridSource: function(e){
+      toggleOrdersGridSource: function(e){
           var self = this;
           if (self.model.get('viewingAllOrders')){
               self.model.set('viewingAllOrders', false);
               if (self.ordersGrid) {
-                  self.ordersGrid.model.filter('userId eq '+self.model.get('userId'))
+                  self.ordersGrid.model.filter('userId eq '+self.model.get('userId')).then(function(response){
+                      // Supposedly .filter() is supposed to handle this set and render, but it's not.
+                      // Don't know why. I'm done fucking with it.
+                      self.ordersGrid.model.set('items', response.data.items);
+                      self.ordersGrid.render();
+                  });
               }
           } else {
               self.model.set('viewingAllOrders', true);
