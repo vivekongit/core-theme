@@ -5,11 +5,26 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             user: B2BAccountModels.b2bUser
         },
         defaults: {
-            b2bAccountId: require.mozuData('user').accountId
+            b2bAccountId: require.mozuData('user').accountId,
+            userRoles: [
+                {
+                    name: 'Administrator',
+                    role: 1
+                },
+                {
+                    name: 'Purchaser',
+                    role: 2
+                },
+                {
+                    name: 'Non-Purchaser',
+                    role: 3
+                }
+            ]
         },
         //Not Good... Rework
         saveUser: function(){
             var user = this.get('user');
+            user.set('id', user.get('userId'));
             user.set('accountId', this.get('b2bAccountId'));
             user.set('localeCode', "en-US");
             user.set('acceptsMarketing', false);
@@ -18,14 +33,15 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             user.set('isRemoved', false);
             user.set('userName', user.get('emailAddress'));
             if (user.get('id')) {
-                return user.apiUpdate.then(function(){
-
+                return user.apiUpdate().then(function(){
+                    return user.apiAddUserRole()
                 });
             }
             var createPayload = {
                 b2bUser: this.get('user')
             };
             return user.apiCreate(createPayload).then(function () {
+                user.apiAddUserRole()
                 window.usersGridView.refreshGrid();
             });
         },
@@ -50,9 +66,12 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             'user.firstName',
             'user.lastName',
             'user.emailAddress',
-            'user.isActive',
-            'user.userRole'
-        ]
+            'user.isActive'
+        ],
+        chooseUserRole: function(e){
+            roleId = $(e.currentTarget).prop('value');
+            this.model.get('user').set('roleId', roleId);
+        }
     });
 
     var UserModalModel = DialogModels.extend({});
@@ -82,6 +101,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         loadUserEditView: function (user) {
             var self = this;
             user = user || new B2BAccountModels.b2bUser({});
+
             var userEditForm = new UsersEditForm({
                 el: self.$el.find('.mz-user-modal-content'),
                 model: new UsersEditModel({user:user})
