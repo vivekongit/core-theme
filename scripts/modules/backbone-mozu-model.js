@@ -467,16 +467,6 @@
 
             hasRequiredBehavior: function(behaviorId){
                 var userBehaviors = require.mozuData('user').behaviors || [];
-<<<<<<< HEAD
-                if (this.requiredBehaviors) {
-                    var match = _.intersection(userBehaviors, this.requiredBehaviors);
-                    if (this.requiredBehaviorsType === "AllOf") {
-                        if (match.length !== this.requiredBehaviors.length) {
-                            return false;
-                        }
-                    }
-                    if (match.length < 1) {
-=======
                 var requiredBehaviors = this.requiredBehaviors;
                 if (behaviorId) {
                     requiredBehaviors = [ behaviorId ];
@@ -484,7 +474,6 @@
                 var match = _.intersection(userBehaviors, requiredBehaviors);
                 if (this.requiredBehaviorsType === "AllOf") {
                     if (match.length !== this.requiredBehaviors.length) {
->>>>>>> 3172dd7... Trying to get order toggling stuff done
                         return false;
                     }
                 }

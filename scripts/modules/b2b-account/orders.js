@@ -86,7 +86,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var order = row || new Backbone.MozuModel(self.model.get('currentOrder'));
           var cart = CartModels.Cart.fromCurrent();
           var products = order.get('items');
-          cart.apiModel.addBulkProducts({ postdata: products}).then(function(){
+          cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){
               window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
           });
       }

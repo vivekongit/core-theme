@@ -51,7 +51,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
         }
     },
     filter: function(filterString){
-        return this.filterBy(filterString);  
+        return this.filterBy(filterString);
     },
     refreshGrid: function(){
         this.setIndex(this.get('startIndex'));
@@ -94,7 +94,7 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
         _.each(j.rowActions, function (row, idx) {
             var isHidden = self.get('rowActions')[idx].isHidden;
             row.isHidden = (typeof isHidden === "function") ? isHidden.apply(self) : isHidden || false;
-        })
+        });
         return j;
     },
     initialize: function () {
