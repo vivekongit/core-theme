@@ -283,7 +283,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 sortable: true
             },
             {
-                index: 'createdDate',
+                index: 'auditInfo',
                 displayName: 'Date Created',
                 displayTemplate: function(auditInfo){
                     var date = new Date(auditInfo.createDate);
