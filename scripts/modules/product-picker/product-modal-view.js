@@ -160,6 +160,7 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
                 el: $(self.modalContentEl()),
                 model: self.model
             });
+            
             addProductView.render();
         },
         render: function () {

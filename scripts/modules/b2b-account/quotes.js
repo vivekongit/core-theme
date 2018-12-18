@@ -161,6 +161,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var self = this;
             this.listenToOnce(this.model, "productSelected", function (product) {
                 self.model.set('isProductSelected', true);
+                self.addWishlistItem();
             });
         },
         saveQuote: function () {

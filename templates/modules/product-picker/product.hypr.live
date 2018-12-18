@@ -1,4 +1,3 @@
-{% dump model%}
 <div>
     <h1 class="mz-pagetitle" itemprop="name">{{ model.content.productName }}</h1>
 
@@ -42,22 +41,9 @@
                     <div class="mz-productdetail-conversion-buttons">
                         <button id="add-to-cart" class="mz-productdetail-addtocart mz-button mz-button-large {% if not model.isPurchasable %}is-disabled{% endif %}"
                             {% if not model.isPurchasable %} disabled="disabled" {% endif %} data-mz-action="completeProductConfiguration">
-                            {{ labels.addToCart }}
-                        </button>
-
-                        {% if siteContext.generalSettings.isWishlistCreationEnabled and not user.isAnonymous %}
-                        <button id="add-to-wishlist" {% if model.notDoneConfiguring or not model.isPurchasable %} disabled="disabled" {% else %}
-                            {% if model.inventoryInfo.outOfStockBehavior=='HideProduct' and not model.inventoryInfo.onlineStockAvailable
-                            %} disabled="disabled" {% endif %} {% endif %} class="mz-productdetail-addtowishlist mz-button {% if not model.isPurchasable %}is-disabled{% endif %}"
-                            data-mz-action="addToWishlist">
                             {{ labels.addToWishlist }}
                         </button>
-                        {% endif %} {% if siteContext.supportsInStorePickup %}
-                        <button type="submit" {% if model.notDoneConfiguring or not model.isPurchasable or not model.supportsInStorePickup %} disabled="disabled"
-                            {% endif %} class="mz-button mz-instorepickuplink-button {% if model.notDoneConfiguring or not model.isPurchasable or not model.supportsInStorePickup %}is-disabled{% endif %}"
-                            data-mz-action="checkLocalStores">{{ labels.checkLocalStores }}</button>
-                        {% endif %}
-                        <div class="mz-product-locations"></div>
+
                     </div>
 
                     {% if not model.isPurchasable %}

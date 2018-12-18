@@ -15,13 +15,6 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
     
     var productPickerView = Backbone.MozuView.extend({
         templateName: 'modules/product-picker/product-picker',
-        initialize: function () {
-            var self = this;
-            this.listenTo(this.model, "configurationComplete", function (product) {
-                //console.log('Config Complete')
-                self.trigger('productSelected', product);
-            });
-        },
         render: function(){
             Backbone.MozuView.prototype.render.apply(this, arguments);
             var self = this;
@@ -31,6 +24,15 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                 model: self.model.get('selectedProduct'),
                 messagesEl: self.$el.find("[mz-modal-product-dialog]").find('[data-mz-message-bar]')
             });
+            this.stopListening(self.model.get('selectedProduct'), "configurationComplete");
+            this.listenTo(self.model.get('selectedProduct'), "configurationComplete", function (product) {
+                //console.log('Config Complete')
+                self.model.addQuoteItem(product.model.toJSON(), self.model.get('pickerItemQuantity'));
+                self.model.unset('selectedProduct');
+                $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
+                $('.mz-b2b-quotes #pickerItemQuantity').val(1);
+            });
+
             window.productConfigurationView = productModalView;
             window.productConfigurationView.render();
 
