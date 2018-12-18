@@ -79,7 +79,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       },
       reorder: function(e, row){
           var self = this;
-          var order = row || new Backbone.MozuModel(self.model.get('currentOrder'));
+          var order = row || new Backbone.MozuModel(self.model.get('currentOrder').attributes);
           var cart = CartModels.Cart.fromCurrent();
           var products = order.get('items');
           cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){

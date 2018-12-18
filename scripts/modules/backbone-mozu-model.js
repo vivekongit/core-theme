@@ -466,19 +466,27 @@
             },
 
             hasRequiredBehavior: function(behaviorId){
-                var userBehaviors = require.mozuData('user').behaviors || [];
-                var requiredBehaviors = this.requiredBehaviors;
-                if (behaviorId) {
-                    requiredBehaviors = [ behaviorId ];
-                }
-                var match = _.intersection(userBehaviors, requiredBehaviors);
-                if (this.requiredBehaviorsType === "AllOf") {
-                    if (match.length !== this.requiredBehaviors.length) {
-                        return false;
-                    }
-                }
-                return true;
-            }
+              var userBehaviors = require.mozuData('user').behaviors || [];
+              if (userBehaviors.includes(1014)) return true;
+              var requiredBehaviors = this.requiredBehaviors || [];
+
+              if (behaviorId) {
+                  requiredBehaviors = [behaviorId];
+              }
+
+              if (requiredBehaviors.length) {
+                  var match = _.intersection(userBehaviors, requiredBehaviors);
+                  if (this.requiredBehaviorsType === "AllOf") {
+                      if (match.length !== this.requiredBehaviors.length) {
+                          return false;
+                      }
+                  }
+                  if (match.length < 1) {
+                      return false;
+                  }
+              }
+              return true;
+          }
 
         });
 

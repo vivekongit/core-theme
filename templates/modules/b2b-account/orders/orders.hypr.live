@@ -17,7 +17,6 @@
 </div>
 {% else %}
 <div class="mz-order-grid-container">
-  {{ model.limitOrdersView }}
   {% if not model.limitOrdersView %}
   <div class="mz-btns" style="text-align:right">
       <label><input data-mz-action="toggleOrdersGridSource" type="checkbox" {% if model.viewingAllOrders %}checked{% endif %} />View All Orders</label>
