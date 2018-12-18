@@ -34,6 +34,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             user.set('userName', user.get('emailAddress'));
             if (user.get('id')) {
                 return user.apiUpdate().then(function(){
+                    window.usersGridView.refreshGrid()
                     return user.apiAddUserRole();
                 });
             }
@@ -102,12 +103,23 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             var self = this;
             user = user || new B2BAccountModels.b2bUser({});
 
-            var userEditForm = new UsersEditForm({
-                el: self.$el.find('.mz-user-modal-content'),
-                model: new UsersEditModel({user:user})
-            });
-            self._userForm = userEditForm;
-            userEditForm.render();
+            user.set('id', user.get('userId'));
+            user.set('accountId', require.mozuData('user').accountId);
+
+            user.apiGetUserRoles().then(function (resp) {
+                var role = resp.data.items[0];
+                if(role) {
+                    user.set('roleId', role.roleId);
+                }
+               
+                var userEditForm = new UsersEditForm({
+                    el: self.$el.find('.mz-user-modal-content'),
+                    model: new UsersEditModel({user:user})
+                });
+                
+                self._userForm = userEditForm;
+                userEditForm.render();
+            })
         },
         render: function () {
             var self = this;
@@ -141,10 +153,11 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
                 sortable: false
             },
             {
-                index: 'islocked',
-                displayName: 'Is locked',
-                renderer: function(value){
-                    return (value) ? 'Locked' : '';
+                index: 'isActive',
+                displayName: 'Is Active',
+                displayTemplate: function(value){
+                    value = (value) ? 'Active' : 'Inactive';
+                    return '<span class="status-pill' + value + '">' + value + '<span>';
                 },
                 sortable: false
             }

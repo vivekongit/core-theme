@@ -29,6 +29,7 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                 //console.log('Config Complete')
                 self.model.addQuoteItem(product.model.toJSON(), self.model.get('pickerItemQuantity'));
                 self.model.unset('selectedProduct');
+                productModalView.handleDialogCancel();
                 $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
                 $('.mz-b2b-quotes #pickerItemQuantity').val(1);
             });

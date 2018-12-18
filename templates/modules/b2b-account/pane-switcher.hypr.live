@@ -8,7 +8,8 @@
             <ul class="mz-scrollnav-list nav">
                 <li class="mz-scrollnav-item">
                     <a class="mz-scrollnav-link" href="#{{pane.name}}">
-                        <span class="nav-item" data-mz-action="handlePaneSelect" data-mz-index="{{forloop.index}}">{{pane.name}}</span>
+                        <span class="nav-item" data-mz-action="handlePaneSelect" data-mz-index="{{forloop.index}}"
+                            {% if pane.name == "Lists" %} data-mz-force-load="true" {% endif %} >{{pane.name}}</span>
                     </a>
                 </li>
             </ul>

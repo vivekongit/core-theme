@@ -13,8 +13,8 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         switcherEl: function () {
             return this.$el.find('[data-mz-pane-switcher]');
         },
-        setPane: function(idx) {
-            if(idx !== this.get('current')) {
+        setPane: function (idx, forceLoad) {
+            if (idx !== this.get('current') || forceLoad) {
                 this.set('current', idx);
                 this.trigger('newPaneSet');
             }
@@ -31,7 +31,8 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         },
         handlePaneSelect: function(e){
             var index = $(e.currentTarget).data('mzIndex')-1;
-            this.model.setPane(index);
+            var forceLoad = $(e.currentTarget).data('mzForceLoad')
+            this.model.setPane(index, forceLoad);
         },
         switcherEl: function () {
             return this.$el.find('[mz-pane-switcher]');

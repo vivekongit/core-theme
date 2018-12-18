@@ -59,7 +59,7 @@
             <div class="mz-l-formfieldgroup-cell">
                 <ul>
                  {% for role in model.userRoles %}
-                    <li><input data-mz-action="chooseUserRole" name="userRole" type="radio" value="{{role.role}}" /> {{role.name}}</li>
+                    <li><input data-mz-action="chooseUserRole" name="userRole" type="radio" value="{{role.role}}" {% if role.role == model.user.roleId %}checked="true"{% endif %} /> {{role.name}}</li>
                 {% endfor %}
                 <span class="mz-validationmessage" data-mz-validationmessage-for="userRole"></span>
                 </ul>
