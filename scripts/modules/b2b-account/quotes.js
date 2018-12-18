@@ -283,13 +283,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 sortable: true
             },
             {
-                index: 'items',
-                displayName: 'Product Count',
-                displayTemplate: function (items) {
-                    items = items || [];
-                    return items.length;
-                },
-                sortable: false
+                index: 'createdDate',
+                displayName: 'Date Created',
+                displayTemplate: function(auditInfo){
+                    var date = new Date(auditInfo.createDate);
+                    return date.toLocaleDateString();
+                }
             }
         ],
         rowActions: [
