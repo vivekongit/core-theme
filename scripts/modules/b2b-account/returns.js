@@ -4,27 +4,15 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       initialize: function(){
         var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
-        var viewingAllReturns = (self.model.hasRequiredBehavior(1103)) ? false : true;
-        self.model.set('viewingAllReturns', viewingAllReturns);
+        self.model.set('viewingAllReturns', true);
       },
       render: function(){
         var self = this;
         Backbone.MozuView.prototype.render.apply(this, arguments);
         var collection = new ReturnsGridCollectionModel({autoload: false});
-        // If the user has permission to view all child returns, we want
-        // them to view all child returns by default.
         var returnHistory = CustomerModels.Customer.fromCurrent().get('returnHistory');
-        collection.set('items', returnHistory.items);
+        collection.set(returnHistory);
         this.initializeGrid(collection);
-        var hasPermission = self.model.hasRequiredBehavior(1103);
-        if (hasPermission && self.model.get('viewingAllReturns')){
-            // We expect the returnHistory on the current customer to be based on accountId, not userId.
-            collection.set('items', returnHistory.items);
-        } else {
-            api.get('rmas', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
-                collection.set('items', res.data.items);
-            });
-        }
       },
       initializeGrid: function(collection){
           var self = this;
@@ -33,13 +21,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               model: collection
           });
           self.returnsGrid.listenTo(self.returnsGrid.model, 'viewReturn', self.viewReturn.bind(self));
-          var hasPermission = self.model.hasRequiredBehavior(1103);
-          //TODO: REVERSE THIS!!
-          if (!hasPermission && self.model.get('viewingAllReturns')){
+          if (self.model.get('viewingAllReturns')){
               self.returnsGrid.render();
           } else {
               api.get('rmas', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
-                  collection.set('items', res.data.items);
+                  collection.set(res.data);
                   self.returnsGrid.render();
               });
           }

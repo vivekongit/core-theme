@@ -111,7 +111,16 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             var self = this;
             user = user || new B2BAccountModels.b2bUser({});
 
-            function createUserEditForm(user) {
+            user.set('id', user.get('userId'));
+            user.set('accountId', require.mozuData('user').accountId);
+
+            user.apiGetUserRoles().then(function (resp) {
+                var role = resp.data.items[0];
+                if(role) {
+                    user.set('originalRoles', resp.data.items);
+                    user.set('roleId', role.roleId);
+                }
+
                 var userEditForm = new UsersEditForm({
                     el: self.$el.find('.mz-user-modal-content'),
                     model: new UsersEditModel({ user: user })
@@ -128,7 +137,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
                 user.apiGetUserRoles().then(function (resp) {
                     var role = resp.data.items[0];
                     if(role) {
-                        user.set('originalRoles', resp.data.items); 
+                        user.set('originalRoles', resp.data.items);
                         user.set('roleId', role.roleId);
                     }
                     createUserEditForm(user);
@@ -156,7 +165,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         columns: [
             {
                 index: 'emailAddress',
-                displayName: 'Email',
+                displayName: 'Email Address',
                 sortable: true
             },
             {
@@ -171,7 +180,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             },
             {
                 index: 'isActive',
-                displayName: 'Is Active',
+                displayName: 'User Status',
                 displayTemplate: function(value){
                     value = (value) ? 'Active' : 'Inactive';
                     return '<span class="status-pill' + value + '">' + value + '<span>';

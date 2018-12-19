@@ -4,8 +4,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       initialize: function(){
         var self = this;
         Backbone.MozuView.prototype.initialize.apply(this, arguments);
-        var viewingAllOrders = (self.model.hasRequiredBehavior(1102)) ? true : false;
-        self.model.set('viewingAllOrders', viewingAllOrders);
+        self.model.set('viewingAllOrders', true);
       },
       render: function(){
           var self = this;
@@ -14,7 +13,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           // If the user has permission to view all child orders, we want
           // them to view all child orders by default.
           var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
-          collection.set('items', orderHistory.items);
+          collection.set(orderHistory);
           this.initializeGrid(collection);
           this.initializeOrderView();
       },
@@ -27,7 +26,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 model: this.model.get('currentOrder'),
                 messagesEl: $('#orders-messages')
             });
-            orderView.model.set('isLimited', self.model.isLimited());
+            orderView.model.set('limitPlaceReturns', self.model.limitPlaceReturns());
             orderView.render();
           }
       },
@@ -39,12 +38,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         });
         self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
         self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
-        var hasPermission = self.model.hasRequiredBehavior(1102);
-        if (hasPermission && self.model.get('viewingAllOrders')){
+        if (self.model.get('viewingAllOrders')){
             self.ordersGrid.render();
         } else {
             api.get('orders', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
-                collection.set('items', res.data.items);
+                collection.set(res.data);
                 self.ordersGrid.render();
             });
         }
@@ -89,13 +87,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   });
 
   var OrdersModel = CustomerModels.EditableCustomer.extend({
-      helpers: ['isLimited', 'limitOrdersView', 'limitPlaceOrders'],
-      requiredBehaviors: [ 1009 ],
-      isLimited: function(){
-          return !this.hasRequiredBehavior();
-      },
-      limitOrdersView: function(){
-          return !this.hasRequiredBehavior(1102);
+      helpers: ['limitPlaceReturns', 'limitPlaceOrders'],
+      // 1009 = initiate returns
+      limitPlaceReturns: function(){
+          return !this.hasRequiredBehavior(1009);
       },
       limitPlaceOrders: function(){
           return !this.hasRequiredBehavior(1008);
