@@ -86,7 +86,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     var QuotesView = Backbone.MozuView.extend({
         templateName: 'modules/b2b-account/quotes/my-quotes',
         newQuote: function () {
-            window.console.log('Create Wishlist');
             this.model.setQuote({});
             this.model.setEditMode(true);
             this.render();
