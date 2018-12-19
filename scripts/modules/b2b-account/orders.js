@@ -43,27 +43,29 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         if (self.model.get('viewingAllOrders')){
             self.ordersGrid.render();
         } else {
-            api.get('orders', { filter: defaultOrderFilter + ' and userId eq '+self.model.get('userId')}).then(function(res){
-                collection.set(res.data);
-                self.ordersGrid.render();
-            });
+            self.getOrdersFilteredByUserId();
         }
+      },
+      getOrdersFilteredByUserId: function(){
+        var self = this;
+        var newFilter = defaultOrderFilter + ' and userId eq '+self.model.get('userId');
+        self.ordersGrid.model.filter = newFilter;
+        api.get('orders', { filter: newFilter}).then(function(res){
+            self.ordersGrid.model.set(res.data);
+            self.ordersGrid.render();
+        });
       },
       toggleOrdersGridSource: function(e){
           var self = this;
           if (self.model.get('viewingAllOrders')){
               self.model.set('viewingAllOrders', false);
               if (self.ordersGrid) {
-                  self.ordersGrid.model.filter(defaultOrderFilter + ' and userId eq '+self.model.get('userId')).then(function(response){
-                      // Supposedly .filter() is supposed to handle this set and render, but it's not.
-                      // Don't know why. I'm done fucking with it.
-                      self.ordersGrid.model.set('items', response.data.items);
-                      self.ordersGrid.render();
-                  });
-              }
+                  self.getOrdersFilteredByUserId();
+                }
           } else {
               self.model.set('viewingAllOrders', true);
-              self.ordersGrid.model.filter('');
+              self.ordersGrid.model.filter = defaultOrderFilter;
+              self.ordersGrid.render();
           }
           self.render();
       },
