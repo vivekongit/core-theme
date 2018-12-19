@@ -1,4 +1,6 @@
 define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart', 'pages/myaccount'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels, OrderViews) {
+  var defaultOrderFilter = 'Status ne Created and Status ne Validated and Status ne Pending and Status ne Abandoned and Status ne Errored';
+
   var OrdersView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/orders/orders",
       initialize: function(){
@@ -41,7 +43,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         if (self.model.get('viewingAllOrders')){
             self.ordersGrid.render();
         } else {
-            api.get('orders', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
+            api.get('orders', { filter: defaultOrderFilter + ' and userId eq '+self.model.get('userId')}).then(function(res){
                 collection.set(res.data);
                 self.ordersGrid.render();
             });
@@ -52,7 +54,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           if (self.model.get('viewingAllOrders')){
               self.model.set('viewingAllOrders', false);
               if (self.ordersGrid) {
-                  self.ordersGrid.model.filter('userId eq '+self.model.get('userId')).then(function(response){
+                  self.ordersGrid.model.filter(defaultOrderFilter + ' and userId eq '+self.model.get('userId')).then(function(response){
                       // Supposedly .filter() is supposed to handle this set and render, but it's not.
                       // Don't know why. I'm done fucking with it.
                       self.ordersGrid.model.set('items', response.data.items);
@@ -99,6 +101,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
   var OrdersGridCollectionModel = MozuGridCollection.extend({
       mozuType: 'orders',
+      filter: defaultOrderFilter,
       columns: [
           {
               index: 'orderNumber',
