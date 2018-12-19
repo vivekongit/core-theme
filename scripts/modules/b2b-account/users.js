@@ -141,6 +141,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         baseRequestParams: {
             accountId: require.mozuData('user').accountId
         },
+        filter: "isRemoved eq false",
         requiredBehaviors: [
             MozuUtilities.Behaviors.Manage_Users
         ],
@@ -194,7 +195,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         },
         deleteUser: function (e, row) {
             var self = this;
-            return this.get('user').apiDelete().then(function(){
+            return row.apiRemove().then(function(){
                 self.refreshGrid();
             });
         },

@@ -22,7 +22,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 this.syncApiModel();
                 return this.apiModel.update();
             }
-            return this.apiModel.create();
+            return this.apiModel.create(this.model, { silent: true });
         },
 
         addQuoteItem: function(item, quantity){
@@ -66,7 +66,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                     quote = quote.toJSON();
                 quote = new QuoteModel(quote);
             }
-            this.set('quote').clear();
+            this.get('quote').clear();
             if (this.get('quote').get('items').length) {
                 this.get('quote').get('items').reset();
             }
@@ -159,10 +159,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         ],
         initialize: function() {
             var self = this;
-            this.listenToOnce(this.model, "productSelected", function (product) {
-                self.model.set('isProductSelected', true);
-                self.addWishlistItem();
-            });
+            // this.listenToOnce(this.model, "productSelected", function (product) {
+            //     self.model.set('isProductSelected', true);
+            //     self.addWishlistItem();
+            // });
         },
         saveQuote: function () {
             window.console.log('Create Wishlist');
@@ -201,6 +201,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             $('#wishlistName').focusout(function(){
                 self.model.saveWishlist();
             });
+            
             var quoteListView = new QuoteListView ({
                 el: self.$el.find('.mz-b2b-quote-list'),
                 model: self.model
@@ -286,11 +287,15 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 index: 'auditInfo',
                 displayName: 'Date Created',
                 displayTemplate: function(auditInfo){
-                    var date = new Date(auditInfo.createDate);
-                    return date.toLocaleDateString();
+                    if(auditInfo){
+                        var date = new Date(auditInfo.createDate);
+                        return date.toLocaleDateString();
+                    }
+                    
                 }
             }
         ],
+        defaultSort: 'updateDate desc',
         rowActions: [
             {
                 displayName: 'Edit',
@@ -332,7 +337,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         addWishlistToCart: function (e, row){
             var cart = CartModels.Cart.fromCurrent();
             var products = row.get('items').toJSON();
-            cart.apiModel.addBulkProducts({ postdata: products}).then(function(){
+            cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){
                 window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
             });
         },
