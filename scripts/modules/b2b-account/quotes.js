@@ -1,6 +1,7 @@
 define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
+        handlesMessages: true,
         defaults: {
             'pickerItemQuantity': 1,
             'isProductSelected': false
@@ -22,7 +23,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 this.syncApiModel();
                 return this.apiModel.update();
             }
-            return this.apiModel.create(this.model, { silent: true });
+            return this.apiModel.create(this.model);
         },
 
         addQuoteItem: function(item, quantity){
@@ -126,7 +127,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             }
             var editQuoteView = new EditQuoteView({
                 el: self.$el.find('.mz-b2b-quotes-product-picker'),
-                model: self.model.get('quote')
+                model: self.model.get('quote'),
+                messagesEl: $('[data-mz-message-bar]')[0]
             });
             this._editQuote = editQuoteView;
             $(document).ready(function () {

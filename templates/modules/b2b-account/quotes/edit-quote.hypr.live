@@ -1,3 +1,4 @@
+
 <div class="quote-btns">
     <button class="mz-button mz-button-small" data-mz-action="cancelQuoteEdit">Close</button>
 </div>
@@ -29,4 +30,3 @@
         {% include "modules/b2b-account/quotes/quote-list" %}
     </div>
 </div>
-

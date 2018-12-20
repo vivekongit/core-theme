@@ -20,6 +20,7 @@
 {% endblock %}
 
 {% block pane-switcher-container %}
+
     <div id="account-panels" class="mz-myaccount-panels mz-l-stack mz-l-stack-large">
         <div id="mzPaneSwitcherContainer" mz-pane-switcher-container></div>
     </div>

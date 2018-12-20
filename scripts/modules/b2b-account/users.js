@@ -148,7 +148,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         baseRequestParams: {
             accountId: require.mozuData('user').accountId
         },
-        //filter: "isRemoved eq false",
+        filter: "isRemoved eq false",
         requiredBehaviors: [
             MozuUtilities.Behaviors.Manage_Users
         ],
