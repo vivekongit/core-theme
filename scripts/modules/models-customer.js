@@ -77,6 +77,9 @@
 
     var CustomerContact = Backbone.MozuModel.extend({
         mozuType: 'contact',
+        defaults: {
+            userId: require.mozuData('user').userId
+        },
         relations: {
             address: AddressModels.StreetAddress,
             phoneNumbers: AddressModels.PhoneNumbers
@@ -319,6 +322,7 @@
     }),
 
     CustomerCardWithContact = PaymentMethods.CreditCard.extend({
+        
         validation: _.extend({
             contactId: {
                 fn: function(value, property, model) {

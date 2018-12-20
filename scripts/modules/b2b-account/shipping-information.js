@@ -5,6 +5,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
   var AddressBookModel = CustomerModels.EditableCustomer.extend({
       helpers: ['isLimited'],
+      defaults: {
+          userId: require.mozuData('user')
+      },
       requiredBehaviors: [1002],
       isLimited: function(){
           return !this.hasRequiredBehavior();
