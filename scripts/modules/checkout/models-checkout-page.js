@@ -225,6 +225,7 @@ var CheckoutPage = Backbone.MozuModel.extend({
             defaults: {
                 "isMultiShipMode" : false
             },
+            requiredBehaviors: [1002],
             setMultiShipMode : function(){
             var directShipItems = this.get('items').where({fulfillmentMethod: "Ship"});
             var destinationCount = [];
@@ -896,7 +897,7 @@ var CheckoutPage = Backbone.MozuModel.extend({
                 }
 
                 //save contacts
-                if ((isAuthenticated || isSavingNewCustomer) && self.hasRequiredBehaviors()) {
+                if ((isAuthenticated || isSavingNewCustomer) && this.hasRequiredBehaviors()) {
                     process.push(this.saveCustomerContacts);
                 }
 

@@ -66,11 +66,11 @@
                 var behaviors = this.model.requiredBehaviors || [];
 
                 _.each(this.requiredBehaviors, function (behavior) {
-                    if (behaviors.indexOf(behavior) == -1) { behaviors.push(behavior) };
+                    if (behaviors.indexOf(behavior) == -1) { behaviors.push(behavior); }
                 });
 
                 _.each(conf.requiredBehaviors, function (behavior) {
-                    if (behaviors.indexOf(behavior) == -1) { behaviors.push(behavior) };
+                    if (behaviors.indexOf(behavior) == -1) { behaviors.push(behavior); }
                 });
 
                 this.model.requiredBehaviors = behaviors;   
