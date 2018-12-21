@@ -13,7 +13,7 @@
     {% if editing.card == card.id %}
     {% include "modules/my-account/my-account-credit-card-form" with model=model.editingCard editingContact=model.editingContact %}
     {% else %}
-    {% include "modules/my-account/my-account-paymentmethod" with model=card hasRequiredBehavior=model.hasRequiredBehavior %}
+    {% include "modules/my-account/my-account-paymentmethod" with model=card %}
 
     {% endif %}
     {% endfor %}

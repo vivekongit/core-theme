@@ -116,6 +116,7 @@ require(["modules/jquery-mozu",
             'address.countryCode',
             'contactId'
         ],
+        requiredBehaviors: [1003],
         beginAddContact: function () {
             this.model.set('contactId', 'new');
         }

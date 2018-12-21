@@ -3,7 +3,7 @@
 <ul class="mz-accountaddressbook-list mz-l-tiles">
   {% for contact in model.contacts %}
   {% if editing.contact == contact.id %}
-  {% include "modules/my-account/my-account-address-form" with model=model.editingContact hasRequiredBehavior=model.hasRequiredBehavior %}
+  {% include "modules/my-account/my-account-address-form" with model=model.editingContact %}
   {% else %}
   <li class="mz-accountaddressbook-contact">
     <div class="mz-accountaddressbook-actions">
@@ -26,7 +26,7 @@
   {% endif %}
   {% endfor %}
   {% if editing.contact == "new" and model.hasRequiredBehavior %}
-  {% include "modules/my-account/my-account-address-form" with model=model.editingContact hasRequiredBehavior=model.hasRequiredBehavior %}
+  {% include "modules/my-account/my-account-address-form" with model=model.editingContact %}
   {% endif %}
 </ul>
 {% else %}

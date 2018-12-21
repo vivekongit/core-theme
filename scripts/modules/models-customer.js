@@ -77,6 +77,7 @@
 
     var CustomerContact = Backbone.MozuModel.extend({
         mozuType: 'contact',
+        requiredBehaviors: [1002],
         defaults: {
             userId: require.mozuData('user').userId
         },

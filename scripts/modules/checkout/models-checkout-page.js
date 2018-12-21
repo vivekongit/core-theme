@@ -897,7 +897,7 @@ var CheckoutPage = Backbone.MozuModel.extend({
                 }
 
                 //save contacts
-                if ((isAuthenticated || isSavingNewCustomer) && this.hasRequiredBehaviors()) {
+                if ((isAuthenticated || isSavingNewCustomer) && this.hasRequiredBehavior()) {
                     process.push(this.saveCustomerContacts);
                 }
 
@@ -912,7 +912,7 @@ var CheckoutPage = Backbone.MozuModel.extend({
                      }
                  }
 
-                 if (saveCreditCard && (this.get('createAccount') || isAuthenticated)) {
+                if (saveCreditCard && (this.get('createAccount') || isAuthenticated) && this.hasRequiredBehavior()) {
                     isSavingCreditCard = true;
                     process.push(this.saveCustomerCard);
                 }
