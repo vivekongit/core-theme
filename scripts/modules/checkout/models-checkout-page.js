@@ -896,7 +896,7 @@ var CheckoutPage = Backbone.MozuModel.extend({
                 }
 
                 //save contacts
-                if (isAuthenticated || isSavingNewCustomer) {
+                if ((isAuthenticated || isSavingNewCustomer) && self.hasRequiredBehaviors()) {
                     process.push(this.saveCustomerContacts);
                 }
 

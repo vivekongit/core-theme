@@ -1,6 +1,6 @@
 {% require_script "modules/b2b-account/payment-information" %}
 <div class="mz-l-stack-section" style="clear:none">
-<h3 class="mz-l-stack-sectiontitle">{{ labels.paymentMethods }} {% if not model.isLimited %}<a href="javascript:;" data-mz-card="new" data-mz-action="beginEditCard">{{ labels.addNewCard }}</a>{% endif %}</h3>
+<h3 class="mz-l-stack-sectiontitle">{{ labels.paymentMethods }} {% if model.hasRequiredBehavior %}<a href="javascript:;" data-mz-card="new" data-mz-action="beginEditCard">{{ labels.addNewCard }}</a>{% endif %}</h3>
 <div class="mz-b2b-payment">
 {% if model.hasSavedCards or editing.card == "new" or model.purchaseOrder and model.purchaseOrder.isEnabled %}
 <div class="mz-accountpaymentmethods">
@@ -13,7 +13,7 @@
     {% if editing.card == card.id %}
     {% include "modules/my-account/my-account-credit-card-form" with model=model.editingCard editingContact=model.editingContact %}
     {% else %}
-    {% include "modules/my-account/my-account-paymentmethod" with model=card isLimited=model.isLimited %}
+    {% include "modules/my-account/my-account-paymentmethod" with model=card hasRequiredBehavior=model.hasRequiredBehavior %}
 
     {% endif %}
     {% endfor %}

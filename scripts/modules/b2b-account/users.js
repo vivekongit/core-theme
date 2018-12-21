@@ -160,9 +160,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             accountId: require.mozuData('user').accountId
         },
         filter: "isRemoved eq false",
-        requiredBehaviors: [
-            MozuUtilities.Behaviors.Manage_Users
-        ],
+        
         autoload: true,
         columns: [
             {
@@ -242,7 +240,10 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
 
             var usersGrid = new MozuGrid({
                 el: self.el.find('.mz-b2baccount-users'),
-                model: collection
+                model: collection,
+                requiredBehaviors: [
+                    MozuUtilities.Behaviors.Manage_Users
+                ]
             });
 
             var usersModalView = new UsersModalView({

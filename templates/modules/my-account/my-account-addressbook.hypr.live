@@ -1,14 +1,16 @@
-﻿<h3 class="mz-l-stack-sectiontitle">{{ labels.addressBook }}{% if not model.isLimited %} <a href="javascript:;" data-mz-action="beginAddContact">{{ labels.addNewContact }}</a>{% endif %}</h3>
+﻿<h3 class="mz-l-stack-sectiontitle">{{ labels.addressBook }}{% if model.hasRequiredBehavior %} <a href="javascript:;" data-mz-action="beginAddContact">{{ labels.addNewContact }}</a>{% endif %}</h3>
 {% if model.hasSavedContacts || editing.contact == "new" %}
 <ul class="mz-accountaddressbook-list mz-l-tiles">
   {% for contact in model.contacts %}
   {% if editing.contact == contact.id %}
-  {% include "modules/my-account/my-account-address-form" with model=model.editingContact isLimited=model.isLimited %}
+  {% include "modules/my-account/my-account-address-form" with model=model.editingContact hasRequiredBehavior=model.hasRequiredBehavior %}
   {% else %}
   <li class="mz-accountaddressbook-contact">
     <div class="mz-accountaddressbook-actions">
-      <a class="mz-accountaddressbook-edit" href="javascript:;" data-mz-action="beginEditContact" data-mz-contact="{{ contact.id }}">{{ labels.edit }}</a>
-      {% if not model.isLimited %}<a class="mz-accountaddressbook-delete" href="javascript:;" data-mz-action="beginDeleteContact" data-mz-contact="{{ contact.id }}">{{ labels.del }}</a>{% endif %}
+      {%if model.canEditPrimary %}
+        <a class="mz-accountaddressbook-edit" href="javascript:;" data-mz-action="beginEditContact" data-mz-contact="{{ contact.id }}">{{ labels.edit }}</a>
+      {% endif %}
+      {% if model.hasRequiredBehavior %}<a class="mz-accountaddressbook-delete" href="javascript:;" data-mz-action="beginDeleteContact" data-mz-contact="{{ contact.id }}">{{ labels.del }}</a>{% endif %}
     </div>
     <div class="mz-accountaddressbook-contactdetails mz-addresssummary">
       {% include "modules/common/address-summary" with model=contact %}
@@ -23,12 +25,12 @@
   </li>
   {% endif %}
   {% endfor %}
-  {% if editing.contact == "new" and not model.isLimited %}
-  {% include "modules/my-account/my-account-address-form" with model=model.editingContact %}
+  {% if editing.contact == "new" and model.hasRequiredBehavior %}
+  {% include "modules/my-account/my-account-address-form" with model=model.editingContact hasRequiredBehavior=model.hasRequiredBehavior %}
   {% endif %}
 </ul>
 {% else %}
 <p class="mz-accountaddressbook-empty">
-  {{ labels.noSavedContacts }} {% if not model.isLimited %}<a href="javascript:;" data-mz-action="beginAddContact">{{ labels.addNewContact }}{% endif %}</a>
+  {{ labels.noSavedContacts }} {% if model.hasRequiredBehavior %}<a href="javascript:;" data-mz-action="beginAddContact">{{ labels.addNewContact }}{% endif %}</a>
 </p>
 {% endif %}

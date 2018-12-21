@@ -468,13 +468,13 @@
             hasRequiredBehavior: function(behaviorId){
                 var userBehaviors = require.mozuData('user').behaviors || [];
                 if (userBehaviors.includes(1014)) return true;
-                var requiredBehaviors = this.requiredBehaviors;
+                var requiredBehaviors = this.requiredBehaviors || [];
 
                 if (behaviorId) {
                     requiredBehaviors = [behaviorId];
                 }
 
-                if (requiredBehaviors) {
+                if (requiredBehaviors.length) {
                     var match = _.intersection(userBehaviors, requiredBehaviors);
                     if (this.requiredBehaviorsType === "AllOf") {
                         if (match.length !== this.requiredBehaviors.length) {
@@ -488,6 +488,8 @@
                 return true;
             }
 
+            
+
         });
 
         // we have to attach the constructor to the prototype via direct assignment,
@@ -497,9 +499,9 @@
         modelProto.constructor = function(conf) {
             this.helpers = (this.helpers || []).concat(['isLoading', 'isValid']);
 
-            if (this.requiredBehaviors) {
+            //if (this.requiredBehaviors) {
                 this.helpers = (this.helpers || []).concat(['hasRequiredBehavior']);
-            }
+            //}
 
 
             Backbone.Model.apply(this, arguments);

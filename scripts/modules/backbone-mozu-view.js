@@ -61,6 +61,21 @@
                     this.listenTo(model, 'change:' + prop, this.enqueueRender, this);
                 }, this);
             }
+
+            if(conf.requiredBehaviors || this.requiredBehaviors){
+                var behaviors = this.model.requiredBehaviors || [];
+
+                _.each(this.requiredBehaviors, function (behavior) {
+                    if (behaviors.indexOf(behavior) == -1) { behaviors.push(behavior) };
+                });
+
+                _.each(conf.requiredBehaviors, function (behavior) {
+                    if (behaviors.indexOf(behavior) == -1) { behaviors.push(behavior) };
+                });
+
+                this.model.requiredBehaviors = behaviors;   
+            }
+
             Backbone.Validation.bind(this);
             Backbone.MozuView.trigger('create', this);
 

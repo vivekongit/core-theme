@@ -9,17 +9,17 @@
 <div class="mz-contacttypes">
         <div class="mz-l-formfieldgroup mz-l-formfieldgroup-norows mz-contacttype">
             <label>
-                <input type="checkbox" {% if isLimited %}disabled{% endif %} data-mz-value="editingContact.isBillingContact" value="true" {% if model.isBillingContact %} checked="checked" {% endif %}> {{ labels.billingContact }}
+                <input type="checkbox" {% if not hasRequiredBehavior %}disabled{% endif %} data-mz-value="editingContact.isBillingContact" value="true" {% if model.isBillingContact %} checked="checked" {% endif %}> {{ labels.billingContact }}
             </label>
             {% if model.isBillingContact %}
             <label class="mz-contacttype-isprimary">
-                <input type="checkbox" {% if isLimited %}disabled{% endif %} data-mz-value="editingContact.isPrimaryBillingContact" value="true" {% if model.isPrimaryBillingContact %} checked="checked" {% endif %}> {{ labels.primary }}
+                <input type="checkbox" data-mz-value="editingContact.isPrimaryBillingContact" value="true" {% if model.isPrimaryBillingContact %} checked="checked" {% endif %}> {{ labels.primary }}
             </label>
             {% endif %}
         </div>
         <div class="mz-l-formfieldgroup mz-l-formfieldgroup-norows mz-contacttype">
             <label>
-                <input type="checkbox" {% if isLimited %}disabled{% endif %} data-mz-value="editingContact.isShippingContact" value="true" {% if model.isShippingContact %} checked="checked" {% endif %}> {{ labels.shippingContact }}
+                <input type="checkbox" {% if not hasRequiredBehavior %}disabled{% endif %} data-mz-value="editingContact.isShippingContact" value="true" {% if model.isShippingContact %} checked="checked" {% endif %}> {{ labels.shippingContact }}
             </label>
             {% if model.isShippingContact %}
             <label class="mz-contacttype-isprimary">
