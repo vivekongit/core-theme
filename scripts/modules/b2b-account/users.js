@@ -41,8 +41,6 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
                             id: user.get('id'),
                             accountId: user.get('accountId'),
                             roleId: role[0].roleId
-                        }).then(function(){
-                            console.log('asdf');
                         });
                     }
                     return user.apiAddUserRole();
