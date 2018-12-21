@@ -35,12 +35,14 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             if (user.get('id')) {
                 return user.apiUpdate().then(function(){
                     window.usersGridView.refreshGrid();
-                    var role = user.get('originalRoles');
-                    if (role[0]) {
+                    var role = user.get('originalRoles') || [];
+                    if (role.length) {
                         user.apiRemoveUserRole({
                             id: user.get('id'),
                             accountId: user.get('accountId'),
                             roleId: role[0].roleId
+                        }).then(function(){
+                            console.log('asdf');
                         });
                     }
                     return user.apiAddUserRole();
