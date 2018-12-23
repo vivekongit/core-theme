@@ -19,23 +19,24 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
             Backbone.MozuView.prototype.render.apply(this, arguments);
             var self = this;
             self.model.set('selectedProduct', new ProductModels.Product({}));
-            var productModalView = new ProductModalViews.ModalView({
-                el: self.$el.find("[mz-modal-product-dialog]"),
-                model: self.model.get('selectedProduct'),
-                messagesEl: self.$el.find("[mz-modal-product-dialog]").find('[data-mz-message-bar]')
-            });
+            // var productModalView = new ProductModalViews.ModalView({
+            //     el: self.$el.find("[mz-modal-product-dialog]"),
+            //     model: self.model.get('selectedProduct'),
+            //     messagesEl: self.$el.find("[mz-modal-product-dialog]").find('[data-mz-message-bar]')
+            // });
             this.stopListening(self.model.get('selectedProduct'), "configurationComplete");
             this.listenTo(self.model.get('selectedProduct'), "configurationComplete", function (product) {
                 //console.log('Config Complete')
                 self.model.addQuoteItem(product.model.toJSON(), self.model.get('pickerItemQuantity'));
                 self.model.unset('selectedProduct');
-                productModalView.handleDialogCancel();
+                // productModalView.handleDialogCancel();
+                window.productModalView.handleDialogCancel();
                 $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
                 $('.mz-b2b-quotes #pickerItemQuantity').val(1);
             });
 
-            window.productConfigurationView = productModalView;
-            window.productConfigurationView.render();
+            // window.productConfigurationView = productModalView;
+            // window.productConfigurationView.render();
 
             var $fields = self.$el.find('[data-mz-role="searchquery"]').each(function (field) {
                 var search = new SearchAutoComplete();
@@ -49,9 +50,9 @@ define(["modules/jquery-mozu", "modules/backbone-mozu", "modules/product-picker/
                 $field.on('typeahead:selected', function (e, data, set) {
                     var product = data.suggestion;
                     self.model.set('selectedProduct', product);
-                    
+                    // window.productModalView.loadAddProductView(self.model.get('selectedProduct'));
+                    // window.productModalView.handleDialogOpen();
                     self.model.trigger('productSelected', product);
-                    
                     // window.console.log('Add Product ' + data.suggestion.productCode);
                 });
             });

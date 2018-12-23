@@ -22,7 +22,8 @@ define(['modules/jquery-mozu','underscore',"modules/backbone-mozu",'hyprlive', '
             initDialog: function(){
                 if(!this.bootstrapInstance){
                     this.bootstrapInstance = Dialog.init({
-                        elementId: "mzModalDialog"
+                        elementId: "mzModalDialog",
+                        hasXButton: false
                     });
                 }
             },

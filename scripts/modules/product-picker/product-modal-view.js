@@ -142,8 +142,18 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
             this.model.trigger('dialogOpen');
             this.bootstrapInstance.show();
         },
+        handleDialogClose: function () {
+            var self = this;
+            if (self.model.messages) {
+                self.model.messages.reset();
+            }
+            self.bootstrapInstance.hide();
+        },
         handleDialogCancel: function () {
             var self = this;
+            if (self.model.messages) {
+                self.model.messages.reset();
+            }
             self.bootstrapInstance.hide();
         },
         setInit: function () {
@@ -154,16 +164,18 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         modalContentEl: function () {
             return this.$el.find('[data-mz-product-modal-content]');
         },
-        loadAddProductView: function () {
+        loadAddProductView: function (product) {
             var self = this;
+            
             var addProductView = new AddProductView({
                 el: $(self.modalContentEl()),
-                model: self.model
+                model: product,
+                messagesEl: $(self.modalContentEl()).parent().find('[data-mz-message-bar]')
             });
-            
             addProductView.render();
         },
         render: function () {
+            Backbone.MozuView.prototype.render.apply(this, arguments);
             var self = this;
         }
     });

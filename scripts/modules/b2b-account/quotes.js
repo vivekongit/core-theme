@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/product-picker/product-modal-view"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, ProductModalViews) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
         handlesMessages: true,
@@ -130,7 +130,17 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 model: self.model.get('quote'),
                 messagesEl: $('[data-mz-message-bar]')[0]
             });
+
+            var productModalView = new ProductModalViews.ModalView({
+                el: self.$el.find("[mz-modal-product-dialog]"),
+                model: new ProductModels.Product({}),
+                messagesEl: self.$el.find("[mz-modal-product-dialog]").find('[data-mz-message-bar]')
+            });
+
             this._editQuote = editQuoteView;
+            window.productModalView = productModalView ;
+
+
             $(document).ready(function () {
                 if (!self.model.get('isEditMode')){
                     var collection = new MozuGridCollectionModel();
@@ -160,10 +170,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         ],
         initialize: function() {
             var self = this;
-            // this.listenToOnce(this.model, "productSelected", function (product) {
-            //     self.model.set('isProductSelected', true);
-            //     self.addWishlistItem();
-            // });
+            this.listenToOnce(this.model, "productSelected", function (product) {
+                self.model.set('isProductSelected', true);
+                self.addWishlistItem();
+            });
         },
         saveQuote: function () {
             window.console.log('Create Wishlist');
@@ -184,10 +194,28 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         addWishlistItem: function(e){
             var self = this;
             var product = self.model.get('selectedProduct');
-
+        
             if (product.options) {
-                window.productConfigurationView.model.set(product);
-                window.productConfigurationView.setInit();
+              
+                if (!(product instanceof ProductModels.Product)) {
+                    if (product.toJSON)
+                        product = product.toJSON();
+                    product = new ProductModels.Product(product);
+                }
+                this.stopListening();
+                this.listenTo(product, "configurationComplete", function () {
+                    self.model.addQuoteItem(product.toJSON(), self.model.get('pickerItemQuantity')).then(function(){
+                        self.model.unset('selectedProduct');
+                        window.productModalView.handleDialogCancel();
+                        $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
+                        $('.mz-b2b-quotes #pickerItemQuantity').val(1);
+                    }, function (error) {
+                        window.productModalView.model.messages.reset({ message: error.message });
+                    });
+                });
+
+                window.productModalView.loadAddProductView(product);
+                window.productModalView.handleDialogOpen();
                 return;
             }
 
