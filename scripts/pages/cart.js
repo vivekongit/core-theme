@@ -432,8 +432,10 @@ define(['modules/api',
 
         CartMonitor.setCount(cartModel.count());
 
-        _.invoke(cartViews, 'render');
-        //cartViews.discountModalView.handleDialogOpen();
+        cartViews.cartView.render();
+        if (this.get('discountModal').get('discounts')) {
+            cartViews.discountModalView.render(); 
+        }
         renderVisaCheckout(cartModel);
         paypal.loadScript();
         if (cartModel.count() > 0){
