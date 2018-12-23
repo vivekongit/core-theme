@@ -147,6 +147,8 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
             if (self.model.messages) {
                 self.model.messages.reset();
             }
+            self._addProductView.stopListening();
+            self._addProductView.undelegateEvents();
             self.bootstrapInstance.hide();
         },
         handleDialogCancel: function () {
@@ -154,6 +156,8 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
             if (self.model.messages) {
                 self.model.messages.reset();
             }
+            self._addProductView.stopListening();
+            self._addProductView.undelegateEvents();
             self.bootstrapInstance.hide();
         },
         setInit: function () {
@@ -172,6 +176,7 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
                 model: product,
                 messagesEl: $(self.modalContentEl()).parent().find('[data-mz-message-bar]')
             });
+            self._addProductView = addProductView;
             addProductView.render();
         },
         render: function () {

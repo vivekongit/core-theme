@@ -28,6 +28,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
         addQuoteItem: function(item, quantity){
             var self = this;
+            self.isLoading(true);
             if (!this.get('id')) {
 
                 return this.saveWishlist().then(function(){
@@ -39,6 +40,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                     };
                     self.apiModel.addItemTo(payload, { silent: true }).then(function (data) {
                         self.get('items').add(new WishlistModels.WishlistItem(data.data), { merge: true });
+                    }).ensure(function(){
+                        self.isLoading(false);
                     });
                 });
             }
@@ -50,7 +53,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
             return this.apiModel.addItemTo(payload, { silent: true }).then(function(data){
                 self.get('items').add(new WishlistModels.WishlistItem(data.data), {merge: true});
-            });
+            }).ensure(function () {
+                self.isLoading(false);
+            });;
         }
     });
 
@@ -128,7 +133,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var editQuoteView = new EditQuoteView({
                 el: self.$el.find('.mz-b2b-quotes-product-picker'),
                 model: self.model.get('quote'),
-                messagesEl: $('[data-mz-message-bar]')[0]
+                messagesEl: self.$el.find('.mz-b2b-quotes-product-picker').parent().find('[data-mz-message-bar]')
             });
 
             var productModalView = new ProductModalViews.ModalView({
@@ -168,13 +173,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             'name',
             'pickerItemQuantity'
         ],
-        initialize: function() {
-            var self = this;
-            this.listenToOnce(this.model, "productSelected", function (product) {
-                self.model.set('isProductSelected', true);
-                self.addWishlistItem();
-            });
-        },
+        // initialize: function() {
+        //     var self = this;
+        //     this.listenToOnce(this.model, "productSelected", function (product) {
+        //         self.model.set('isProductSelected', true);
+        //         self.addWishlistItem();
+        //     });
+        // },
         saveQuote: function () {
             window.console.log('Create Wishlist');
             var self = this;
@@ -194,6 +199,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         addWishlistItem: function(e){
             var self = this;
             var product = self.model.get('selectedProduct');
+            self.model.messages.reset();
         
             if (product.options) {
               
@@ -219,7 +225,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 return;
             }
 
-            window.views.currentPane.model.get('quote').addQuoteItem(product, self.model.get('pickerItemQuantity'));
+            window.views.currentPane.model.get('quote').addQuoteItem(product, self.model.get('pickerItemQuantity')).then(function () { }, function (error) {
+                self.model.messages.reset({ message: error.message });
+            });
             self.model.unset('selectedProduct');
             $('.mz-b2b-quotes .mz-searchbox-input.tt-input').val('');
             $('.mz-b2b-quotes #pickerItemQuantity').val(1);

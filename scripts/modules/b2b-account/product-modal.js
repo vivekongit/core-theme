@@ -158,7 +158,7 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
                 el: $(self.modalContentEl()),
                 model: product
             });
-            self._productStepView = addProductStepView;
+            self._addProductStepView = addProductStepView;
             addProductStepView.render();
         },
         render: function () {
