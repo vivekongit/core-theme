@@ -55,7 +55,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 self.get('items').add(new WishlistModels.WishlistItem(data.data), {merge: true});
             }).ensure(function () {
                 self.isLoading(false);
-            });;
+            });
         }
     });
 

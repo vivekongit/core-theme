@@ -148,7 +148,6 @@ define(['modules/backbone-mozu', 'hyprlive', 'modules/jquery-mozu', 'underscore'
         },
         loadAddProductView: function (product) {
             var self = this;
-            var product = product || self.model;
             if (!(product instanceof ProductModels.Product)) {
                 if (product.toJSON)
                     product = product.toJSON();
