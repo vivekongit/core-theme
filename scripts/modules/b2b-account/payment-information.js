@@ -77,10 +77,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   });
 
   var PaymentMethodsModel = CustomerModels.EditableCustomer.extend({
-      helpers: ['isLimited'],
+      helpers: ['isLimited', 'blockCreditLimit'],
       requiredBehaviors: [ 1003 ],
       isLimited: function(){
           return !this.hasRequiredBehavior();
+      },
+      blockCreditLimit: function(){
+          return !this.hasRequiredBehavior(1007);
       }
   });
 
