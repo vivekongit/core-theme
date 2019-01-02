@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/product-picker/product-modal-view"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, ProductModalViews) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/product-picker/product-modal-view", "modules/mozu-utilities"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, ProductModalViews, MozuUtilities) {
 
     var QuoteModel = WishlistModels.Wishlist.extend({
         handlesMessages: true,
@@ -91,6 +91,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     var QuotesView = Backbone.MozuView.extend({
         templateName: 'modules/b2b-account/quotes/my-quotes',
+        requiredBehaviors: [
+            MozuUtilities.Behaviors.View_Lists_Of_Child_Accounts
+        ],
         newQuote: function () {
             this.model.setQuote({});
             this.model.setEditMode(true);
@@ -124,6 +127,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             window.console.log('Share Quote');
             //Move to Cart?
         },
+        viewAllLists: function(e){
+            self._quotesGridView.model.filterBy("");
+        },
         render: function(){
             Backbone.MozuView.prototype.render.apply(this, arguments);
             var self = this;
@@ -155,14 +161,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                         model: collection
                     });
 
+                    self._quotesGridView = quotesGrid;
+
                     quotesGrid.render();
                     return;
                 } else {
                     editQuoteView.render();
                 }
-
-
-
             });
         }
     });
@@ -285,7 +290,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 id = $qField.data('mz-cart-item'),
                 item = this.model.get("items").get(id);
 
-            if (item && !isNaN(newQuantity)) {
+            if (item && !isNaN(newQuantity)) { 
                 item.set('quantity', newQuantity);
                 var payload = item.toJSON();
                     payload.id = self.model.get('id');
@@ -298,7 +303,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var self = this;
             var id = $(e.currentTarget).data('mzItemId');
             if (id) {
-                var removeWishId = id;
+                var removeWishId = id; 
                 return this.model.apiModel.deleteItem({id: self.model.get('id'), itemId: id}, { silent: true }).then(function () {
                     var itemToRemove = self.model.get('items').where({
                         id: removeWishId
@@ -314,6 +319,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     var MozuGridCollectionModel = MozuGridCollection.extend({
         mozuType: 'wishlists',
+        filter: "userId eq " + require.mozuData('user').userId,
         columns: [
             {
                 index: 'name',
