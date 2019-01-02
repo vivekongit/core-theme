@@ -1,7 +1,10 @@
-define(["underscore", "modules/backbone-mozu", "modules/models-product"], function (_, Backbone, ProductModels) {
+define(["underscore", "modules/backbone-mozu", "modules/models-product", "modules/models-attributes"], function (_, Backbone, ProductModels, Attributes) {
 
     var b2bUser = Backbone.MozuModel.extend({
         mozuType: 'b2buser',
+        relations: {
+            attributes: Attributes.b2bAccountAttributes
+        },
         toJSON: function(){
             var j = Backbone.MozuModel.prototype.toJSON.apply(this, arguments);
             
