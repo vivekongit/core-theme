@@ -39,16 +39,18 @@
         </div>
     </div><!--mz-l-column -->
     <div class="mz-l-column">
-        <div class="mz-l-formfieldgroup-row">
-            <div class="mz-l-formfieldgroup-cell">
-                <label for="isActive">
-                    {{ labels.isActive}}
-                </label>
+        {% if model.editMode == true %}
+            <div class="mz-l-formfieldgroup-row">
+                <div class="mz-l-formfieldgroup-cell">
+                    <label for="isActive">
+                        {{ labels.isActive}}
+                    </label>
+                </div>
+                <div class="mz-l-formfieldgroup-cell">
+                    <input type="checkbox" name="isActive" id="isActive" data-mz-value="user.isActive" value="true" {% if model.user.isActive %}checked="checked"{% endif %}>
+                </div>
             </div>
-            <div class="mz-l-formfieldgroup-cell">
-                <input type="checkbox" name="isActive" id="isActive" data-mz-value="user.isActive" value="true" {% if model.user.isActive %}checked="checked"{% endif %}>
-            </div>
-        </div>
+        {% endif %}
 
         <div class="mz-l-formfieldgroup-row">
             <div class="mz-l-formfieldgroup-cell">

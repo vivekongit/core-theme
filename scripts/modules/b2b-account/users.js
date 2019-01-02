@@ -6,6 +6,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         },
         defaults: {
             b2bAccountId: require.mozuData('user').accountId,
+            editMode: false,
             userRoles: [
                 {
                     name: 'Administrator',
@@ -41,9 +42,12 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
                             id: user.get('id'),
                             accountId: user.get('accountId'),
                             roleId: role[0].roleId
+                        }).then( function() {
+                            return user.apiAddUserRole();
                         });
+                    } else {
+                        return user.apiAddUserRole();
                     }
-                    return user.apiAddUserRole();
                 });
             }
             var createPayload = {
@@ -71,6 +75,10 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
 
     var UsersEditForm = Backbone.MozuView.extend({
         templateName: "modules/b2b-account/users/edit-user-form",
+        defaults: {
+            'user.isActive': true,
+            'user.roleId': "3"
+        },
         autoUpdate: [
             'user.firstName',
             'user.lastName',
@@ -109,21 +117,17 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
         },
         loadUserEditView: function (user) {
             var self = this;
-            user = user || new B2BAccountModels.b2bUser({});
+            user = user || new B2BAccountModels.b2bUser({
+                roleId: 3
+            });
 
-            user.set('id', user.get('userId'));
-            user.set('accountId', require.mozuData('user').accountId);
-
-            user.apiGetUserRoles().then(function (resp) {
-                var role = resp.data.items[0];
-                if(role) {
-                    user.set('originalRoles', resp.data.items);
-                    user.set('roleId', role.roleId);
-                }
-
+            function createUserEditForm(user, isEditMode) {
                 var userEditForm = new UsersEditForm({
                     el: self.$el.find('.mz-user-modal-content'),
-                    model: new UsersEditModel({ user: user })
+                    model: new UsersEditModel({
+                        editMode: isEditMode,
+                        user: user
+                    })
                 });
 
                 self._userForm = userEditForm;
@@ -140,10 +144,11 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
                         user.set('originalRoles', resp.data.items);
                         user.set('roleId', role.roleId);
                     }
-                    createUserEditForm(user);
+                    createUserEditForm(user, true);
                 });
                 return;
             }
+
             createUserEditForm(user);
         },
         render: function () {
@@ -158,7 +163,7 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             accountId: require.mozuData('user').accountId
         },
         filter: "isRemoved eq false",
-        
+
         autoload: true,
         columns: [
             {

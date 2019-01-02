@@ -4,11 +4,11 @@ define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
         mozuType: 'customerattribute',
     });
 
-    var customerAttritubes = Backbone.MozuModel.extend({
+    var customerAttributes = Backbone.MozuModel.extend({
         mozuType: 'customerattributes',
         relations: {
             items: Backbone.Collection.extend({
-                model: attritube
+                model: customerAttritube
             })
         }
     });
@@ -17,7 +17,7 @@ define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
         mozuType: 'accountattribute',
     });
 
-    var b2bAccountAttritubes = Backbone.MozuModel.extend({
+    var b2bAccountAttributes = Backbone.MozuModel.extend({
         mozuType: 'accountattributes',
         relations: {
             items: Backbone.Collection.extend({
@@ -30,15 +30,33 @@ define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
         mozuType: 'attributedefinition',
     }); 
 
+    var customerAttributeDefinitions = Backbone.MozuModel.extend({
+        mozuType: 'customerAttributeDefinitions',
+        relations: {
+            items: Backbone.Collection.extend({
+                model: customerAttributeDefinition
+            })
+        }
+    });
+
     var b2bAccountAttributeDefinition = Backbone.MozuModel.extend({
         mozuType: 'accountattributedefinition',
     }); 
 
+    var b2bAccountAttributeDefinitions = Backbone.MozuModel.extend({
+        mozuType: 'b2bAccountAttributeDefinitions',
+        relations: {
+            items: Backbone.Collection.extend({
+                model: b2bAccountAttributeDefinition
+            })
+        }
+    });
+
     return {
         'customerAttritube': customerAttritube,
-        'customerAttritubes': customerAttritubes,
+        'customerAttributes': customerAttributes,
         'b2bAccountAttritube': b2bAccountAttritube,
-        'b2bAccountAttritubes': b2bAccountAttritubes,
+        'b2bAccountAttributes': b2bAccountAttributes,
         'customerAttributeDefinition': customerAttributeDefinition,
         'customerAttributeDefinitions': customerAttributeDefinitions,
         'b2bAccountAttributeDefinition': b2bAccountAttributeDefinition,
