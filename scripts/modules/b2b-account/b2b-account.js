@@ -23,7 +23,7 @@ define([
             {
                 name: 'Account Information',
                 view: new AccountInfo.InfoView({
-                    model: CustomerModels.B2BCustomer.fromCurrent('customer')
+                    model: CustomerModels.EditableCustomer.fromCurrent()
                 })
             },
             {

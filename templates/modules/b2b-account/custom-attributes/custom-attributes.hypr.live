@@ -1,0 +1,15 @@
+<div class="mz-b2b-customattributes mz-l-stack-section" style="clear:none">
+<h2 class="mz-l-stack-sectiontitle">{{ labels.customAttributes }}</h2>
+
+<div class="mz-accountsettings-section mz-accountsettings-attributes">
+  {% for attribute in model.attributes %}
+    {% include 'modules/b2b-account/custom-attributes/attribute' with attribute=attribute editing=model.editing %}
+  {% endfor %}
+</div>
+
+{% if model.editing %}
+<button class="mz-button mz-button-small mz-accountsettings-editdone" data-mz-action="finishEdit">{{ labels.save }}</button>
+<button class="mz-button mz-button-small mz-accountsettings-editdone" data-mz-action="cancelEdit">{{ labels.cancel }}</button>
+{% endif %}
+
+</div>

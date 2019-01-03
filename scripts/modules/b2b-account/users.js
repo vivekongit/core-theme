@@ -163,7 +163,6 @@ define(["modules/mozu-utilities", "modules/jquery-mozu", 'modules/api', "undersc
             accountId: require.mozuData('user').accountId
         },
         filter: "isRemoved eq false",
-
         autoload: true,
         columns: [
             {

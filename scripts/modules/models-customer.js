@@ -323,7 +323,7 @@
     }),
 
     CustomerCardWithContact = PaymentMethods.CreditCard.extend({
-        
+
         validation: _.extend({
             contactId: {
                 fn: function(value, property, model) {
@@ -336,7 +336,7 @@
     }),
 
     EditableCustomer = Customer.extend({
-        
+
         handlesMessages: true,
         relations: _.extend({
             editingCard: CustomerCardWithContact,
@@ -472,7 +472,7 @@
             var self = this,
                 editingContact = this.get('editingContact'),
                 apiContact;
-            
+
             if (options && options.forceIsValid) {
                 editingContact.set('address.isValidated', true);
             }
@@ -528,7 +528,7 @@
             delete j.password;
             delete j.confirmPassword;
             delete j.oldPassword;
-           
+
             j.accountId = j.id;
             j.id = j.userId;
             return j;

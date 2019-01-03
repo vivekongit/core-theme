@@ -1,6 +1,5 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext"], function ($, api, _, Hypr, Backbone, HyprLiveContext) {
-
-    var InfoView = Backbone.MozuView.extend({
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/editable-view', "modules/models-customer"], function ($, api, _, Hypr, Backbone, HyprLiveContext, EditableView, CustomerModels) {
+    var InfoView = EditableView.extend({
         templateName: "modules/b2b-account/account-info",
         autoUpdate: [
             'firstName',
@@ -8,15 +7,41 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             'emailAddress',
             'acceptsMarketing'
         ],
-        // initialize: function () {
-        //     Backbone.MozuView.prototype.initialize.apply(this, arguments);
-        //     // return this.model.getAttributes().then(function (customer) {
-        //     //     customer.get('attributes').each(function (attribute) {
-        //     //         attribute.set('attributeDefinitionId', attribute.get('id'));
-        //     //     });
-        //     //     return customer;
-        //     // });
-        // },
+        initialize: function () {
+          return this.model.getAttributes().then(function(customer) {
+              customer.get('attributes').each(function(attribute) {
+                  attribute.set('attributeDefinitionId', attribute.get('id'));
+              });
+              return customer;
+          });
+        },
+        startEdit: function(e){
+          e.preventDefault();
+          this.model.set('editing', true);
+          this.render();
+        },
+        cancelEdit: function() {
+            this.model.set('editing', false);
+            this.afterEdit();
+        },
+        finishEdit: function() {
+            var self = this;
+
+            this.doModelAction('apiUpdate').then(function() {
+                self.model.set('editing', false);
+            }).otherwise(function() {
+                self.model.set('editing', true);
+            }).ensure(function() {
+                self.afterEdit();
+            });
+        },
+        afterEdit: function() {
+            var self = this;
+
+            self.initialize().ensure(function() {
+                self.render();
+            });
+        },
         updateAttribute: function (e) {
             var self = this;
             var attributeFQN = e.currentTarget.getAttribute('data-mz-attribute');
@@ -36,15 +61,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                         .next('[data-mz-validationmessage-for="' + attr + '"]').text(error);
                 }
             });
-        },
-       
-        finishEdit: function () {
-            var self = this;
-            self.model.apiUpdate();
         }
     });
 
     return {
         'InfoView': InfoView
-    }
+    };
 });

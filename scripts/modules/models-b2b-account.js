@@ -2,12 +2,9 @@ define(["underscore", "modules/backbone-mozu", "modules/models-product", "module
 
     var b2bUser = Backbone.MozuModel.extend({
         mozuType: 'b2buser',
-        relations: {
-            attributes: Attributes.b2bAccountAttributes
-        },
         toJSON: function(){
             var j = Backbone.MozuModel.prototype.toJSON.apply(this, arguments);
-            
+
             j.id = j.userId;
             j.accountId = require.mozuData('user').accountId;
             return j;
