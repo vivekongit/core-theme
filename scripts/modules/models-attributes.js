@@ -1,7 +1,7 @@
 define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
 
     var customerAttritube = Backbone.MozuModel.extend({
-        mozuType: 'customerattribute',
+        mozuType: 'customerattribute'
     });
 
     var customerAttributes = Backbone.MozuModel.extend({
@@ -14,7 +14,7 @@ define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
     });
 
     var b2bAccountAttritube = Backbone.MozuModel.extend({
-        mozuType: 'accountattribute',
+        mozuType: 'accountattribute'
     });
 
     var b2bAccountAttributes = Backbone.MozuModel.extend({
@@ -27,7 +27,7 @@ define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
     });
 
     var customerAttributeDefinition = Backbone.MozuModel.extend({
-        mozuType: 'attributedefinition',
+        mozuType: 'attributedefinition'
     }); 
 
     var customerAttributeDefinitions = Backbone.MozuModel.extend({
@@ -40,7 +40,7 @@ define(["underscore", "modules/backbone-mozu"], function (_, Backbone) {
     });
 
     var b2bAccountAttributeDefinition = Backbone.MozuModel.extend({
-        mozuType: 'accountattributedefinition',
+        mozuType: 'accountattributedefinition'
     }); 
 
     var b2bAccountAttributeDefinitions = Backbone.MozuModel.extend({

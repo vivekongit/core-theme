@@ -128,7 +128,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             //Move to Cart?
         },
         viewAllLists: function(e){
-            self._quotesGridView.model.filterBy("");
+            this._quotesGridView.model.filterBy("");
         },
         render: function(){
             Backbone.MozuView.prototype.render.apply(this, arguments);
