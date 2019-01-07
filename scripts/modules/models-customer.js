@@ -229,6 +229,13 @@
             attributes: Backbone.Collection.extend({
                 model: CustomerAttribute
             }),
+            // We set this relationship so that b2battributes, when assigned, can
+            // function like a backbone collection. But it's only out of convenience that the model
+            // is named CustomerAttribute. This is NOT a collection of customer attributes. They are
+            // ACCOUNT attributes.
+            b2bAttributes: Backbone.Collection.extend({
+                model: CustomerAttribute
+            }),
             contacts: Backbone.Collection.extend({
                 model: CustomerContact,
                 getPrimaryShippingContact: function(){

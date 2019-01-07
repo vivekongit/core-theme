@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/editable-view', "modules/models-customer"], function ($, api, _, Hypr, Backbone, HyprLiveContext, EditableView, CustomerModels) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/editable-view', "modules/models-customer", "modules/models-b2b-account"], function ($, api, _, Hypr, Backbone, HyprLiveContext, EditableView, CustomerModels, B2BAccountModels) {
 
     var AccountAttributeDefs = Backbone.MozuModel.extend({
         mozuType: 'accountattributedefinitions'
@@ -68,31 +68,25 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var self = this;
             if (this.model.get('editingAccountAttributes')){
                 // Save b2b attributes only. found in self.model.get('b2battributes')
-                // .Then:
-                self.model.set('editingAccountAttributes', false);
-                // .Otherwise: self.model.set('editingAccountAttributes', true);
-                // .Ensure: self.afterEditAttrs();
+                var b2bAccountModel = new B2BAccountModels.b2bAccount(this.model.toJSON());
+                b2bAccountModel.set('attributes', this.model.get('b2bAttributes'));
+                b2bAccountModel.apiUpdate().then(function(){
+                  self.model.set('editingAccountAttributes', false);
+                }).otherwise(function() {
+                    self.model.set('editingAccountAttributes', true);
+                }).ensure(function(){
+                    self.afterEditAttrs();
+                });
             } else { // as opposed to (if this.model.get('editingCustomerAttributes'))
               // Save customer attributes only. found in self.model.get('attributes');
-              // .Then:
-              self.model.set('editingCustomerAttributes', false);
-              // .Otherwise: self.model.set('editingCustomerAttributes', true);
-              // .Ensure: self.afterEditAttrs();
+              this.doModelAction('apiUpdate').then(function() {
+                  self.model.set('editingCustomerAttributes', false);
+              }).otherwise(function() {
+                  self.model.set('editingCustomerAttributes', true);
+              }).ensure(function() {
+                  self.afterEditAttrs();
+              });
             }
-
-            //Remove this once you get it into the above .ensures
-            self.afterEditAttrs();
-
-            // It was originally this:
-            /*
-            this.doModelAction('apiUpdate').then(function() {
-                self.model.set('editingAccountAttributes', false);
-            }).otherwise(function() {
-                self.model.set('editing', true);
-            }).ensure(function() {
-                self.afterEdit();
-            });
-            */
         },
         afterEditAttrs: function() {
             var self = this;
@@ -107,7 +101,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var editingAccountAttrs = self.model.get('editingAccountAttributes');
             var attrsToEdit = this.model.get('attributes');
             if (editingAccountAttrs) attrsToEdit = this.model.get('b2bAttributes');
-
             var attributeFQN = e.currentTarget.getAttribute('data-mz-attribute');
             var attribute = attrsToEdit.findWhere({
                 attributeFQN: attributeFQN
