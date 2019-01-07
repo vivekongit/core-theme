@@ -14,9 +14,10 @@ define([
     "modules/b2b-account/payment-information",
     "modules/backbone-pane-switcher",
     'modules/b2b-account/shipping-information',
-    "modules/b2b-account/account-info"
+    "modules/b2b-account/account-info",
+    'modules/b2b-account/custom-attributes'
 ],
-    function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, B2BAccountModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, ShippingInformation, AccountInfo) {
+    function ($, api, _, Hypr, Backbone, HyprLiveContext, CustomerModels, B2BAccountModels, Lists, Users, Orders, Returns, PaymentInformation, PaneSwitcher, ShippingInformation, AccountInfo, CustomAttributes) {
 
     var paneSwitcherModel = new PaneSwitcher.PaneSwitcherModel({
         panes: [
@@ -64,7 +65,10 @@ define([
                 })
             },
             {
-                name: 'Custom Attributes'
+                name: 'Custom Attributes',
+                view: new CustomAttributes.CustomAttributesView({
+                    model: CustomerModels.EditableCustomer.fromCurrent()
+                })
             }
         ]
     });

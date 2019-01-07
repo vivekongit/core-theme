@@ -27,12 +27,6 @@
   <input type="checkbox" id="account-acceptsmarketing" data-mz-value="acceptsMarketing" {% if model.acceptsMarketing %}checked="checked"{% endif %} {% if not model.editing %}disabled="disabled"{% endif %} />
   <label for="account-acceptsmarketing">{{ labels.accountOptIn }}</label>
 </div>
-<div class="mz-accountsettings-section mz-accountsettings-attributes">
-  <h3>{{ labels.customerAttributes }}</h3>
-  {% for attribute in model.attributes %}
-    {% include 'modules/b2b-account/custom-attributes/attribute' with attribute=attribute editing=model.editing %}
-  {% endfor %}
-</div>
 
 {% if model.editing %}
 <button class="mz-button mz-button-small mz-accountsettings-editdone" data-mz-action="finishEdit">{{ labels.save }}</button>
