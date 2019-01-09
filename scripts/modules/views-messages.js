@@ -12,7 +12,7 @@
             },
             dismissMessage: function() {
                 this.$el.fadeOut(3000); 
-                this.model.trigger('messageDismiss') 
+                this.model.trigger('messageDismiss');
             },
             render: function() {
                 var self = this;

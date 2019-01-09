@@ -60,7 +60,7 @@ define(['modules/jquery-mozu', 'underscore', 'backbone', 'hyprlive', 'modules/vi
             self.view.listenTo(self.view.model, 'messageDismiss', function(){
                 var message = self.view.model.at(0);
                 self.Messages.removeMessage(message.get('key'));
-            })
+            });
             //this.view.render();
             return self.view;
         };
@@ -94,7 +94,7 @@ define(['modules/jquery-mozu', 'underscore', 'backbone', 'hyprlive', 'modules/vi
             dismissMessage: dismissMessage,
             saveMessage: saveMessage
         };
-    };
+    }
 
     Handler.prototype.Messages = Messages();
 
