@@ -6,14 +6,14 @@
 <div class="mz-accountpaymentmethods">
 <ul class="mz-accountpaymentmethods-list mz-l-tiles">
     {% if model.purchaseOrder and model.purchaseOrder.isEnabled and siteContext.checkoutSettings.purchaseOrder.isEnabled %}
-    {% include "modules/my-account/my-account-paymentmethod" with model=model.purchaseOrder blockCreditLimit=model.blockCreditLimit %}
+    {% include "modules/my-account/my-account-paymentmethod" with model=model.purchaseOrder blockCreditLimit=model.blockCreditLimit hasRequiredBehavior=model.hasRequiredBehavior %}
     {% endif %}
 
     {% for card in model.cards %}
     {% if editing.card == card.id %}
     {% include "modules/my-account/my-account-credit-card-form" with model=model.editingCard editingContact=model.editingContact %}
     {% else %}
-    {% include "modules/my-account/my-account-paymentmethod" with model=card %}
+    {% include "modules/my-account/my-account-paymentmethod" with model=card hasRequiredBehavior=model.hasRequiredBehavior %}
 
     {% endif %}
     {% endfor %}
