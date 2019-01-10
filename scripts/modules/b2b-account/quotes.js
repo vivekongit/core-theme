@@ -379,20 +379,27 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         addWishlistToCart: function (e, row) {
             var cart = CartModels.Cart.fromCurrent();
-            var products = row.get('items').toJSON();
-            cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false }).then(function () {
-                window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
-            }, function (error) {
-                if (error.items) {
-                    var errorMessage = "";
-                    _.each(error.items, function(error){
-                        var errorProp = _.find(error.additionalErrorData, function(errorData){
-                            return errorData.name === "Property";
-                        });
-                        errorMessage += ('</br ><strong>' + errorProp.value + '</strong> : ' + error.message);
-                    });
-                    MessageHandler.saveMessage('BulkAddToCart', 'BulkAddToCartErrors', errorMessage);
-                }
+            var items = row.get('items').toJSON();
+            var products = [];
+
+            _.each(items, function(item) {
+                var isItemDigital = item.product.fulfillmentTypesSupported.includes('Digital');
+
+
+                products.push({
+                    quantity : item.quantity,
+                    data: item.data,
+                    fulfillmentMethod : (!isItemDigital ? "Ship" : "Digital"),
+                    product: {
+                        productCode : item.product.productCode,
+                        variationProductCode : item.product.variationProductCode,
+                        bundledProducts : item.product.bundledProducts,
+                        options : item.product.Options
+                    }
+                });
+            });
+            //var products = row.get('items').toJSON();
+            cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){
                 window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
             });
         },
