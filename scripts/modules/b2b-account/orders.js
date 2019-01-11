@@ -1,21 +1,17 @@
 define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart', 'pages/myaccount', 'modules/message-handler'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels, OrderViews, MessageHandler) {
-  var defaultOrderFilter = 'Status ne Created and Status ne Validated and Status ne Pending and Status ne Abandoned and Status ne Errored';
+  var DEFAULT_ORDER_FILTER = 'Status ne Created and Status ne Validated and Status ne Pending and Status ne Abandoned and Status ne Errored';
+  var USER_ORDER_FILTER = DEFAULT_ORDER_FILTER + ' and userId eq '+ require.mozuData('user').userId;
 
   var OrdersView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/orders/orders",
-      initialize: function(){
-        var self = this;
-        Backbone.MozuView.prototype.initialize.apply(this, arguments);
-        self.model.set('viewingAllOrders', true);
-      },
       render: function(){
           var self = this;
           Backbone.MozuView.prototype.render.apply(this, arguments);
-          var collection = new OrdersGridCollectionModel({autoload: false});
+          var collection = new OrdersGridCollectionModel({autoload: true});
           // If the user has permission to view all child orders, we want
           // them to view all child orders by default.
-          var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
-          collection.set(orderHistory);
+        //   var orderHistory = CustomerModels.Customer.fromCurrent().get('orderHistory');
+        //   collection.set(orderHistory);
           this.initializeGrid(collection);
           this.initializeOrderView();
       },
@@ -34,40 +30,35 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       },
       initializeGrid: function(collection){
         var self = this;
-        self.ordersGrid = new MozuGrid({
+        self._ordersGridView = new MozuGrid({
             el: $('.mz-b2b-orders-grid'),
             model: collection
         });
-        self.ordersGrid.listenTo(self.ordersGrid.model, 'viewOrder', self.viewOrder.bind(self));
-        self.ordersGrid.listenTo(self.ordersGrid.model, 'reorder', self.reorder.bind(self));
-        if (self.model.get('viewingAllOrders')){
-            self.ordersGrid.render();
-        } else {
-            self.getOrdersFilteredByUserId();
-        }
+        self._ordersGridView.listenTo(self._ordersGridView.model, 'viewOrder', self.viewOrder.bind(self));
+        self._ordersGridView.listenTo(self._ordersGridView.model, 'reorder', self.reorder.bind(self));
+        
+        // if (self.model.get('viewingAllOrders')){
+        //     self._ordersGridView.render();
+        // } else {
+        //     self.getOrdersFilteredByUserId();
+        // }
       },
       getOrdersFilteredByUserId: function(){
         var self = this;
-        var newFilter = defaultOrderFilter + ' and userId eq '+self.model.get('userId');
-        self.ordersGrid.model.filter = newFilter;
-        api.get('orders', { filter: newFilter}).then(function(res){
-            self.ordersGrid.model.set(res.data);
-            self.ordersGrid.render();
-        });
+        var newFilter = DEFAULT_ORDER_FILTER + ' and userId eq '+self.model.get('userId');
+        self._ordersGridView.model.filter = newFilter;
+        self._ordersGridView.render();
       },
-      toggleOrdersGridSource: function(e){
+      toggleViewAllOrders: function(e){
           var self = this;
-          if (self.model.get('viewingAllOrders')){
-              self.model.set('viewingAllOrders', false);
-              if (self.ordersGrid) {
-                  self.getOrdersFilteredByUserId();
-                }
+          if (e.currentTarget.checked){
+            self.model.set('viewingAllOrders', true);
+            self._ordersGridView.model.filterBy(DEFAULT_ORDER_FILTER);
           } else {
-              self.model.set('viewingAllOrders', true);
-              self.ordersGrid.model.filter = defaultOrderFilter;
-              self.ordersGrid.render();
+            self.model.set('viewingAllOrders', false);
+            self._ordersGridView.model.filterBy(USER_ORDER_FILTER);
           }
-          self.render();
+          //self.render();
       },
       viewOrder: function(row){
           this.model.set('viewOrder', true);
@@ -115,7 +106,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
   var OrdersGridCollectionModel = MozuGridCollection.extend({
       mozuType: 'orders',
-      filter: defaultOrderFilter,
+      filter: USER_ORDER_FILTER,
+      defaultSort: 'submittedDate desc',
       columns: [
           {
               index: 'orderNumber',

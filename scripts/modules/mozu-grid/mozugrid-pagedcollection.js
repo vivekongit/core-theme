@@ -50,9 +50,6 @@ var MozuGridPagedCollection = Backbone.MozuPagedCollection.extend({
             this.sortBy(index + ' ' + sortDirection);
         }
     },
-    filter: function(filterString){
-        return this.filterBy(filterString);
-    },
     refreshGrid: function(){
         this.setIndex(this.get('startIndex'));
         this.trigger('render');

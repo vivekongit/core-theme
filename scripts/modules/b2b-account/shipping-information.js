@@ -6,7 +6,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
   var AddressBookModel = CustomerModels.EditableCustomer.extend({
       helpers: ['canEditPrimary'],
       defaults: {
-          userId: require.mozuData('user')
+          userId: require.mozuData('user').userId
       },
       requiredBehaviors: [1002],
       canEditPrimary: function(){
