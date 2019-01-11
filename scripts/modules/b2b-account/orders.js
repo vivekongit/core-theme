@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart', 'pages/myaccount'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels, OrderViews) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-orders', 'modules/models-cart', 'pages/myaccount', 'modules/message-handler'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, OrderModels, CartModels, OrderViews, MessageHandler) {
   var defaultOrderFilter = 'Status ne Created and Status ne Validated and Status ne Pending and Status ne Abandoned and Status ne Errored';
 
   var OrdersView = Backbone.MozuView.extend({
@@ -86,6 +86,18 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           var products = order.get('items');
           cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){
               window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
+          }, function(error){
+            if (error.items) {
+                var errorMessage = "";
+                _.each(error.items, function(error){
+                    var errorProp = _.find(error.additionalErrorData, function(errorData){
+                        return errorData.name === "Property";
+                    });
+                    errorMessage += ('</br ><strong>' + errorProp.value + '</strong> : ' + error.message);
+                });
+                MessageHandler.saveMessage('Reorder', 'BulkReorderErrors', errorMessage);
+                MessageHandler.showMessage('Reorder');
+            }
           });
       }
   });

@@ -13,8 +13,9 @@ define(['modules/api',
         'modules/amazonPay',
         'modules/applepay',
         'modules/cart/discount-dialog/views-discount-dialog',
-        'modules/models-discount'
-], function (api, Backbone, _, $, CartModels, CartMonitor, HyprLiveContext, Hypr, preserveElement, modalDialog, paypal, LocationModels, AmazonPay, ApplePay, DiscountModalView, Discount) {
+        'modules/models-discount',
+        'modules/message-handler'
+], function (api, Backbone, _, $, CartModels, CartMonitor, HyprLiveContext, Hypr, preserveElement, modalDialog, paypal, LocationModels, AmazonPay, ApplePay, DiscountModalView, Discount, MessageHandler) {
 
     var ThresholdMessageView = Backbone.MozuView.extend({
       templateName: 'modules/cart/cart-discount-threshold-messages'
@@ -433,10 +434,13 @@ define(['modules/api',
         CartMonitor.setCount(cartModel.count());
 
         cartViews.cartView.render();
-        if (this.get('discountModal').get('discounts')) {
+        if (cartModel.get('discountModal').get('discounts').length) {
             cartViews.discountModalView.render(); 
         }
         renderVisaCheckout(cartModel);
+
+        MessageHandler.showMessage("BulkAddToCart");
+
         paypal.loadScript();
         if (cartModel.count() > 0){
           ApplePay.init();

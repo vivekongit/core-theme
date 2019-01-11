@@ -47,6 +47,8 @@
     "bundleContents": "Bundle Contents",
     "bundleExtraPartOf": "Bought as optional extra for <a href=\"{0}\">{1}</a> bundle",
     "bundlePartOf": "Bought as part of <a href=\"{0}\">{1}</a> bundle",
+    "bulkAddToCartErrors" : "<h4>Issues adding the following to cart</h4> {0}",
+    "bulkReorderErrors" : "Issue with Reordering {0}",
     "b2bAccount" : "B2B Account",
     "b2bAccountInfo": "Account Information",
     "b2bAccountInfoContact": "Contact Information",
