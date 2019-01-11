@@ -244,7 +244,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 self.model.saveWishlist();
             });
 
+<<<<<<< HEAD
             var quoteListView = new QuoteListView({
+=======
+            var quoteListView = new QuoteListView ({
+>>>>>>> 46e0b56... Prevent nonpurchaser from attempting to make order from list
                 el: self.$el.find('.mz-b2b-quote-list'),
                 model: self.model
             });
@@ -304,7 +308,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var id = $(e.currentTarget).data('mzItemId');
             if (id) {
                 var removeWishId = id;
-                return this.model.apiModel.deleteItem({ id: self.model.get('id'), itemId: id }, { silent: true }).then(function () {
+                return this.model.apiModel.deleteItem({id: self.model.get('id'), itemId: id}, { silent: true }).then(function () {
                     var itemToRemove = self.model.get('items').where({
                         id: removeWishId
                     });
@@ -334,7 +338,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                         var date = new Date(auditInfo.createDate);
                         return date.toLocaleDateString();
                     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 46e0b56... Prevent nonpurchaser from attempting to make order from list
                 }
             }
         ],
@@ -354,7 +361,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             },
             {
                 displayName: 'Order',
-                action: 'addWishlistToCart'
+                action: 'addWishlistToCart',
+                isHidden: function () {
+                    // 1008 = Can place orders
+                    return !this.hasRequiredBehavior(1008);
+                }
             }
         ],
         relations: {
