@@ -244,11 +244,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 self.model.saveWishlist();
             });
 
-<<<<<<< HEAD
             var quoteListView = new QuoteListView({
+<<<<<<< HEAD
 =======
             var quoteListView = new QuoteListView ({
 >>>>>>> 46e0b56... Prevent nonpurchaser from attempting to make order from list
+=======
+>>>>>>> 359e5c2... Fixed lint issues
                 el: self.$el.find('.mz-b2b-quote-list'),
                 model: self.model
             });
@@ -308,7 +310,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var id = $(e.currentTarget).data('mzItemId');
             if (id) {
                 var removeWishId = id;
-                return this.model.apiModel.deleteItem({id: self.model.get('id'), itemId: id}, { silent: true }).then(function () {
+                return this.model.apiModel.deleteItem({ id: self.model.get('id'), itemId: id }, { silent: true }).then(function () {
                     var itemToRemove = self.model.get('items').where({
                         id: removeWishId
                     });
@@ -339,9 +341,12 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                         return date.toLocaleDateString();
                     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 46e0b56... Prevent nonpurchaser from attempting to make order from list
+=======
+>>>>>>> 359e5c2... Fixed lint issues
                 }
             }
         ],
