@@ -1,11 +1,14 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/editable-view', "modules/models-customer"], function ($, api, _, Hypr, Backbone, HyprLiveContext, EditableView, CustomerModels) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/editable-view', "modules/models-customer", "modules/models-b2b-account"], function ($, api, _, Hypr, Backbone, HyprLiveContext, EditableView, CustomerModels, B2BAccountModels) {
     var InfoView = EditableView.extend({
-        templateName: "modules/b2b-account/account-info",
+        templateName: "modules/b2b-account/account-info/account-info",
         autoUpdate: [
             'firstName',
             'lastName',
             'emailAddress',
-            'acceptsMarketing'
+            'acceptsMarketing',
+            'oldPassword',
+            'password',
+            'confirmPassword'
         ],
         initialize: function () {
           return this.model.getAttributes().then(function(customer) {
@@ -26,8 +29,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         finishEdit: function() {
             var self = this;
-
-            this.doModelAction('apiUpdate').then(function() {
+            var user = new B2BAccountModels.b2bUser(self.model.toJSON());
+            user.apiUpdate().then(function() {
                 self.model.set('editing', false);
             }).otherwise(function() {
                 self.model.set('editing', true);
@@ -37,10 +40,28 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         afterEdit: function() {
             var self = this;
-
             self.initialize().ensure(function() {
                 self.render();
             });
+        },
+        startEditPassword: function() {
+            this.model.set('editingPassword', true);
+            this.render();
+        },
+        finishEditPassword: function() {
+            var self = this;
+            this.doModelAction('changePassword').then(function() {
+                _.delay(function() {
+                    self.$('[data-mz-validationmessage-for="passwordChanged"]').show().text(Hypr.getLabel('passwordChanged')).fadeOut(3000);
+                }, 250);
+            }, function() {
+                self.model.set('editingPassword', true);
+            });
+            this.model.set('editingPassword', false);
+        },
+        cancelEditPassword: function() {
+            this.model.set('editingPassword', false);
+            this.render();
         },
         updateAttribute: function (e) {
             var self = this;
