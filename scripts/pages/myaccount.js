@@ -730,6 +730,7 @@ define(['modules/backbone-mozu', "modules/api", 'hyprlive', 'hyprlivecontext', '
 
     return {
        'OrderHistoryListingView': OrderHistoryListingView,
+       'ReturnPrintLabelView': PrintView,
        'AddressBookView': AddressBookView
     };
 });

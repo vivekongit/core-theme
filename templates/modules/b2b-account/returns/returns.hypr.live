@@ -7,8 +7,11 @@
       <div class="mz-btns">
           <button type="button" class="mz-button" data-mz-action="returnToGrid">Back</button>
       </div>
+      <!-- <div data-mz-orderlist class="mz-l-paginatedlist-list">
+        {% include "modules/my-account/return-history-list" %}
+      </div> -->
       <ul class="mz-orderlist">
-          <li>{% include "modules/my-account/return-history-listing" with model=model.currentReturn %}</li>
+          <li class="mz-orderlist-item">{% include "modules/my-account/return-history-listing" with model=model.currentReturn %}</li>
       </ul>
   </div>
 {% else %}
@@ -24,3 +27,5 @@
 {% endif %}
 </div>
 </div>
+
+{% include "modules/my-account/my-account-print-window" %}

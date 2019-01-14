@@ -1,4 +1,4 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-returns'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, ReturnModels) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'pages/myaccount'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, MyAccount) {
   var ReturnsView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/returns/returns",
       initialize: function(){
@@ -24,12 +24,43 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           if (self.model.get('viewingAllReturns')){
               self.returnsGrid.render();
           } else {
-              api.get('rmas', { filter: 'userId eq '+self.model.get('userId')}).then(function(res){
+              api.get('rmas', { filter: 'userId eq ' + self.model.get('userId')}).then(function(res){
                   collection.set(res.data);
                   self.returnsGrid.render();
               });
           }
       },
+      printReturnLabel: function(e) {
+            var self = this,
+                $target = $(e.currentTarget);
+
+            //Get Whatever Info we need to our shipping label
+            var returnId = $target.data('mzReturnid'),
+                returnObj = self.model.get('currentReturn');
+
+            var _totalRequestCompleted = 0;
+
+            _.each(returnObj.packages, function(value, key, list) {
+                window.accountModel.apiGetReturnLabel({
+                    'returnId': returnId,
+                    'packageId': value.id,
+                    'returnAsBase64Png': true
+                }).then(function(data) {
+                    value.labelImageSrc = 'data:image/png;base64,' + data;
+                    _totalRequestCompleted++;
+                    if (_totalRequestCompleted == list.length) {
+                        var returnModel = new Backbone.MozuModel(returnObj);
+                        var printReturnLabelView = new MyAccount.ReturnPrintLabelView({
+                            el: $('#mz-printReturnLabelView'),
+                            model: returnModel
+                        });
+                        printReturnLabelView.render();
+                        printReturnLabelView.loadPrintWindow();
+                    }
+                });
+            });
+
+        },
       toggleReturnsGridSource: function(e){
         var self = this;
         if (self.model.get('viewingAllReturns')){
@@ -47,10 +78,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         self.render();
       },
       viewReturn: function(row){
-          this.model.set('viewReturn', true);
-          this.model.set('currentReturn', row.toJSON());
-          this.render();
-      },
+        this.model.set('viewReturn', true);
+        this.model.set('currentReturn', row.toJSON());
+        this.render();
+    },
       returnToGrid: function(){
           this.model.set('viewReturn', false);
           this.render();
