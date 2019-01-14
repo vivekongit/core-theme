@@ -395,10 +395,14 @@
             var self = this;
             self.validatePassword = true;
             if (this.validate('password') || this.validate('confirmPassword')) return false;
-            return this.apiChangePassword({
+            var changePasswordPayload = {
                 oldPassword: this.get('oldPassword'),
                 newPassword: this.get('password')
-            }).ensure(function () {
+            };
+            if (this.get('accountType') === 'B2B'){
+                changePasswordPayload.userId = this.get('userId');
+            }
+            return this.apiChangePassword(changePasswordPayload).ensure(function () {
                 self.validatePassword = false;
             });
         },

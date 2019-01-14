@@ -11,6 +11,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             'confirmPassword'
         ],
         initialize: function () {
+
+          // If we don't make sure this editingContact field is populated with an address,
+          // It breaks when we try to validate a password change.
+          var toEdit = this.model.get('contacts').first();
+          if (toEdit)
+              this.model.get('editingContact').set(toEdit.toJSON({ helpers: true, ensureCopy: true }), { silent: true });
+
           return this.model.getAttributes().then(function(customer) {
               customer.get('attributes').each(function(attribute) {
                   attribute.set('attributeDefinitionId', attribute.get('id'));

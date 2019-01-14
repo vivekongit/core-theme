@@ -31,7 +31,7 @@
       <div class="is-loading"></div>
       {% include "modules/b2b-account/payment-information/purchase-orders-grid" %}
   </div>
-{% endif %}
 </div>
+{% endif %}
 </div>
 </div>
