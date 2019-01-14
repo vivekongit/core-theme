@@ -24,7 +24,8 @@ define([
             {
                 name: 'Account Information',
                 view: new AccountInfo.InfoView({
-                    model: CustomerModels.EditableCustomer.fromCurrent()
+                    model: CustomerModels.EditableCustomer.fromCurrent(),
+                    messagesEl: $('#account-info-messages')
                 })
             },
             {
