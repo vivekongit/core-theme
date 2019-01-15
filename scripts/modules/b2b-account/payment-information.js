@@ -69,7 +69,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                   el: $('.mz-b2b-transactions-grid'),
                   model: collection
               });
-              transactionsGrid.requireBehaviorsToRender = true;
               transactionsGrid.render();
               return;
           });
@@ -96,6 +95,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           return this.apiGetPurchaseOrderTransactions();
       },
       requiredBehaviors: [ 1006 ],
+      requireBehaviorsToRender: true,
       columns: [
           {
               index: 'transactionDate',

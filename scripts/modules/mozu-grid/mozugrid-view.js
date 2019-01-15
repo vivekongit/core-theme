@@ -4,19 +4,20 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
         templateName: 'modules/mozugrid/grid',
         initialize: function () {
             var self = this;
+            if (!(!this.model.hasRequiredBehavior() && this.model.requireBehaviorsToRender)){
+              if (typeof this.model.apiGridRead === 'function') {
+                  this.model.apiModel.get = this.model.apiGridRead.bind(this.model);
+                  this.model.apiModel.setIndex = this.model.apiGridRead.bind(this.model);
+              }
 
-            if (typeof this.model.apiGridRead === 'function') {
-                this.model.apiModel.get = this.model.apiGridRead.bind(this.model);
-                this.model.apiModel.setIndex = this.model.apiGridRead.bind(this.model);
-            }
+              try {
+                  if (this.model.get('autoload')){
+                      self.model.setIndex(0);
+                  }
+              } catch (error) {
 
-            try {
-                if (this.model.get('autoload')){
-                    self.model.setIndex(0);
-                }
-            } catch (error) {
-
-            }
+              }
+          }
         },
         registerRowActions: function(){
             var self = this;
@@ -47,7 +48,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
             var views = {};
             self.registerRowActions();
             Backbone.MozuView.prototype.render.apply(this, arguments);
-            
+
             if (self.model.get('items').length) {
                 views = {
                     mozuGridPagingControls: new PagingViews.PagingControls({
@@ -60,7 +61,7 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
                     })
                 };
             }
-            
+
 
             _.invoke(views, 'render');
         }
