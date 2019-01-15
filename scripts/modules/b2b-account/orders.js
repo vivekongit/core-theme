@@ -36,18 +36,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         });
         self._ordersGridView.listenTo(self._ordersGridView.model, 'viewOrder', self.viewOrder.bind(self));
         self._ordersGridView.listenTo(self._ordersGridView.model, 'reorder', self.reorder.bind(self));
-        
-        // if (self.model.get('viewingAllOrders')){
-        //     self._ordersGridView.render();
-        // } else {
-        //     self.getOrdersFilteredByUserId();
-        // }
-      },
-      getOrdersFilteredByUserId: function(){
-        var self = this;
-        var newFilter = DEFAULT_ORDER_FILTER + ' and userId eq '+self.model.get('userId');
-        self._ordersGridView.model.filter = newFilter;
-        self._ordersGridView.render();
       },
       toggleViewAllOrders: function(e){
           var self = this;
@@ -58,7 +46,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             self.model.set('viewingAllOrders', false);
             self._ordersGridView.model.filterBy(USER_ORDER_FILTER);
           }
-          //self.render();
       },
       viewOrder: function(row){
           this.model.set('viewOrder', true);
