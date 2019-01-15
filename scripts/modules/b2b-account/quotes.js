@@ -91,9 +91,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     var QuotesView = Backbone.MozuView.extend({
         templateName: 'modules/b2b-account/quotes/my-quotes',
-        requiredBehaviors: [
-            MozuUtilities.Behaviors.View_Lists_Of_Child_Accounts
-        ],
         newQuote: function () {
             this.model.setQuote({});
             this.model.setEditMode(true);
@@ -127,8 +124,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             window.console.log('Share Quote');
             //Move to Cart?
         },
-        viewAllLists: function (e) {
-            this._quotesGridView.model.filterBy("");
+        toggleViewAllLists: function (e) {
+            if (e.currentTarget.checked){
+              this.model.set('viewingAllLists', true);
+              this._quotesGridView.model.filterBy("");
+            } else {
+              this.model.set('viewingAllLists', false);
+              this._quotesGridView.model.filterBy("userId eq " + require.mozuData('user').userId);
+            }
         },
         render: function () {
             Backbone.MozuView.prototype.render.apply(this, arguments);
@@ -244,13 +247,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 self.model.saveWishlist();
             });
 
-            var quoteListView = new QuoteListView({
-<<<<<<< HEAD
-=======
             var quoteListView = new QuoteListView ({
->>>>>>> 46e0b56... Prevent nonpurchaser from attempting to make order from list
-=======
->>>>>>> 359e5c2... Fixed lint issues
                 el: self.$el.find('.mz-b2b-quote-list'),
                 model: self.model
             });
@@ -340,13 +337,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                         var date = new Date(auditInfo.createDate);
                         return date.toLocaleDateString();
                     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 46e0b56... Prevent nonpurchaser from attempting to make order from list
-=======
->>>>>>> 359e5c2... Fixed lint issues
                 }
             }
         ],

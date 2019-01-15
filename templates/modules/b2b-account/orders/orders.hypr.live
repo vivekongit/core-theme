@@ -8,7 +8,7 @@
 {% if model.viewOrder %}
 <div class="mz-btns">
     <button type="button" class="mz-button" data-mz-action="returnToGrid">Back</button>
-    {% if not model.limitPlaceOrders %}<button type="button" style="float:right" class="mz-button" data-mz-action="reorder">Reorder</button>{% endif %}
+    {% if not model.limitPlaceOrders %}<button type="button" style="float:right" class="mz-button" data-mz-action="reorder">{{ labels.reorder }}</button>{% endif %}
 </div>
 <div class="mz-b2b-order-view">
     <ul>
@@ -18,7 +18,7 @@
 {% else %}
 <div class="mz-order-grid-container">
   <div class="mz-btns" style="text-align:right">
-      <label><input data-mz-action="toggleViewAllOrders" type="checkbox" {% if model.viewingAllOrders %}checked{% endif %} /> View All Orders</label>
+      <label><input data-mz-action="toggleViewAllOrders" type="checkbox" {% if model.viewingAllOrders %}checked{% endif %} />{{ labels.viewAllOrders }}</label>
   </div>
   <div class="mz-b2b-orders-grid">
       <div class="is-loading"></div>

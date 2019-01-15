@@ -17,7 +17,7 @@
 {% else %}
 <div class="mz-return-grid-container">
   <div class="mz-btns" style="text-align:right">
-      <label><input data-mz-action="toggleViewAllReturns" type="checkbox" {% if model.viewingAllReturns %}checked{% endif %} /> View All Returns</label>
+      <label><input data-mz-action="toggleReturnsGridSource" type="checkbox" {% if model.viewingAllReturns %}checked{% endif %} />{{ labels.viewAllReturns }}</label>
   </div>
   <div class="mz-b2b-returns-grid">
       <div class="is-loading"></div>
