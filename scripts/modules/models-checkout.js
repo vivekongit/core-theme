@@ -1557,6 +1557,7 @@
         var CheckoutPage = Backbone.MozuModel.extend({
             mozuType: 'order',
             handlesMessages: true,
+            requiredBehaviors: [1002],
             relations: {
                 fulfillmentInfo: FulfillmentInfo,
                 billingInfo: BillingInfo,
@@ -2101,7 +2102,7 @@
 
                 this.isLoading(true);
 
-                if (isSavingNewCustomer) {  
+                if (isSavingNewCustomer && this.hasRequiredBehavior(1014)) {  
                     process.unshift(this.addNewCustomer);
                 }
 
@@ -2114,17 +2115,17 @@
                          billingInfo.set('card', creditCard.billingInfo.card);
                      }
                  }
-                 if (saveCreditCard && (this.get('createAccount') || isAuthenticated)) {
+                 if (saveCreditCard && (this.get('createAccount') || isAuthenticated) && this.hasRequiredBehavior(1014)) {
                     isSavingCreditCard = true;
                     process.push(this.saveCustomerCard);
                     }
 
-                if ((this.get('createAccount') || isAuthenticated) && billingInfo.getDigitalCreditsToAddToCustomerAccount().length > 0) {
+                if ((this.get('createAccount') || isAuthenticated) && billingInfo.getDigitalCreditsToAddToCustomerAccount().length > 0 && this.hasRequiredBehavior(1014)) {
                     process.push(this.addDigitalCreditToCustomerAccount);
                 }
 
                 //save contacts
-                if (!this.isNonMozuCheckout() && isAuthenticated || isSavingNewCustomer) {
+                if (!this.isNonMozuCheckout() && isAuthenticated || isSavingNewCustomer && this.hasRequiredBehavior(1014)) {
                     if (!isSameBillingShippingAddress && !isSavingCreditCard) {
                         if (requiresFulfillmentInfo) process.push(this.addShippingContact);
                         if (requiresBillingInfo) process.push(this.addBillingContact);
