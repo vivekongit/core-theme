@@ -1,5 +1,6 @@
 define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/product-picker/product-modal-view", "modules/mozu-utilities", "modules/message-handler"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, ProductModalViews, MozuUtilities, MessageHandler) {
-
+    var ALL_LISTS_FILTER = "";
+    var USER_LISTS_FILTER = "userId eq " + require.mozuData('user').userId;
     var QuoteModel = WishlistModels.Wishlist.extend({
         handlesMessages: true,
         defaults: {
@@ -130,10 +131,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         toggleViewAllLists: function (e) {
             if (e.currentTarget.checked){
               this.model.set('viewingAllLists', true);
-              this._quotesGridView.model.filterBy("");
+              this._quotesGridView.model.filterBy(ALL_LISTS_FILTER);
             } else {
               this.model.set('viewingAllLists', false);
-              this._quotesGridView.model.filterBy("userId eq " + require.mozuData('user').userId);
+              this._quotesGridView.model.filterBy(USER_LISTS_FILTER);
             }
         },
         render: function () {

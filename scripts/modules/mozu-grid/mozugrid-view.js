@@ -4,7 +4,8 @@ define(["modules/jquery-mozu", "underscore", "modules/backbone-mozu", "modules/v
         templateName: 'modules/mozugrid/grid',
         initialize: function () {
             var self = this;
-            if (!(!this.model.hasRequiredBehavior() && this.model.requireBehaviorsToRender)){
+            var allowedToGetData = (this.model.hasRequiredBehavior() || !this.model.requireBehaviorsToRender);
+            if (allowedToGetData){
               if (typeof this.model.apiGridRead === 'function') {
                   this.model.apiModel.get = this.model.apiGridRead.bind(this.model);
                   this.model.apiModel.setIndex = this.model.apiGridRead.bind(this.model);

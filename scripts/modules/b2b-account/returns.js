@@ -94,12 +94,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               }
           },
           {
-              index: 'createdBy',
+              index: 'contact',
               displayName: 'Created By',
               sortable: false,
-              displayTemplate: function(createdBy){
-                  // We'll need to do extra work to get this.
-                  if (createdBy) return createdBy;
+              displayTemplate: function(contact){
+                  if (contact.email) return contact.email;
                   return "";
               }
           },
