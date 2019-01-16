@@ -43,6 +43,16 @@
                         <li class="mz-message-item">{{ labels.bulkAddToCartErrors|string_format(msg.message)|safe }}</li>
                     </ul>
                 {% endif %}
+                {% if msg.messageType == "Warning" %}
+                    <ul class="is-showing mz-infos">
+                        <li class="mz-message-item">{{ msg.message }}</li>
+                    </ul>
+                {% endif %}
+                {% if msg.messageType == "Error" %}
+                    <ul class="is-showing mz-errors">
+                        <li class="mz-message-item">{{ msg.message }}</li>
+                    </ul>
+                {% endif %}
             {% else %}
                 <ul class="is-showing mz-errors">
                     <li class="mz-message-item">{{ msg.message }}</li>

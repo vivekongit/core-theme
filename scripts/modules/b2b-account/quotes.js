@@ -112,6 +112,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             self.model.isLoading(true);
             return this.model.get('quote').apiCreate(quote).then(function () {
                 self.render();
+            }, function(error){
+                MessageHandler.saveMessage('CopyWishList', 'Error', error.message);
+                MessageHandler.showMessage('CopyWishList');
             }).done(function () {
                 self.model.isLoading(false);
             });
@@ -424,6 +427,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         copyWishlist: function (e, row) {
             var wishlistName = 'copy - ' + row.get('name');
             row.set('name', wishlistName);
+            row.set('userId', require.mozuData('user').userId);
             window.views.currentPane.copyQuote(row);
         }
     });
