@@ -380,6 +380,12 @@
             }
         }),
 
+        CustomerBillingContact = CustomerModels.Contact.extend({
+            hasRequiredBehavior: function(){
+                 return true;
+             }
+         }),
+
         BillingInfo = CheckoutStep.extend({
             mozuType: 'payment',
             validation: {
@@ -401,7 +407,7 @@
                 'creditAmountToApply': Backbone.MozuModel.DataTypes.Float
             },
             relations: {
-                billingContact: CustomerModels.Contact,
+                billingContact: CustomerBillingContact,
                 card: PaymentMethods.CreditCardWithCVV,
                 check: PaymentMethods.Check,
                 purchaseOrder: PaymentMethods.PurchaseOrder
