@@ -92,6 +92,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     var QuotesView = Backbone.MozuView.extend({
         templateName: 'modules/b2b-account/quotes/my-quotes',
+        initialize: function(){
+            Backbone.MozuView.prototype.initialize.apply(this, arguments);
+            this.model.set('viewingAllLists', true);
+        },
         newQuote: function () {
             this.model.setQuote({});
             this.model.setEditMode(true);
@@ -169,7 +173,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                     });
 
                     self._quotesGridView = quotesGrid;
-
                     quotesGrid.render();
                     return;
                 } else {
@@ -326,7 +329,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     var MozuGridCollectionModel = MozuGridCollection.extend({
         mozuType: 'wishlists',
-        filter: "userId eq " + require.mozuData('user').userId,
+        filter: ALL_LISTS_FILTER,
         columns: [
             {
                 index: 'name',
