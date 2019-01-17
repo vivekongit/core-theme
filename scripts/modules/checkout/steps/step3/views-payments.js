@@ -125,6 +125,12 @@ define(["modules/jquery-mozu",
                      this.visaCheckoutInitialized = true;
                 }
 
+                // There is probably a better place to set this than here.
+                // We just need to make sure this gets set before we open the form to add a new card.
+                if (Hypr.getThemeSetting('isCvvSuppressed') && this.model.get('card')) {
+                    this.model.get('card').set('isCvvOptional', true);
+                }
+
                 if (this.$(".apple-pay-button").length > 0)
                     ApplePay.init();
 
