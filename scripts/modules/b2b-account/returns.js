@@ -1,7 +1,28 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'pages/myaccount'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, MyAccount) {
+define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", 'modules/editable-view', 'modules/models-customer', 'modules/models-b2b-account', 'pages/myaccount'], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, EditableView, CustomerModels, B2BAccountModels, MyAccount) {
     var DEFAULT_RETURN_FILTER = '';
     var USER_RETURN_FILTER = 'userId eq '+ require.mozuData('user').userId;
 
+    var ReturnsMozuGrid = MozuGrid.extend({
+        render: function(){
+          var self = this;
+          this.populateWithUsers().then(function(){
+              MozuGrid.prototype.render.apply(self, arguments);
+          });
+        },
+        populateWithUsers: function(){
+            var self = this;
+            var b2bAccount = new B2BAccountModels.b2bAccount(CustomerModels.Customer.fromCurrent().toJSON());
+            return b2bAccount.apiGetUsers().then(function(users){
+                self.model.get('items').models.forEach(function(rtn){
+                    var userInQuestion = users.data.items.find(function(user){
+                        return (user.userId === rtn.get('userId'));
+                    });
+                    rtn.set('fullName', userInQuestion.firstName+' '+userInQuestion.lastName);
+                });
+                return self.model;
+            });
+        }
+    });
     var ReturnsView = Backbone.MozuView.extend({
       templateName: "modules/b2b-account/returns/returns",
       render: function(){
@@ -11,7 +32,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       },
       initializeGrid: function(collection){
           var self = this;
-          self._returnsGridView = new MozuGrid({
+          var modelCollection = {};
+          self._returnsGridView = new ReturnsMozuGrid({
               el: $('.mz-b2b-returns-grid'),
               model: collection
           });
@@ -94,12 +116,11 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
               }
           },
           {
-              index: 'contact',
+              index: 'fullName',
               displayName: 'Created By',
               sortable: false,
-              displayTemplate: function(contact){
-                  if (contact.email) return contact.email;
-                  return "";
+              displayTemplate: function(fullName){
+                  return fullName || '';
               }
           },
           {
