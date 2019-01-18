@@ -42,9 +42,7 @@
     </div>
 
     <div class="mz-shipping-row-item">
-      {% if model.hasRequiredBehavior %}
         <button class="mz-button mz-shipping-destination-add-address-link mz-checkout-button-link" {% if model.quantity < 2  || model.selectableDestinations.length === 0%} style="visibility:hidden" {% endif %} data-mz-action="handleSplitOrderItem" {% if model.isLoading %} disabled {% endif %}> + {{ labels.shippingDestinationAddAddress }} </button>
-      {% endif %}
   </div>
 
 </div>
