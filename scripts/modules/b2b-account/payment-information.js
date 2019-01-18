@@ -106,14 +106,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                   return date.toLocaleDateString();
               }
           },
-          {
-              index: 'orderNumber',
-              displayName: 'Order Number',
-              sortable: true,
-              displayTemplate: function(value){
-                  return (value === undefined || value.length < 1) ? value : 'N/A';
-              }
-          },
+          // {
+          //     index: 'orderNumber',
+          //     displayName: 'Order Number',
+          //     sortable: true,
+          //     displayTemplate: function(value){
+          //         return (value === undefined || value.length < 1) ? value : 'N/A';
+          //     }
+          // },
           {
               index: 'transactionTypeId',
               displayName: 'Order Type',
