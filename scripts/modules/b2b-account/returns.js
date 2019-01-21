@@ -94,6 +94,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
   var _returnsGridViewCollectionModel = MozuGridCollection.extend({
       mozuType: 'rmas',
+      filter: USER_RETURN_FILTER,
       defaultSort: 'createDate desc',
       columns: [
           {
