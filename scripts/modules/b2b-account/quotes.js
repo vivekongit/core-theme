@@ -77,6 +77,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             if (this.get('quote').get('items').length) {
                 this.get('quote').get('items').reset();
             }
+            quote.get('items').forEach(function(item){
+                item.get('product').url = (HyprLiveContext.locals.siteContext.siteSubdirectory || '')+'/p/'+item.get('product').productCode;
+            });
             this.set('quote', quote);
         },
         setEditMode: function (flag) {
@@ -88,6 +91,24 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             }
             return this.setEditMode(true);
         }
+    });
+
+    var QuotesMozuGrid = MozuGrid.extend({
+      render: function(){
+          var self = this;
+          this.populateWithUsers();
+          MozuGrid.prototype.render.apply(self, arguments);
+      },
+      populateWithUsers: function(){
+          var self = this;
+          self.model.get('items').models.forEach(function(list){
+              var userInQuestion = window.b2bUsers.find(function(user){
+                  return (user.userId === list.get('userId'));
+              });
+              list.set('fullName', userInQuestion.firstName+' '+userInQuestion.lastName);
+          });
+          return self.model;
+      }
     });
 
     var QuotesView = Backbone.MozuView.extend({
@@ -133,6 +154,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             //Move to Cart?
         },
         toggleViewAllLists: function (e) {
+          this._quotesGridView.model.setPage(1);
             if (e.currentTarget.checked){
               this.model.set('viewingAllLists', true);
               this._quotesGridView.model.filterBy(ALL_LISTS_FILTER);
@@ -167,7 +189,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 if (!self.model.get('isEditMode')) {
                     var collection = new MozuGridCollectionModel();
 
-                    var quotesGrid = new MozuGrid({
+                    var quotesGrid = new QuotesMozuGrid({
                         el: $('.mz-b2b-quotes-grid'),
                         model: collection
                     });
@@ -345,6 +367,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                         return date.toLocaleDateString();
                     }
                 }
+            },
+            {
+                index: 'fullName',
+                displayName: 'Created By',
+                displayTemplate: function(value){
+                    return (value || '');
+                }
             }
         ],
         defaultSort: 'updateDate desc',
@@ -396,9 +425,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             var products = [];
 
             _.each(items, function(item) {
-                var isItemDigital = item.product.fulfillmentTypesSupported.includes('Digital');
-
-
+                var isItemDigital = _.contains(item.product.fulfillmentTypesSupported, "Digital");
                 products.push({
                     quantity : item.quantity,
                     data: item.data,

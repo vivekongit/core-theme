@@ -76,16 +76,27 @@ define([
 
     $(document).ready(function () {
 
-        var views = {
-            paneSwitcherView: new PaneSwitcher.PaneSwitcherView({
-                templateName: "modules/b2b-account/pane-switcher",
-                el: $('.mz-b2b-pane-switcher'),
-                model: paneSwitcherModel
-            })
-        };
+      var b2bAccount = new B2BAccountModels.b2bAccount({id: require.mozuData('user').accountId});
+      return b2bAccount.apiGetUsers().then(function(users){
+          var strippedDownUsers = _.map(users.data.items, function(user){
+             return {
+                 firstName: user.firstName,
+                 lastName: user.lastName,
+                 userId: user.userId
+             };
+          });
 
-        window.views = views;
-        _.invoke(views, 'render');
+          window.b2bUsers = strippedDownUsers;
+          var views = {
+              paneSwitcherView: new PaneSwitcher.PaneSwitcherView({
+                  templateName: "modules/b2b-account/pane-switcher",
+                  el: $('.mz-b2b-pane-switcher'),
+                  model: paneSwitcherModel
+              })
+          };
+          window.views = views;
+          _.invoke(views, 'render');
+      });
 
     });
 });

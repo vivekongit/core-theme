@@ -5,22 +5,18 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
     var ReturnsMozuGrid = MozuGrid.extend({
         render: function(){
           var self = this;
-          this.populateWithUsers().then(function(){
-              MozuGrid.prototype.render.apply(self, arguments);
-          });
+          this.populateWithUsers();
+          MozuGrid.prototype.render.apply(self, arguments);
         },
         populateWithUsers: function(){
             var self = this;
-            var b2bAccount = new B2BAccountModels.b2bAccount({id: require.mozuData('user').accountId});
-            return b2bAccount.apiGetUsers().then(function(users){
-                self.model.get('items').models.forEach(function(rtn){
-                    var userInQuestion = users.data.items.find(function(user){
-                        return (user.userId === rtn.get('userId'));
-                    });
-                    rtn.set('fullName', userInQuestion.firstName+' '+userInQuestion.lastName);
+            self.model.get('items').models.forEach(function(rtn){
+                var userInQuestion = window.b2bUsers.find(function(user){
+                    return (user.userId === rtn.get('userId'));
                 });
-                return self.model;
+                rtn.set('fullName', userInQuestion.firstName+' '+userInQuestion.lastName);
             });
+            return self.model;
         }
     });
     var ReturnsView = Backbone.MozuView.extend({
@@ -76,8 +72,9 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         });
 
     },
-    toggleViewAllReturns: function(e){
+    toggleReturnsGridSource: function(e){
         var self = this;
+        self._returnsGridView.model.setPage(1);
         if (e.currentTarget.checked){
             self.model.set('viewingAllReturns', true);
             self._returnsGridView.model.filterBy(DEFAULT_RETURN_FILTER);
