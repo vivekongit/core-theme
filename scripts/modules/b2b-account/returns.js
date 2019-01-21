@@ -30,9 +30,15 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         Backbone.MozuView.prototype.render.apply(this, arguments);
         this.initializeGrid(collection);
       },
+      initialize: function(){
+        Backbone.MozuView.prototype.initialize.apply(this, arguments);
+        this.model.set('viewingAllReturns', false);
+      },
       initializeGrid: function(collection){
           var self = this;
-          var modelCollection = {};
+          if (!self.model.get('viewingAllReturns')){
+              collection.filterBy(USER_RETURN_FILTER);
+          }
           self._returnsGridView = new ReturnsMozuGrid({
               el: $('.mz-b2b-returns-grid'),
               model: collection
@@ -94,7 +100,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
   var _returnsGridViewCollectionModel = MozuGridCollection.extend({
       mozuType: 'rmas',
-      filter: USER_RETURN_FILTER,
       defaultSort: 'createDate desc',
       columns: [
           {

@@ -36,6 +36,10 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
           this.initializeGrid(collection);
           this.initializeOrderView();
       },
+      initialize: function(){
+        Backbone.MozuView.prototype.initialize.apply(this, arguments);
+        this.model.set('viewingAllOrders', false);
+      },
       initializeOrderView: function(){
         var self = this;
           if(this.model.get('currentOrder')){
@@ -51,10 +55,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
       },
       initializeGrid: function(collection){
         var self = this;
+        if (!self.model.get('viewingAllOrders')){
+            collection.filterBy(USER_ORDER_FILTER);
+        }
         self._ordersGridView = new OrdersMozuGrid({
             el: $('.mz-b2b-orders-grid'),
             model: collection
         });
+
         self._ordersGridView.listenTo(self._ordersGridView.model, 'viewOrder', self.viewOrder.bind(self));
         self._ordersGridView.listenTo(self._ordersGridView.model, 'reorder', self.reorder.bind(self));
       },
@@ -114,7 +122,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
   var OrdersGridCollectionModel = MozuGridCollection.extend({
       mozuType: 'orders',
-      filter: USER_ORDER_FILTER,
       defaultSort: 'submittedDate desc',
       columns: [
           {
