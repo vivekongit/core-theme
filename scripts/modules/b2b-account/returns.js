@@ -11,7 +11,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
         },
         populateWithUsers: function(){
             var self = this;
-            var b2bAccount = new B2BAccountModels.b2bAccount(CustomerModels.Customer.fromCurrent().toJSON());
+            var b2bAccount = new B2BAccountModels.b2bAccount({id: require.mozuData('user').accountId});
             return b2bAccount.apiGetUsers().then(function(users){
                 self.model.get('items').models.forEach(function(rtn){
                     var userInQuestion = users.data.items.find(function(user){
