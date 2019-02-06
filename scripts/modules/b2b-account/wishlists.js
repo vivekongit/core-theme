@@ -1,4 +1,23 @@
-define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules/backbone-mozu", "hyprlivecontext", 'modules/mozu-grid/mozugrid-view', 'modules/mozu-grid/mozugrid-pagedCollection', "modules/views-paging", "modules/models-product", "modules/models-wishlist", "modules/search-autocomplete", "modules/models-cart", "modules/product-picker/product-picker-view", "modules/backbone-pane-switcher", "modules/product-picker/product-modal-view", "modules/mozu-utilities", "modules/message-handler"], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, ProductModalViews, MozuUtilities, MessageHandler) {
+define([
+  "modules/jquery-mozu",
+  'modules/api',
+  "underscore",
+  "hyprlive",
+  "modules/backbone-mozu",
+  "hyprlivecontext",
+  'modules/mozu-grid/mozugrid-view',
+  'modules/mozu-grid/mozugrid-pagedCollection',
+  "modules/views-paging",
+  "modules/models-product",
+  "modules/models-wishlist",
+  "modules/search-autocomplete",
+  "modules/models-cart",
+  "modules/product-picker/product-picker-view",
+  "modules/backbone-pane-switcher",
+  "modules/product-picker/product-modal-view",
+  "modules/mozu-utilities",
+  "modules/message-handler"
+], function ($, api, _, Hypr, Backbone, HyprLiveContext, MozuGrid, MozuGridCollection, PagingViews, ProductModels, WishlistModels, SearchAutoComplete, CartModels, ProductPicker, PaneSwitcher, ProductModalViews, MozuUtilities, MessageHandler) {
     var ALL_LISTS_FILTER = "";
     var USER_LISTS_FILTER = "userId eq " + require.mozuData('user').userId;
     var WishlistModel = WishlistModels.Wishlist.extend({
@@ -26,9 +45,8 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 this.syncApiModel();
                 return this.apiModel.update();
             }
-            return this.apiModel.create(this.model);
+              return this.apiModel.create(this.model);
         },
-
         addWishlistItem: function (item, quantity) {
             var self = this;
             self.isLoading(true);
@@ -38,7 +56,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                     var payload = {
                             wishlistId: self.get('id'),
                             id: self.get('id'),
-                            quantity: 1,
+                            quantity: quantity,
                             product: item
                     };
                     self.apiModel.addItemTo(payload, { silent: true }).then(function (data) {
@@ -61,6 +79,45 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             }).ensure(function () {
                 self.isLoading(false);
             });
+        },
+        addWishlistItems: function(listOfItems){
+            // This is only called when saving a quick order as a list.
+            var payloadItems = [];
+            listOfItems.forEach(function(item){
+                payloadItems.push({
+                    product: item.get('product'),
+                    quantity: item.get('quantity')
+                });
+            });
+            var self = this;
+            if (!this.get('id')){
+                this.set('items', payloadItems);
+                this.set('wishlistId', self.get('id'));
+                return this.saveWishlist().then(function(){
+                  var payload = {
+                          wishlistId: self.get('id'),
+                          id: self.get('id'),
+                          items: payloadItems,
+                          name: self.get('name')
+                  };
+                  return self.apiModel.update(payload, { silent: true }).then(function (data) {
+                      return self.apiGet();
+                  }).ensure(function () {
+                      self.isLoading(false);
+                  });
+                });
+            }
+            var payload = {
+                wishlistId: this.get('id'),
+                items: payloadItems
+            };
+
+            return this.apiModel.update(payload, { silent: true }).then(function (data) {
+                return self.apiGet();
+            }).ensure(function () {
+                self.isLoading(false);
+            });
+
         }
     });
 
@@ -122,12 +179,14 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             "change [data-mz-value='wishlist-quantity']": "onQuantityChange"
         },
         initialize: function(){
+            var self = this;
             Backbone.MozuView.prototype.initialize.apply(this, arguments);
             this.model.set('viewingAllLists', true);
         },
         newWishlist: function () {
             this.model.setWishlist({});
             this.model.setEditMode(true);
+            this.model.setWishlist({editingNew: true});
             this.render();
             //Just the Edit Page that is empty?
         },
@@ -152,14 +211,6 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             }).done(function () {
                 self.model.isLoading(false);
             });
-        },
-        createOrder: function () {
-            window.console.log('Create Order');
-            //Move to Cart?
-        },
-        shareWishlist: function () {
-            window.console.log('Share Wishlist');
-            //Move to Cart?
         },
         toggleViewAllLists: function (e) {
           this._wishlistsGridView.model.setPage(1);
@@ -218,26 +269,49 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             'name',
             'pickerItemQuantity'
         ],
-        // initialize: function() {
-        //     var self = this;
-        //     this.listenToOnce(this.model, "productSelected", function (product) {
-        //         self.model.set('isProductSelected', true);
-        //         self.addWishlistItem();
-        //     });
-        // },
+        initialize: function() {
+            var self = this;
+            Backbone.MozuView.prototype.initialize.apply(this, arguments);
+            this.originalData = this.model.toJSON() || {};
+        },
         saveWishlist: function () {
             var self = this;
-            this.model.saveWishlist().then(function () {
+            return this.model.saveWishlist().then(function () {
                 self.model.parent.setEditMode(false);
                 self.model.parent.trigger('render');
             });
 
-            //Just the Edit Page that is empty?
         },
-        cancelWishlistEdit: function () {
+        saveAndCloseWishlistEdit: function () {
+          // Name here is a bit misleading but the effect is the same -
+          // wishlists auto-save constantly. This function closes the editor
+          // without deleting any changes.
+          // It gets also called when no changes have been made and the user clicks cancel.
+            this.model.set('editingNew', false);
             this.model.parent.setEditMode(false);
             window.views.currentPane.render();
-            //Just the Edit Page that is empty?
+        },
+        cancelWishlistEdit: function () {
+            // Wishlists are typically saved automatically.
+            // If we are in new wishlist mode, cancellation means we can simply delete
+            // the wishlist we've begun. If we are editing an existing wishlist, we
+            // save over the one we have with a copy of original data we stashed away on page load.
+            var self = this;
+            if (this.model.get('editingNew') && this.model.get('id')){
+                this.model.deleteWishlist((this.model.get('id'))).then(function(){
+                    self.saveAndCloseWishlistEdit();
+                });
+            } else if (!this.model.get('id')){
+                  self.saveAndCloseWishlistEdit();
+            } else {
+                // if !this.model.get('id'), this.originalData should be an empty,
+                // and there is no wishlist to save so this is fine.
+                this.model.set(self.originalData);
+                this.saveWishlist().then(function(){
+                  self.saveAndCloseWishlistEdit();
+                });
+            }
+
         },
         addWishlistItem: function (e) {
             var self = this;
@@ -386,7 +460,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
                 action: 'copyWishlist'
             },
             {
-                displayName: 'Order',
+                displayName: 'Add to Cart',
                 action: 'addWishlistToCart',
                 isHidden: function () {
                     // 1008 = Can place orders
@@ -400,16 +474,13 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
             })
         },
         deleteWishlist: function (e, row) {
-            window.console.log('Remove Wishlist');
             //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
             //var wishlistId = e.target.data("mzWishlistId");
             //Confirmation Modal
             window.views.currentPane.removeWishlist(row.get('id'));
         },
         editWishlist: function (e, row) {
-            window.console.log('Edit Wishlist');
             //var rowIndex = $(e.target).parents('.mz-grid-row').data('mzRowIndex');
-
             window.views.currentPane.model.setWishlist(row);
             window.views.currentPane.model.setEditMode(true);
             window.views.currentPane.render();
@@ -461,6 +532,7 @@ define(["modules/jquery-mozu", 'modules/api', "underscore", "hyprlive", "modules
 
     return {
         'WishlistsModel': WishlistsModel,
+        'WishlistModel': WishlistModel,
         'WishlistsView': WishlistsView
     };
 });

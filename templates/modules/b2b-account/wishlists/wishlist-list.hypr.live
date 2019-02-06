@@ -1,7 +1,13 @@
-{% if model.items %}
+{% if model.items.length %}
         {% for item in model.items %}
         {% include "modules/b2b-account/wishlists/wishlist-item-listing" with model=item %}
-        {% endfor %} 
+        {% endfor %}
+        <div class="wishlist-btns">
+            {% if model.quickOrder %}
+            <button type="button" class="mz-button" data-mz-action="saveQuickOrder">{{ labels.saveAsList }}</button>
+            {% endif %}
+            <button type="button" class="mz-button" data-mz-action="quickOrder">{{ labels.addAllItemsToCart }}</button>
+        </div>
 {% else %}
         {{ labels.accountNoWishlists }}
 {% endif %}

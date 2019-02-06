@@ -15,7 +15,24 @@
         <li class="mz-utilitynav-item">
             <div id="mz-logged-in-notice">
                 Welcome, <a href="{{siteContext.siteSubdirectory}}/myaccount" class="mz-utilitynav-link">{{user.firstName|default(user.emailAddress)}}</a>! (<a href="{{siteContext.siteSubdirectory}}/logout" data-mz-action="logout" class="mz-utilitynav-link">{{ labels.logOut }}</a>)
+            </div>
         </li>
+        {% comment %}
+        Quick Order functionality is only available to B2B accounts.
+        Right now the easiest way to check an account's type without making an API call is to check their permissions.
+        Behavior 1014 is a global behavior that is only given to B2C accounts.
+        {% endcomment %}
+        {% with user.behaviors|find('1014') as behavior %}
+          {% if not behavior %}
+          {% with user.behaviors|find('1008') as placeOrderBehavior %}
+            {% if placeOrderBehavior %}
+              <li class="mz-utilitynav-item">
+                  <a href="{{siteContext.siteSubdirectory}}/myaccount#QuickOrder" data-mz-action="quickOrder" data-placement="bottom" class="mz-utilitynav-link">{{ labels.quickOrder }}</a>
+              </li>
+            {% endif %}
+          {% endwith %}
+          {% endif %}
+        {% endwith %}
         {%else%}
         <li class="mz-utilitynav-item">
             <a href="{{siteContext.siteSubdirectory}}/user/login" data-mz-action="login" data-placement="bottom" class="mz-utilitynav-link">{{ labels.logIn }}</a>
