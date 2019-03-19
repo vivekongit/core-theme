@@ -54,11 +54,9 @@ define([
               }
 
               this.stopListening();
-              this.model.isLoading(true);
               this.listenTo(product, "configurationComplete", function (){
                   self.finalizeAddItemToOrder(product);
                   window.quickOrderModalView.handleDialogClose();
-                  self.model.isLoading(false);
                   self.render();
               });
               window.quickOrderModalView.loadAddProductView(product);
@@ -77,7 +75,6 @@ define([
           self.model.unset('selectedProduct');
           $('.mz-b2b-quickorder .mz-searchbox-input.tt-input').val('');
           $('.mz-b2b-quickorder #pickerItemQuantity').val(1);
-          //this.model.isLoading(false);
         },
         removeItem: function(e){
           var self = this;
@@ -118,13 +115,13 @@ define([
                   }
               });
           });
-          self.model.isLoading(true);
-          cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: true}).then(function(response){
+              this.$el.addClass('is-loading');
+              cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: true}).then(function(response){
                   window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
               }, function (error) {
                   if (error.items) {
                       self.handleError(error);
-                      self.model.isLoading(false);
+                      self.$el.removeClass('is-loading');
                       self.render();
                   }
           });
@@ -160,7 +157,7 @@ define([
         saveQuickOrderAsList: function(){
             var self = this;
             var wishlist = new WishlistModels.WishlistModel({});
-            this.model.isLoading(true);
+            this.$el.addClass('is-loading');
             wishlist.addWishlistItems(this.model.get('items')).then(function(res){
                 var paneSwitcherModel = window.views.paneSwitcherView.model;
                 var listPane = paneSwitcherModel.get('panes').find(function(pane){
@@ -170,7 +167,7 @@ define([
                 listPane.view.model.setEditMode(true);
                 listPane.view.model.set('editingNew', true);
                 window.views.paneSwitcherView.model.setPane('Lists');
-                self.model.isLoading(false);
+                self.$el.removeClass('is-loading');
             });
         }
     });
@@ -227,7 +224,7 @@ define([
               // Simply increase the quantity of the product in question.
               var newQuantity = alreadyInOrder.get('quantity')+ quantity;
               alreadyInOrder.set('quantity', newQuantity);
-              self.model.updateItemTotal(alreadyInOrder);
+              self.updateItemTotal(alreadyInOrder);
           }
       },
       compareProductOptions: function(product1, product2){
@@ -253,7 +250,7 @@ define([
           options2 = options2.sort();
 
           for (var i = 0; i<options1.length; i++){
-              if (options1[i] !== options1[i]) return false;
+              if (options1[i] !== options2[i]) return false;
           }
           return true;
       },
