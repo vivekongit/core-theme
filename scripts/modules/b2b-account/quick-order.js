@@ -222,7 +222,7 @@ define([
               });
           } else {
               // Simply increase the quantity of the product in question.
-              var newQuantity = alreadyInOrder.get('quantity')+ quantity;
+              var newQuantity = Number(alreadyInOrder.get('quantity')) + Number(quantity);
               alreadyInOrder.set('quantity', newQuantity);
               self.updateItemTotal(alreadyInOrder);
           }
