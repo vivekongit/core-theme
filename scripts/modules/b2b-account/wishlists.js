@@ -118,6 +118,44 @@ define([
                 self.isLoading(false);
             });
 
+        },
+        addToCart: function(){
+          this.isLoading(true);
+          var self = this;
+          var items = this.get('items').toJSON();
+          var cart = CartModels.Cart.fromCurrent();
+          var products = [];
+          _.each(items, function(item) {
+              var isItemDigital = _.contains(item.product.fulfillmentTypesSupported, "Digital");
+
+              products.push({
+                  quantity : item.quantity,
+                  data: item.data,
+                  fulfillmentMethod : (!isItemDigital ? "Ship" : "Digital"),
+                  product: {
+                      productCode : item.product.productCode,
+                      variationProductCode : item.product.variationProductCode,
+                      bundledProducts : item.product.bundledProducts,
+                      options : item.product.options || []
+                  }
+              });
+          });
+          cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){
+                  window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
+              }, function (error) {
+                  self.isLoading(false);
+                  if (error.items) {
+                      var errorMessage = "";
+                      _.each(error.items, function(error){
+                          var errorProp = _.find(error.additionalErrorData, function(errorData){
+                              return errorData.name === "Property";
+                          });
+                          errorMessage += ('</br ><strong>' + errorProp.value + '</strong> : ' + error.message);
+                      });
+                      MessageHandler.saveMessage('BulkAddToCart', 'BulkAddToCartErrors', errorMessage);
+                      window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
+                  }
+          });
         }
     });
 
@@ -281,6 +319,9 @@ define([
                 self.model.parent.trigger('render');
             });
 
+        },
+        addWishlistToCart: function(){
+          this.model.addToCart();
         },
         saveAndCloseWishlistEdit: function () {
           // Name here is a bit misleading but the effect is the same -
@@ -486,41 +527,7 @@ define([
             window.views.currentPane.render();
         },
         addWishlistToCart: function (e, row) {
-            var cart = CartModels.Cart.fromCurrent();
-            var items = row.get('items').toJSON();
-            var products = [];
-
-            _.each(items, function(item) {
-                var isItemDigital = _.contains(item.product.fulfillmentTypesSupported, "Digital");
-
-                products.push({
-                    quantity : item.quantity,
-                    data: item.data,
-                    fulfillmentMethod : (!isItemDigital ? "Ship" : "Digital"),
-                    product: {
-                        productCode : item.product.productCode,
-                        variationProductCode : item.product.variationProductCode,
-                        bundledProducts : item.product.bundledProducts,
-                        options : item.product.options || []
-                    }
-                });
-            });
-            //var products = row.get('items').toJSON();
-            cart.apiModel.addBulkProducts({ postdata: products, throwErrorOnInvalidItems: false}).then(function(){
-                    window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
-                }, function (error) {
-                    if (error.items) {
-                        var errorMessage = "";
-                        _.each(error.items, function(error){
-                            var errorProp = _.find(error.additionalErrorData, function(errorData){
-                                return errorData.name === "Property";
-                            });
-                            errorMessage += ('</br ><strong>' + errorProp.value + '</strong> : ' + error.message);
-                        });
-                        MessageHandler.saveMessage('BulkAddToCart', 'BulkAddToCartErrors', errorMessage);
-                        window.location = (HyprLiveContext.locals.siteContext.siteSubdirectory || '') + "/cart";
-                    }
-            });
+            row.addToCart();
         },
         copyWishlist: function (e, row) {
             var wishlistName = 'copy - ' + row.get('name');
