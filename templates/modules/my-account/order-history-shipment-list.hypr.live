@@ -1,0 +1,7 @@
+<div class="mz-order-shipments" data-mz-id="{{ model.shipmentNumber }}">
+    {% for shipment in model.items %}
+        <div data-mz-order-shipment class="mz-order-shipment">
+            {% include "modules/my-account/order-history-shipment" with model=shipment order=model %}
+        </div>
+    {% endfor %}
+</div>

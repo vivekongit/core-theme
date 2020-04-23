@@ -1,0 +1,31 @@
+<div data-mz-order-shipment data-mz-shipment-number="{{ model.number }}">
+
+    {% block order-shipment-header %}
+        <h3 class="mz-shipment-status-heading">{{ model.fulfillmentStatus }}
+            {% if model.fulfillmentDate %}
+                {{ model.fulfillmentDate }}
+            {% endif %}
+        </h3>
+    {% endblock order-shipment-header %}
+
+    {% block order-shipment %}
+        {% for item in model.items %}
+            <div data-mz-order-shipment-item class="mz-order-shipment-item">
+                {% include "modules/my-account/order-history-shipment-item" with model=item shipment=model %}
+            </div>
+        {% endfor %}
+        <div data-mz-order-shipment-item-actions>
+            {% if model.fulfillmentDate %}
+                {{ model.fulfillmentDate }}
+            {% endif %}
+            {% if model.fulfillmentDate %}
+                {{ model.fulfillmentDate }}
+            {% endif %}
+        </div>    
+
+    {% endblock order-shipment %}
+    
+    {% block order-shipment-footer%}
+
+    {% endblock order-shipment-footer %}
+</div>
