@@ -12,6 +12,23 @@ define([
             items: Backbone.Collection.extend({
                 model: ProductModels.Product
             })
+        },
+        helpers: ['formatedFulfillmentDate'],
+        formatedFulfillmentDate: function() {
+            var shippedDate = this.get('fulfillmentDate'),
+                options = {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                };
+
+            if (shippedDate) {
+                var date = new Date(shippedDate);
+                return date.toLocaleDateString("en-us", options);
+            }
+
+            return "";
         }
     }),
     ShipmentCollection = Backbone.MozuPagedCollection.extend({

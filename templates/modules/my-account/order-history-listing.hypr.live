@@ -15,7 +15,7 @@
     {% endif %}
 
     {% if model.shipments %}
-        <div class="data-mz-order-shipment">
+        <div class="data-mz-shipment">
             {% include "modules/my-account/order-history-shipment-list" with model=model.shipments %}
         </div>
     {% endif %}

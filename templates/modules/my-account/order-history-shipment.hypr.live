@@ -1,31 +1,71 @@
-<div data-mz-order-shipment data-mz-shipment-number="{{ model.number }}">
 
-    {% block order-shipment-header %}
+<div class="mz-l-shipment">
+    {% block shipment-header %}
+
+        {% if model.status == "Fulfilled" %}
+            <h3 class="mz-shipment-status-heading">{{ labels.orderPackageFulfilled|string_format(model.formatedFulfillmentDate) }}</h3>
+        {% else %}
+            <h3 class="mz-shipment-status-heading">{{ model.shipmentStatus }}
+        {% endif %}
+
         <h3 class="mz-shipment-status-heading">{{ model.fulfillmentStatus }}
             {% if model.fulfillmentDate %}
-                {{ model.fulfillmentDate }}
+                {{ model.fulfillmentDate|date("F j, Y") }}
             {% endif %}
         </h3>
-    {% endblock order-shipment-header %}
 
-    {% block order-shipment %}
+    {% endblock shipment-header %}
+
+    {% block shipment-details %}
+
+    <div class="mz-shipment-items">
         {% for item in model.items %}
-            <div data-mz-order-shipment-item class="mz-order-shipment-item">
+            <div data-mz-shipment-item class="mz-shipment-item" data-mz-shipment-item-id="{{item.lineId}}">
                 {% include "modules/my-account/order-history-shipment-item" with model=item shipment=model %}
             </div>
         {% endfor %}
-        <div data-mz-order-shipment-item-actions>
-            {% if model.fulfillmentDate %}
-                {{ model.fulfillmentDate }}
-            {% endif %}
-            {% if model.fulfillmentDate %}
-                {{ model.fulfillmentDate }}
-            {% endif %}
-        </div>    
+    </div>
 
-    {% endblock order-shipment %}
-    
-    {% block order-shipment-footer%}
+    {% endblock shipment-details %}
 
-    {% endblock order-shipment-footer %}
+    {% block shipment-footer%}
+
+    {% endblock shipment-footer %}
 </div>
+
+
+
+{% block shipment-actions %}
+    <div data-mz-shipment-actions class="mz-shipment-actions mz-l-shipment-actions">
+        {% if themeSettings.allowCustomerInitiatedReturns and not model.limitPlaceReturns and model.shipmentStatus == "FULFILLED" %}
+            <div class="mz-shipment-action">
+                <button type="submit" class="mz-button" data-mz-order-id="{{ order.id }}" data-mz-action="startOrderReturn" >{{ labels.returnOrReplace }}</button>
+            </div>
+        {% endif %}
+        
+        {% if model.packages.length && model.packages.length > 0 %}
+        <div class="mz-shipment-action">
+            <div class="mz-shipment-status-tracking">
+            <h4 class="mz-shipment-action-heading">{{ labels.trackingInfo }}</h4>
+                {% for package in model.packages %}
+                    {% if package.shippingMethodName %}
+                        {{ labels.shippingMethod }}: {{ package.shippingMethodName }}<br>
+                    {% endif %}
+                    {% if package.trackings %}
+                        {{labels.trackingNumber}}:
+                        {% for tracking in package.trackings %}
+                            {% if tracking.url %}
+                                <span class="mz-shipment-status-tracking" data-mz-tracking-number="{{ item.trackingNumber }}" data-mx-shipping-code="{{ item.shippingMethodCode }}" data-mx-shipping-name="{{ item.shippingMethodName }}">{{ labels.trackingNumber }}: {{ model.trackingNumber }}</span>
+                            {% else %}
+                                {{ tracking.number }}
+                            {% endif %}
+                        {% endfor %}
+                        <br><br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock shipment-actions %}
+
