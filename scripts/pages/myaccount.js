@@ -289,6 +289,7 @@ define(['modules/backbone-mozu', "modules/api", 'hyprlive', 'hyprlivecontext', '
         },
         startOrderReturn: function(e) {
             this.model.clearReturn();
+            this.model._activeReturnShipmentNumber = e.currentTarget.getAttribute('data-mz-shipment-number');
             this.views().returnView.render();
         }
     });
@@ -310,6 +311,9 @@ define(['modules/backbone-mozu', "modules/api", 'hyprlive', 'hyprlivecontext', '
 
             self.model.fetchReturnableItems().then(function(data) {
                 var returnableItems = self.model.returnableItems(data.items);
+
+                returnableItems = returnableItems;
+
                 if (self.model.getReturnableItems().length < 1) {
                     self.trigger('renderMessage', {
                         messageType: 'noReturnableItems'
@@ -321,7 +325,7 @@ define(['modules/backbone-mozu', "modules/api", 'hyprlive', 'hyprlivecontext', '
 
                 $.each(self.$el.find('[data-mz-order-history-listing-return-item]'), function(index, val) {
                     var packageItem = returnableItems.find(function(model) {
-                        if($(val).data('mzOrderLineId') == model.get('orderLineId')){
+                        if($(val).data('mzShipmentItemId') == model.get('shipmentItemId')){
                             if ($(val).data('mzOptionAttributeFqn')) {
                                 return (model.get('orderItemOptionAttributeFQN') == $(val).data('mzOptionAttributeFqn') && model.uniqueProductCode() == $(val).data('mzProductCode'));
                             }
@@ -337,8 +341,14 @@ define(['modules/backbone-mozu', "modules/api", 'hyprlive', 'hyprlivecontext', '
                 });
 
                 _.invoke(returnItemViews, 'render');
+                
+                $('html, body').animate({
+                    scrollTop: $('#mz-orderlisting-' + self.model.get('id')).offset().top - 20 
+                }, 'slow');
 
             });
+
+            
 
         },
         clearOrderReturn: function() {

@@ -48,7 +48,7 @@ define([
                     rawData.items = rawData.items.concat(this.items);
                 }
             }
-            return Backbone.MozuModel.prototype.set.call(this, rawData, options)
+            return Backbone.MozuModel.prototype.set.call(this, rawData, options);
         },
         getMoreShipmentItems: function() {
             return this.nextPage();    

@@ -1,16 +1,15 @@
 
 <div class="mz-l-shipment">
-    {% block shipment-header %}
+    {% block shipment-header %} 
 
-        {% if model.status == "Fulfilled" %}
-            <h3 class="mz-shipment-status-heading">{{ labels.orderPackageFulfilled|string_format(model.formatedFulfillmentDate) }}</h3>
-        {% else %}
-            <h3 class="mz-shipment-status-heading">{{ model.shipmentStatus }}
-        {% endif %}
-
-        <h3 class="mz-shipment-status-heading">{{ model.fulfillmentStatus }}
-            {% if model.fulfillmentDate %}
-                {{ model.fulfillmentDate|date("F j, Y") }}
+        <h3 class="mz-shipment-status-heading">
+            {%if model.fulfillmentStatus %}
+                {{ model.fulfillmentStatus }}
+                {% if model.fulfillmentDate %}
+                    {{ model.fulfillmentDate|date("F j, Y") }}
+                {% endif %}
+            {% else %}
+                {{labels.shipmentsProcessing}}
             {% endif %}
         </h3>
 
@@ -20,9 +19,9 @@
 
     <div class="mz-shipment-items">
         {% for item in model.items %}
-            <div data-mz-shipment-item class="mz-shipment-item" data-mz-shipment-item-id="{{item.lineId}}">
-                {% include "modules/my-account/order-history-shipment-item" with model=item shipment=model %}
-            </div>
+                <div data-mz-shipment-item class="mz-shipment-item" data-mz-shipment-item-id="{{item.lineId}}">
+                    {% include "modules/my-account/order-history-shipment-item" with model=item shipment=model %}
+                </div>
         {% endfor %}
     </div>
 
@@ -37,11 +36,31 @@
 
 {% block shipment-actions %}
     <div data-mz-shipment-actions class="mz-shipment-actions mz-l-shipment-actions">
-        {% if themeSettings.allowCustomerInitiatedReturns and not model.limitPlaceReturns and model.shipmentStatus == "FULFILLED" %}
-            <div class="mz-shipment-action">
-                <button type="submit" class="mz-button" data-mz-order-id="{{ order.id }}" data-mz-action="startOrderReturn" >{{ labels.returnOrReplace }}</button>
+
+        {% if model.destination.destinationContact %}
+            <div class="mz-shipment-shipto">
+                {% block order-shipped-to %}
+                    <div> <strong>{{ labels.shippedTo }}: </strong> 
+                        {{ model.destination.destinationContact.firstName }} 
+                        {{ model.destination.destinationContact.lastNameOrSurname }}
+                    </div>
+                    <div>{{ model.destination.destinationContact.address.address }}
+                        {{ model.destination.destinationContact.address.address1 }}
+                    </div>
+                    <div>{{ model.destination.destinationContact.address.cityOrTown }} 
+                        {{ model.destination.destinationContact.address.stateOrProvince }} 
+                        {{ model.destination.destinationContact.address.postalOrZipCode }}
+                    </div>
+                {% endblock order-shipped-to %}
             </div>
         {% endif %}
+
+        {% if themeSettings.allowCustomerInitiatedReturns and not model.limitPlaceReturns and model.shipmentStatus == "FULFILLED" %}
+            <div class="mz-shipment-action">
+                <button type="submit" class="mz-button" data-mz-shipment-number="{{ model.number }}" data-mz-action="startOrderReturn" >{{ labels.returnOrReplace }}</button>
+            </div>
+        {% endif %}
+
         
         {% if model.packages.length && model.packages.length > 0 %}
         <div class="mz-shipment-action">

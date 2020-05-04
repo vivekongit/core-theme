@@ -206,44 +206,6 @@ define([
                 return groupedCodes;
             },
             /**
-             * Creates a list of nonShipped items by comparing fulfilled package items with Order Items
-             * 
-             * [setNonShippedItems]
-             * @return {[Array]}
-             */
-            setNonShippedItems: function() {
-                var self = this,
-                    groupedItems = [];
-
-                if (self.get('items')) {
-                    //Get collections of both packaged Codes and exploded order items
-                    var packages = this.getCollectionOfPackages();
-                    groupedItems = this.get('explodedItems').getGroupedCollection();
-
-                    //Update quanity of items by comparing with packaged items
-                    _.each(packages, function(type, typeKey, typeList) {
-                        _.each(type, function(myPackage, key, list) {
-                            for (var i = 0; i < groupedItems[typeKey].length; i++) {
-                                if (groupedItems[typeKey][i].uniqueProductCode() === myPackage.get('productCode')) {
-                                    if (groupedItems[typeKey][i].get('optionAttributeFQN') && groupedItems[typeKey][i].get('optionAttributeFQN') != myPackage.get('optionAttributeFQN')) {
-                                        return false;
-                                    }
-                                    if (groupedItems[typeKey][i].get('quantity') === 1) {
-                                        groupedItems[typeKey].splice(i, 1);
-                                        return false;
-                                    }
-                                    groupedItems[typeKey][i].set('quantity', groupedItems[typeKey][i].get('quantity') - 1);
-                                    return false;
-                                }
-                            }
-                        });
-                    });
-
-                }
-                self._nonShippedItems = groupedItems.standardProduct.concat(groupedItems.productExtra);
-                return;
-            },
-            /**
              * Fetches a list of order items and thier returnable states
              * 
              * [setNonShippedItems]
@@ -273,6 +235,10 @@ define([
                     returnItems = [],
                     parentBundles = [];
 
+                returnableItems = _.filter(returnableItems, function(item) {
+                    return item.shipmentNumber == self._activeReturnShipmentNumber;
+                });
+
                 var lineItemGroups = _.groupBy(returnableItems, function(item) {
                     return item.orderLineId;
                 });
@@ -291,7 +257,7 @@ define([
                             return item.excludeProductExtras === true;
                         }) :
                         returnableParents[0];
-
+                    returnableParent = returnableParent || returnableParents[0];
                     var originalOrderItem = self.get('items').find(function(item) {
                         return item.get('lineId') === returnableParent.orderLineId;
                     });
@@ -352,6 +318,7 @@ define([
                 return self.get('returnableItems');
             },
             clearReturn: function() {
+                this._activeReturnShipmentNumber = null;
                 var rmas = this.get('rma');
                 rmas.clear();
             },
